@@ -1,0 +1,339 @@
+﻿{
+  "baseUrl": "http://localhost:5000/api",
+  "docs": "http://localhost:5000/api-docs",
+  
+  "endpoints": {
+    "authentication": {
+      "register": {
+        "method": "POST",
+        "url": "/auth/register",
+        "description": "Register new user",
+        "authRequired": false
+      },
+      "login": {
+        "method": "POST",
+        "url": "/auth/login",
+        "description": "Login user (returns JWT)",
+        "authRequired": false
+      },
+      "me": {
+        "method": "GET",
+        "url": "/auth/me",
+        "description": "Get current user info",
+        "authRequired": true
+      },
+      "refresh": {
+        "method": "POST",
+        "url": "/auth/refresh",
+        "description": "Refresh JWT token",
+        "authRequired": true
+      },
+      "logout": {
+        "method": "POST",
+        "url": "/auth/logout",
+        "description": "Logout user",
+        "authRequired": true
+      },
+      "changePassword": {
+        "method": "POST",
+        "url": "/auth/change-password",
+        "description": "Change password",
+        "authRequired": true
+      }
+    },
+    
+    "guests": {
+      "getAll": {
+        "method": "GET",
+        "url": "/guests",
+        "description": "Get all guests (pagination)",
+        "authRequired": true,
+        "roles": ["admin", "receptionist"]
+      },
+      "getById": {
+        "method": "GET",
+        "url": "/guests/{id}",
+        "description": "Get guest by ID",
+        "authRequired": true,
+        "roles": ["admin", "receptionist", "guest"]
+      },
+      "create": {
+        "method": "POST",
+        "url": "/guests",
+        "description": "Create new guest",
+        "authRequired": true,
+        "roles": ["admin", "receptionist"]
+      },
+      "update": {
+        "method": "PUT",
+        "url": "/guests/{id}",
+        "description": "Update guest",
+        "authRequired": true,
+        "roles": ["admin", "receptionist"]
+      },
+      "delete": {
+        "method": "DELETE",
+        "url": "/guests/{id}",
+        "description": "Delete guest",
+        "authRequired": true,
+        "roles": ["admin"]
+      },
+      "search": {
+        "method": "GET",
+        "url": "/guests/search",
+        "description": "Search guests (name/email/phone)",
+        "authRequired": true,
+        "roles": ["admin", "receptionist"]
+      },
+      "stats": {
+        "method": "GET",
+        "url": "/guests/stats",
+        "description": "Get guest statistics",
+        "authRequired": true,
+        "roles": ["admin", "receptionist"]
+      }
+    },
+    
+    "rooms": {
+      "getAll": {
+        "method": "GET",
+        "url": "/rooms",
+        "description": "Get all rooms (with filters)",
+        "authRequired": true,
+        "roles": ["admin", "receptionist"]
+      },
+      "getById": {
+        "method": "GET",
+        "url": "/rooms/{id}",
+        "description": "Get room by ID",
+        "authRequired": true,
+        "roles": ["admin", "receptionist"]
+      },
+      "create": {
+        "method": "POST",
+        "url": "/rooms",
+        "description": "Create new room",
+        "authRequired": true,
+        "roles": ["admin"]
+      },
+      "update": {
+        "method": "PUT",
+        "url": "/rooms/{id}",
+        "description": "Update room info",
+        "authRequired": true,
+        "roles": ["admin", "receptionist"]
+      },
+      "getAvailable": {
+        "method": "GET",
+        "url": "/rooms/available",
+        "description": "Get available rooms (date range)",
+        "authRequired": true,
+        "roles": ["admin", "receptionist", "guest"],
+        "params": ["start_date", "end_date", "room_type_id"]
+      },
+      "getTypes": {
+        "method": "GET",
+        "url": "/rooms/types",
+        "description": "Get all room types",
+        "authRequired": true,
+        "roles": ["admin", "receptionist", "guest"]
+      },
+      "createType": {
+        "method": "POST",
+        "url": "/rooms/types",
+        "description": "Create room type",
+        "authRequired": true,
+        "roles": ["admin"]
+      },
+      "getOccupancy": {
+        "method": "GET",
+        "url": "/rooms/occupancy",
+        "description": "Get occupancy rates",
+        "authRequired": true,
+        "roles": ["admin", "receptionist"],
+        "params": ["start_date", "end_date"]
+      }
+    },
+    
+    "reservations": {
+      "getAll": {
+        "method": "GET",
+        "url": "/reservations",
+        "description": "Get all reservations (filters)",
+        "authRequired": true,
+        "roles": ["admin", "receptionist"]
+      },
+      "getById": {
+        "method": "GET",
+        "url": "/reservations/{id}",
+        "description": "Get reservation by ID",
+        "authRequired": true,
+        "roles": ["admin", "receptionist", "guest"]
+      },
+      "create": {
+        "method": "POST",
+        "url": "/reservations",
+        "description": "Create new reservation",
+        "authRequired": true,
+        "roles": ["admin", "receptionist", "guest"]
+      },
+      "update": {
+        "method": "PUT",
+        "url": "/reservations/{id}",
+        "description": "Update reservation",
+        "authRequired": true,
+        "roles": ["admin", "receptionist"]
+      },
+      "cancel": {
+        "method": "PUT",
+        "url": "/reservations/{id}/cancel",
+        "description": "Cancel reservation",
+        "authRequired": true,
+        "roles": ["admin", "receptionist", "guest"]
+      },
+      "checkIn": {
+        "method": "PUT",
+        "url": "/reservations/{id}/check-in",
+        "description": "Check-in guest",
+        "authRequired": true,
+        "roles": ["admin", "receptionist"]
+      },
+      "checkOut": {
+        "method": "PUT",
+        "url": "/reservations/{id}/check-out",
+        "description": "Check-out guest",
+        "authRequired": true,
+        "roles": ["admin", "receptionist"]
+      },
+      "getGuestReservations": {
+        "method": "GET",
+        "url": "/reservations/guest/{guest_id}",
+        "description": "Get guest's reservations",
+        "authRequired": true,
+        "roles": ["admin", "receptionist", "guest"]
+      },
+      "calculatePrice": {
+        "method": "POST",
+        "url": "/reservations/calculate-price",
+        "description": "Calculate reservation price",
+        "authRequired": true,
+        "roles": ["admin", "receptionist", "guest"]
+      }
+    },
+    
+    "payments": {
+      "getAll": {
+        "method": "GET",
+        "url": "/payments",
+        "description": "Get all payments (filters)",
+        "authRequired": true,
+        "roles": ["admin", "receptionist"]
+      },
+      "getById": {
+        "method": "GET",
+        "url": "/payments/{id}",
+        "description": "Get payment by ID",
+        "authRequired": true,
+        "roles": ["admin", "receptionist"]
+      },
+      "create": {
+        "method": "POST",
+        "url": "/payments",
+        "description": "Create new payment",
+        "authRequired": true,
+        "roles": ["admin", "receptionist"]
+      },
+      "process": {
+        "method": "PUT",
+        "url": "/payments/{id}/process",
+        "description": "Process payment (mark completed)",
+        "authRequired": true,
+        "roles": ["admin", "receptionist"]
+      },
+      "refund": {
+        "method": "PUT",
+        "url": "/payments/{id}/refund",
+        "description": "Process refund",
+        "authRequired": true,
+        "roles": ["admin"]
+      },
+      "getFinancialReport": {
+        "method": "GET",
+        "url": "/payments/financial-report",
+        "description": "Financial report",
+        "authRequired": true,
+        "roles": ["admin", "receptionist"]
+      },
+      "getReservationPayments": {
+        "method": "GET",
+        "url": "/payments/reservation/{reservation_id}",
+        "description": "Reservation payments",
+        "authRequired": true,
+        "roles": ["admin", "receptionist"]
+      }
+    },
+    
+    "reports": {
+      "daily": {
+        "method": "GET",
+        "url": "/reports/daily",
+        "description": "Daily report",
+        "authRequired": true,
+        "roles": ["admin", "receptionist"]
+      },
+      "weekly": {
+        "method": "GET",
+        "url": "/reports/weekly",
+        "description": "Weekly report",
+        "authRequired": true,
+        "roles": ["admin", "receptionist"]
+      },
+      "monthly": {
+        "method": "GET",
+        "url": "/reports/monthly",
+        "description": "Monthly report",
+        "authRequired": true,
+        "roles": ["admin", "receptionist"]
+      },
+      "custom": {
+        "method": "GET",
+        "url": "/reports/custom",
+        "description": "Custom report",
+        "authRequired": true,
+        "roles": ["admin", "receptionist"]
+      }
+    },
+    
+    "system": {
+      "health": {
+        "method": "GET",
+        "url": "/health",
+        "description": "Health check",
+        "authRequired": false
+      },
+      "metrics": {
+        "method": "GET",
+        "url": "/metrics",
+        "description": "System metrics",
+        "authRequired": true,
+        "roles": ["admin"]
+      }
+    }
+  },
+  
+  "summary": {
+    "totalEndpoints": 49,
+    "categories": [
+      { "name": "authentication", "count": 6 },
+      { "name": "guests", "count": 7 },
+      { "name": "rooms", "count": 9 },
+      { "name": "reservations", "count": 10 },
+      { "name": "payments", "count": 8 },
+      { "name": "reports", "count": 4 },
+      { "name": "system", "count": 2 },
+      { "name": "docs", "count": 2 },
+      { "name": "staff", "count": 6 },
+      { "name": "audit", "count": 4 }
+    ]
+  }
+}

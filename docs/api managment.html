@@ -1,0 +1,197 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>api-endpoints</title>
+</head>
+<body>
+Authentication routes
+Endpoints:
+1- POST /register - User registration
+2- POST /login - User login
+3- GET /me - Get current user
+4- POST /refresh - Refresh token
+5- POST /logout - User logout
+6- POST /change-password - Change password
+
+
+
+Guest management routes
+
+Endpoints:
+1- GET    /              - Get all guests (with pagination)
+2- GET    /search        - Search guests
+3- GET    /:id           - Get guest by ID
+4- POST   /              - Create new guest
+5- PUT    /:id           - Update guest
+6- DELETE /:id           - Delete guest
+
+
+
+Payment management routes
+
+Endpoints:
+1- GET    /                               - Get all payments
+2- GET    /reservation/:reservation_id    - Get reservation payments
+3- GET    /financial-report               - Get financial report
+4- GET    /:id                            - Get payment by ID
+5- POST   /                               - Create new payment
+6- PUT    /:id/process                    - Process payment
+7- PUT    /:id/refund                     - Process refund
+
+
+
+Report management routes
+
+Endpoints:
+1- GET /daily     - Get daily report
+2- GET /weekly    - Get weekly report
+3- GET /monthly   - Get monthly report
+4- GET /custom    - Get custom report
+
+
+Reservation management routes
+
+Endpoints:
+1- GET    /                       - Get all reservations
+2- GET    /guest/:guest_id        - Get guest's reservations
+3- GET    /:id                    - Get reservation by ID
+4- GET    /calculate-price        - Calculate reservation price
+5- POST   /                       - Create new reservation
+6- PUT    /:id                    - Update reservation
+7- PUT    /:id/cancel             - Cancel reservation
+8- PUT    /:id/check-in           - Check in guest
+9- PUT    /:id/check-out          - Check out guest
+
+
+
+Room management routes
+
+Endpoints:
+1- GET    /                   - Get all rooms
+2- GET    /available          - Get available rooms
+3- GET    /types              - Get room types
+4- GET    /occupancy          - Get occupancy rate
+5- GET    /:id                - Get room by ID
+6- POST   /                   - Create new room
+7- POST   /types              - Create room type
+8- PUT    /:id                - Update room
+
+
+Staff management routes
+Endpoints:
+1. GET    /profile              - Get staff profile (receptionist only)
+2. GET    /                     - Get all staff (admin only)
+3. POST   /                     - Create new staff (admin only)
+4. GET    /:id                  - Get staff by ID (admin or self)
+5. PUT    /:id                  - Update staff (admin or self)
+6. GET    /department/stats     - Get department statistics (admin only)
+
+Audit log viewing routes (admin only)
+1. GET    /api/audit                     - Get audit logs with filters
+2. GET    /api/audit/recent              - Get recent activity
+3. GET    /api/audit/record/:table/:id   - Get audit trail for specific record
+
+</body>
+</html>
+cd "C:\Users\mehar\Documents\Hotel-Reservation-System\frontend"
+Remove-Item -Path ".git" -Recurse -Force
+
+
+
+cd "C:\Users\mehar\Documents\Hotel-Reservation-System"
+.\setup_frontend.ps1
+
+# Overwrite src/services/roomService.js to include the missing createRoomType function
+@'
+/**
+ * roomService.js - Room management service
+ */
+import apiClient from './api';
+
+class RoomService {
+  /**
+   * Get all rooms with optional filtering
+   */
+  static async getAllRooms(params = {}) {
+    try {
+      const response = await apiClient.get('/rooms', { params });
+      return response.data;
+    } catch (error) {
+      console.error('Error fetching rooms:', error);
+      throw error;
+    }
+  }
+
+  /**
+   * Get all room types
+   */
+  static async getRoomTypes() {
+    try {
+      const response = await apiClient.get('/rooms/types');
+      return response.data;
+    } catch (error) {
+      console.error('Error fetching room types:', error);
+      return []; 
+    }
+  }
+
+  /**
+   * Create a new room type (THIS WAS MISSING)
+   */
+  static async createRoomType(data) {
+    try {
+      const response = await apiClient.post('/rooms/types', data);
+      return response.data;
+    } catch (error) {
+      console.error('Error creating room type:', error);
+      throw error;
+    }
+  }
+
+  static async getRoomById(id) {
+    try {
+      const response = await apiClient.get(`/rooms/${id}`);
+      return response.data;
+    } catch (error) {
+      throw error;
+    }
+  }
+
+  static async createRoom(roomData) {
+    try {
+      const response = await apiClient.post('/rooms', roomData);
+      return response.data;
+    } catch (error) {
+      throw error;
+    }
+  }
+
+  static async updateRoom(id, roomData) {
+    try {
+      const response = await apiClient.put(`/rooms/${id}`, roomData);
+      return response.data;
+    } catch (error) {
+      throw error;
+    }
+  }
+
+  static async deleteRoom(id) {
+    try {
+      const response = await apiClient.delete(`/rooms/${id}`);
+      return response.data;
+    } catch (error) {
+      throw error;
+    }
+  }
+}
+
+export default RoomService;
+'@ | Out-File -FilePath "src\services\roomService.js" -Encoding UTF8 -Force
+
+
+
+
+
+

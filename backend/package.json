@@ -1,0 +1,78 @@
+{
+  "name": "hotel-reservation-backend",
+  "version": "1.0.0",
+  "description": "Express.js API for Hotel Reservation System",
+  "main": "server.js",
+  "type": "module",
+  "scripts": {
+    "start": "node server.js",
+    "dev": "nodemon server.js",
+    "debug": "nodemon --inspect server.js",
+    "test": "jest --coverage",
+    "test:watch": "jest --watch",
+    "lint": "eslint .",
+    "lint:fix": "eslint . --fix",
+    "seed": "node ../database/seed.js",
+    "seed:clean": "node ../database/seed.js --clean",
+    "migrate": "node ./src/config/migrations.js",
+    "health": "node ./src/utils/healthCheck.js",
+    "logs": "powershell -NoProfile -Command \"Get-Content -Path .\\logs\\combined-$(Get-Date -Format yyyy-MM-dd).log -Wait\"",
+    "logs:error": "powershell -NoProfile -Command \"Get-Content -Path .\\logs\\error-$(Get-Date -Format yyyy-MM-dd).log -Wait\"",
+    "clean": "rimraf logs/*.log node_modules package-lock.json",
+    "docker:build": "docker build -t hotel-reservation-backend .",
+    "docker:run": "docker run -p 5000:5000 hotel-reservation-backend"
+  },
+  "keywords": [
+    "express",
+    "hotel",
+    "reservation",
+    "api"
+  ],
+  "author": "Your Name",
+  "license": "MIT",
+  "dependencies": {
+    "axios": "^1.13.2",
+    "bcryptjs": "^2.4.3",
+    "compression": "^1.7.4",
+    "cors": "^2.8.5",
+    "dotenv": "^16.3.1",
+    "express": "^4.18.2",
+    "express-mongo-sanitize": "^2.2.0",
+    "express-rate-limit": "^7.1.5",
+    "express-validator": "^7.0.1",
+    "helmet": "^7.0.0",
+    "hpp": "^0.2.3",
+    "jsonwebtoken": "^9.0.2",
+    "morgan": "^1.10.0",
+    "nodemailer": "^7.0.12",
+    "pg": "^8.11.3",
+    "swagger-jsdoc": "^6.2.8",
+    "swagger-ui-express": "^5.0.0",
+    "winston": "^3.11.0",
+    "winston-daily-rotate-file": "^4.7.1",
+    "xss-clean": "^0.1.4"
+  },
+  "devDependencies": {
+    "eslint": "^8.55.0",
+    "eslint-config-airbnb-base": "^15.0.0",
+    "eslint-plugin-import": "^2.29.0",
+    "jest": "^29.7.0",
+    "nodemon": "^3.0.1",
+    "rimraf": "^5.0.0",
+    "supertest": "^6.3.3"
+  },
+  "engines": {
+    "node": ">=18.0.0",
+    "npm": ">=8.0.0"
+  },
+  "jest": {
+    "testEnvironment": "node",
+    "coveragePathIgnorePatterns": [
+      "/node_modules/",
+      "/tests/"
+    ],
+    "collectCoverageFrom": [
+      "src/**/*.js"
+    ]
+  }
+}

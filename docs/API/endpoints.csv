@@ -1,0 +1,45 @@
+﻿Category,Endpoint,Method,URL,Description,Auth Required,Roles,Parameters
+Authentication,register,POST,/auth/register,Register new user,FALSE,,
+Authentication,login,POST,/auth/login,Login user (returns JWT),FALSE,,
+Authentication,me,GET,/auth/me,Get current user info,TRUE,all,
+Authentication,refresh,POST,/auth/refresh,Refresh JWT token,TRUE,all,
+Authentication,logout,POST,/auth/logout,Logout user,TRUE,all,
+Authentication,change-password,POST,/auth/change-password,Change password,TRUE,all,
+Guests,get-all,GET,/guests,Get all guests (pagination),TRUE,admin;receptionist,page;limit;search;guest_type
+Guests,get-by-id,GET,/guests/{id},Get guest by ID,TRUE,admin;receptionist;guest,
+Guests,create,POST,/guests,Create new guest,TRUE,admin;receptionist,
+Guests,update,PUT,/guests/{id},Update guest,TRUE,admin;receptionist,
+Guests,delete,DELETE,/guests/{id},Delete guest,TRUE,admin,
+Guests,search,GET,/guests/search,Search guests (name/email/phone),TRUE,admin;receptionist,query
+Guests,stats,GET,/guests/stats,Get guest statistics,TRUE,admin;receptionist,
+Rooms,get-all,GET,/rooms,Get all rooms (with filters),TRUE,admin;receptionist,room_type_id;status;floor;is_active
+Rooms,get-by-id,GET,/rooms/{id},Get room by ID,TRUE,admin;receptionist,
+Rooms,create,POST,/rooms,Create new room,TRUE,admin,
+Rooms,update,PUT,/rooms/{id},Update room info,TRUE,admin;receptionist,
+Rooms,get-available,GET,/rooms/available,Get available rooms (date range),TRUE,admin;receptionist;guest,start_date;end_date;room_type_id
+Rooms,get-types,GET,/rooms/types,Get all room types,TRUE,admin;receptionist;guest,
+Rooms,create-type,POST,/rooms/types,Create room type,TRUE,admin,
+Rooms,get-occupancy,GET,/rooms/occupancy,Get occupancy rates,TRUE,admin;receptionist,start_date;end_date
+Reservations,get-all,GET,/reservations,Get all reservations (filters),TRUE,admin;receptionist,status;start_date;end_date;guest_id
+Reservations,get-by-id,GET,/reservations/{id},Get reservation by ID,TRUE,admin;receptionist;guest,
+Reservations,create,POST,/reservations,Create new reservation,TRUE,admin;receptionist;guest,
+Reservations,update,PUT,/reservations/{id},Update reservation,TRUE,admin;receptionist,
+Reservations,cancel,PUT,/reservations/{id}/cancel,Cancel reservation,TRUE,admin;receptionist;guest,
+Reservations,check-in,PUT,/reservations/{id}/check-in,Check-in guest,TRUE,admin;receptionist,
+Reservations,check-out,PUT,/reservations/{id}/check-out,Check-out guest,TRUE,admin;receptionist,
+Reservations,get-guest-reservations,GET,/reservations/guest/{guest_id},Get guest's reservations,TRUE,admin;receptionist;guest,
+Reservations,calculate-price,POST,/reservations/calculate-price,Calculate reservation price,TRUE,admin;receptionist;guest,
+Reservations,stats,GET,/reservations/stats,Get reservation statistics,TRUE,admin;receptionist,
+Payments,get-all,GET,/payments,Get all payments (filters),TRUE,admin;receptionist,payment_status;payment_method;start_date;end_date
+Payments,get-by-id,GET,/payments/{id},Get payment by ID,TRUE,admin;receptionist,
+Payments,create,POST,/payments,Create new payment,TRUE,admin;receptionist,
+Payments,process,PUT,/payments/{id}/process,Process payment (mark completed),TRUE,admin;receptionist,
+Payments,refund,PUT,/payments/{id}/refund,Process refund,TRUE,admin,
+Payments,financial-report,GET,/payments/financial-report,Financial report,TRUE,admin;receptionist,start_date;end_date
+Payments,reservation-payments,GET,/payments/reservation/{reservation_id},Reservation payments,TRUE,admin;receptionist,
+Reports,daily,GET,/reports/daily,Daily report,TRUE,admin;receptionist,date
+Reports,weekly,GET,/reports/weekly,Weekly report,TRUE,admin;receptionist,start_date
+Reports,monthly,GET,/reports/monthly,Monthly report,TRUE,admin;receptionist,year;month
+Reports,custom,GET,/reports/custom,Custom report,TRUE,admin;receptionist,start_date;end_date;report_type
+System,health,GET,/health,Health check,FALSE,,
+System,metrics,GET,/metrics,System metrics,TRUE,admin,

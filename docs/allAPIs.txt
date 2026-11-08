@@ -1,0 +1,51 @@
+✅ /api/auth/*
+  POST /register    - User registration
+  POST /login       - User login (JWT)
+  GET  /me          - Current user info
+  POST /logout      - User logout
+  POST /refresh     - Refresh token
+  POST /change-password
+
+✅ /api/guests/*
+  GET    /          - List guests (pagination)
+  GET    /:id       - Get guest by ID
+  POST   /          - Create guest
+  PUT    /:id       - Update guest
+  DELETE /:id       - Delete guest
+  GET    /search    - Search guests
+
+✅ /api/rooms/*
+  GET    /          - List rooms (filters)
+  GET    /:id       - Get room by ID
+  POST   /          - Create room (admin only)
+  PUT    /:id       - Update room
+  GET    /available - Available rooms (date range)
+  GET    /types     - Room types
+  POST   /types     - Create room type
+  GET    /occupancy - Occupancy rates
+
+✅ /api/reservations/*
+  GET    /          - List reservations
+  GET    /:id       - Get reservation
+  POST   /          - Create reservation
+  PUT    /:id       - Update reservation
+  PUT    /:id/cancel- Cancel reservation
+  PUT    /:id/check-in
+  PUT    /:id/check-out
+  GET    /guest/:id - Guest's reservations
+  POST   /calculate-price
+
+✅ /api/payments/*
+  GET    /          - List payments
+  GET    /:id       - Get payment
+  POST   /          - Create payment
+  PUT    /:id/process
+  PUT    /:id/refund
+  GET    /financial-report
+  GET    /reservation/:id
+
+✅ /api/reports/*
+  GET /daily        - Daily report
+  GET /weekly       - Weekly report  
+  GET /monthly      - Monthly report
+  GET /custom       - Custom report
