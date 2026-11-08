@@ -396,7 +396,7 @@ async function runAllTests() {
           logSuccess(`Get Record Audit Trail - ${test.table}.${test.id}`, 
             `Found ${count} audit entries for ${test.description}`);
           
-          console.log(`   📈 Audit Trail for ${test.table} ID ${test.id}:`);
+          console.log(`    Audit Trail for ${test.table} ID ${test.id}:`);
           if (Array.isArray(trail)) {
             trail.forEach((entry, index) => {
               console.log(`   ${index + 1}. ${entry.action} by User ${entry.user_id || 'System'}`);
@@ -549,7 +549,7 @@ async function printSummary(tester) {
   console.log(` Total Tests: ${total}`);
   console.log(` Passed: ${passed}`);
   console.log(` Failed: ${total - passed}`);
-  console.log(`🎯 Success Rate: ${successRate}%`);
+  console.log(` Success Rate: ${successRate}%`);
 
   // Test coverage summary
   console.log('\n TEST COVERAGE:');
@@ -561,15 +561,15 @@ async function printSummary(tester) {
   console.log('    Data validation         - Audit log structure');
 
   // Recommendations
-  console.log('\n💡 RECOMMENDATIONS:');
+  console.log('\n RECOMMENDATIONS:');
   if (successRate === '100.0') {
-    console.log('🎉 EXCELLENT! All Audit Log API endpoints are fully functional.');
+    console.log(' EXCELLENT! All Audit Log API endpoints are fully functional.');
     console.log('   Next steps:');
     console.log('   1. Test with different date ranges');
     console.log('   2. Test with complex filter combinations');
     console.log('   3. Load test with high volume of audit logs');
   } else if (parseFloat(successRate) >= 80.0) {
-    console.log('👍 GOOD! Most endpoints are working.');
+    console.log(' GOOD! Most endpoints are working.');
     console.log('   Review failed tests - check permission setup.');
   } else {
     console.log('  NEEDS ATTENTION. Several tests failed.');
@@ -579,12 +579,12 @@ async function printSummary(tester) {
     console.log('   3. Database has audit_logs table');
   }
 
-  console.log('\n🔗 AUDIT LOG STATISTICS:');
+  console.log('\n AUDIT LOG STATISTICS:');
   try {
     const recent = await tester.getRecentActivity(1);
     const totalLogs = await tester.getAuditLogs({ limit: 1 });
     
-    console.log(`   📈 Recent activity endpoint: ${recent.data?.length ? 'Working' : 'No data'}`);
+    console.log(`    Recent activity endpoint: ${recent.data?.length ? 'Working' : 'No data'}`);
     console.log(`    Filter endpoint: ${totalLogs.data ? 'Working' : 'No data'}`);
   } catch (error) {
     console.log(`    Cannot fetch statistics: ${error.message}`);
@@ -639,7 +639,7 @@ async function showMenu() {
 }
 
 async function testSpecificEndpoint(tester) {
-  console.log('\n🔧 SPECIFIC AUDIT ENDPOINT TESTING');
+  console.log('\n SPECIFIC AUDIT ENDPOINT TESTING');
   console.log('==================================');
   console.log('1. GET /audit - Get audit logs with filters');
   console.log('2. GET /audit/recent - Get recent activity');
@@ -713,7 +713,7 @@ async function testSpecificEndpoint(tester) {
 
 async function viewRecentActivity(tester) {
   try {
-    console.log('\n📈 RECENT AUDIT ACTIVITY');
+    console.log('\n RECENT AUDIT ACTIVITY');
     console.log('========================');
     
     const result = await tester.getRecentActivity(20);
@@ -753,7 +753,7 @@ async function viewRecentActivity(tester) {
 }
 
 async function quickHealthCheck(tester) {
-  console.log('\n⚡ QUICK AUDIT API HEALTH CHECK');
+  console.log('\n QUICK AUDIT API HEALTH CHECK');
   console.log('===============================');
   
   const checks = [
@@ -807,7 +807,7 @@ async function quickHealthCheck(tester) {
   console.log(`   Passed: ${passed}/${total}`);
   
   if (passed === total) {
-    console.log('🎉 AUDIT API IS HEALTHY!');
+    console.log(' AUDIT API IS HEALTHY!');
   } else {
     console.log('  Some checks failed. Review the errors above.');
   }
@@ -876,7 +876,7 @@ process.on('unhandledRejection', (error) => {
 });
 
 process.on('uncaughtException', (error) => {
-  console.error('\n💥 Uncaught exception:', error.message);
+  console.error('\n Uncaught exception:', error.message);
   console.error('   Stack:', error.stack);
   process.exit(1);
 });

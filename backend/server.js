@@ -27,14 +27,14 @@ async function initializeDatabase() {
     const isConnected = await testConnection();
     
     if (!isConnected) {
-      logger.error('❌ Database connection failed');
+      logger.error(' Database connection failed');
       throw new Error('Database connection failed');
     }
     
-    logger.info('✅ PostgreSQL database connected successfully');
+    logger.info(' PostgreSQL database connected successfully');
     return true;
   } catch (error) {
-    logger.error('❌ Database initialization failed:', { error: error.message });
+    logger.error(' Database initialization failed:', { error: error.message });
     throw error;
   }
 }
@@ -53,18 +53,18 @@ async function startServer() {
       // Step 3: Log Operational Dashboard
       // This provides a quick reference to all 51 active endpoints
       logger.info(`
-      🏨 Hotel Reservation System Backend
+       Hotel Reservation System Backend
       ============================================
-      🚀 Server running in ${process.env.NODE_ENV || 'development'} mode
-      📡 Listening on port ${PORT}
+       Server running in ${process.env.NODE_ENV || 'development'} mode
+       Listening on port ${PORT}
 
-      🔗 MAIN LINKS
-      🌐 API Base URL:    ${BASE_URL}/api
-      📚 Swagger Docs:    ${BASE_URL}/api-docs
-      📊 Health Check:    ${BASE_URL}/api/health
-      📈 System Metrics:  ${BASE_URL}/api/metrics
+       MAIN LINKS
+       API Base URL:    ${BASE_URL}/api
+       Swagger Docs:    ${BASE_URL}/api-docs
+       Health Check:    ${BASE_URL}/api/health
+       System Metrics:  ${BASE_URL}/api/metrics
 
-      🔐 AUTHENTICATION (6 Endpoints)
+       AUTHENTICATION (6 Endpoints)
       POST   ${BASE_URL}/api/auth/register
       POST   ${BASE_URL}/api/auth/login
       GET    ${BASE_URL}/api/auth/me
@@ -72,7 +72,7 @@ async function startServer() {
       POST   ${BASE_URL}/api/auth/logout
       POST   ${BASE_URL}/api/auth/change-password
 
-      👥 GUEST MANAGEMENT (6 Endpoints)
+       GUEST MANAGEMENT (6 Endpoints)
       GET    ${BASE_URL}/api/guests
       GET    ${BASE_URL}/api/guests/search?query=name
       GET    ${BASE_URL}/api/guests/:id
@@ -80,7 +80,7 @@ async function startServer() {
       PUT    ${BASE_URL}/api/guests/:id
       DELETE ${BASE_URL}/api/guests/:id
 
-      👔 STAFF MANAGEMENT (6 Endpoints)
+       STAFF MANAGEMENT (6 Endpoints)
       GET    ${BASE_URL}/api/staff (Admin)
       POST   ${BASE_URL}/api/staff (Admin)
       GET    ${BASE_URL}/api/staff/profile (Self)
@@ -88,7 +88,7 @@ async function startServer() {
       PUT    ${BASE_URL}/api/staff/:id
       GET    ${BASE_URL}/api/staff/department/stats
 
-      🛏️ ROOM MANAGEMENT (8 Endpoints)
+       ROOM MANAGEMENT (8 Endpoints)
       GET    ${BASE_URL}/api/rooms
       POST   ${BASE_URL}/api/rooms
       GET    ${BASE_URL}/api/rooms/available
@@ -98,7 +98,7 @@ async function startServer() {
       GET    ${BASE_URL}/api/rooms/:id
       PUT    ${BASE_URL}/api/rooms/:id
 
-      📅 RESERVATIONS (9 Endpoints)
+       RESERVATIONS (9 Endpoints)
       GET    ${BASE_URL}/api/reservations
       POST   ${BASE_URL}/api/reservations
       GET    ${BASE_URL}/api/reservations/calculate-price
@@ -109,7 +109,7 @@ async function startServer() {
       PUT    ${BASE_URL}/api/reservations/:id/check-in
       PUT    ${BASE_URL}/api/reservations/:id/check-out
 
-      💳 PAYMENTS (7 Endpoints)
+       PAYMENTS (7 Endpoints)
       GET    ${BASE_URL}/api/payments
       POST   ${BASE_URL}/api/payments
       GET    ${BASE_URL}/api/payments/financial-report
@@ -118,13 +118,13 @@ async function startServer() {
       PUT    ${BASE_URL}/api/payments/:id/process
       PUT    ${BASE_URL}/api/payments/:id/refund
 
-      📈 REPORTS & ANALYTICS (4 Endpoints)
+       REPORTS & ANALYTICS (4 Endpoints)
       GET    ${BASE_URL}/api/reports/daily
       GET    ${BASE_URL}/api/reports/weekly
       GET    ${BASE_URL}/api/reports/monthly
       GET    ${BASE_URL}/api/reports/custom
 
-      👁️ AUDIT LOGS (3 Endpoints)
+       AUDIT LOGS (3 Endpoints)
       GET    ${BASE_URL}/api/audit
       GET    ${BASE_URL}/api/audit/recent
       GET    ${BASE_URL}/api/audit/record/:table/:id
@@ -144,10 +144,10 @@ async function startServer() {
     // Handle startup errors (e.g., port in use)
     server.on('error', (error) => {
       if (error.code === 'EADDRINUSE') {
-        logger.error(`❌ Port ${PORT} is already in use`);
+        logger.error(` Port ${PORT} is already in use`);
         process.exit(1);
       } else {
-        logger.error('❌ Server error:', { error: error.message });
+        logger.error(' Server error:', { error: error.message });
         throw error;
       }
     });
@@ -157,16 +157,16 @@ async function startServer() {
     // ============================================
     // Ensures ongoing requests are completed before killing the process
     const shutdown = async () => {
-      logger.info('🛑 Received shutdown signal');
+      logger.info(' Received shutdown signal');
       
       server.close(() => {
-        logger.info('✅ HTTP server closed');
+        logger.info(' HTTP server closed');
         process.exit(0);
       });
       
       // Force shutdown if it hangs for more than 10 seconds
       setTimeout(() => {
-        logger.error('⚠️ Could not close connections in time, forcefully shutting down');
+        logger.error(' Could not close connections in time, forcefully shutting down');
         process.exit(1);
       }, 10000);
     };
@@ -176,7 +176,7 @@ async function startServer() {
 
     return server;
   } catch (error) {
-    logger.error('❌ Failed to start server:', { error: error.message });
+    logger.error(' Failed to start server:', { error: error.message });
     process.exit(1);
   }
 }
@@ -187,7 +187,7 @@ async function startServer() {
 
 // Catch unhandled Promise rejections (async code crashes)
 process.on('unhandledRejection', (reason, promise) => {
-  logger.error('🔥 UNHANDLED REJECTION at:', { promise, reason: reason.message || reason });
+  logger.error(' UNHANDLED REJECTION at:', { promise, reason: reason.message || reason });
   // In production, it's safer to crash and restart than to run in an unstable state
   if (process.env.NODE_ENV === 'production') {
     process.exit(1);
@@ -196,7 +196,7 @@ process.on('unhandledRejection', (reason, promise) => {
 
 // Catch uncaught exceptions (synchronous code crashes)
 process.on('uncaughtException', (error) => {
-  logger.error('🔥 UNCAUGHT EXCEPTION:', { error: error.message, stack: error.stack });
+  logger.error(' UNCAUGHT EXCEPTION:', { error: error.message, stack: error.stack });
   if (process.env.NODE_ENV === 'production') {
     process.exit(1);
   }

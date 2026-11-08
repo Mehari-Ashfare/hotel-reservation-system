@@ -60,7 +60,7 @@ const GuestBooking = () => {
             <Grid item xs={12} sm={6} md={4} key={room.room_id}>
               <Card sx={{ height: '100%', display: 'flex', flexDirection: 'column' }}>
                 <Box sx={{ height: 140, backgroundColor: '#e3f2fd', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-                    <Typography variant="h3" color="primary">🛏️</Typography>
+                    <Typography variant="h3" color="primary"></Typography>
                 </Box>
                 <CardContent sx={{ flexGrow: 1 }}>
                   <Typography gutterBottom variant="h5" component="div">

@@ -153,11 +153,11 @@ const Profile = () => {
             
             {isGuest ? (
                  <Typography variant="body2" color="text.secondary">
-                   👋 Welcome back! Keep your contact details updated for a smooth check-in experience.
+                    Welcome back! Keep your contact details updated for a smooth check-in experience.
                  </Typography>
               ) : (
                  <Typography variant="body2" color="text.secondary">
-                   💼 Staff Account: Access level granted based on assigned role permissions.
+                    Staff Account: Access level granted based on assigned role permissions.
                  </Typography>
               )}
           </Paper>
@@ -471,11 +471,11 @@ export default Profile;
             
 //             {isGuest ? (
 //                  <Typography variant="body2" color="text.secondary">
-//                    👋 Welcome back! Keep your contact details updated for a smooth check-in experience.
+//                     Welcome back! Keep your contact details updated for a smooth check-in experience.
 //                  </Typography>
 //               ) : (
 //                  <Typography variant="body2" color="text.secondary">
-//                    💼 Staff Account: Access level granted based on assigned role permissions.
+//                     Staff Account: Access level granted based on assigned role permissions.
 //                  </Typography>
 //               )}
 //           </Paper>
@@ -712,13 +712,13 @@ export default Profile;
 //               {isGuest ? (
 //                  <Box sx={{ bgcolor: '#f9f9f9', p: 2, borderRadius: 1 }}>
 //                     <Typography variant="body2" color="text.secondary">
-//                       👋 Welcome! You can view your account details here.
+//                        Welcome! You can view your account details here.
 //                     </Typography>
 //                  </Box>
 //               ) : (
 //                  <Box sx={{ bgcolor: '#f1f8e9', p: 2, borderRadius: 1 }}>
 //                     <Typography variant="body2" color="text.secondary">
-//                       💼 Staff Account: Access level granted based on role.
+//                        Staff Account: Access level granted based on role.
 //                     </Typography>
 //                  </Box>
 //               )}

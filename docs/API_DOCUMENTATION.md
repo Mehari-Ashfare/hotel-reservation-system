@@ -1,102 +1,154 @@
-# Hotel Reservation System API Documentation
+# API Reference
+
+This reference describes the routes mounted by the current Express application. For request and response schemas, use Swagger UI while the backend is running at `http://localhost:5000/api-docs`.
 
 ## Base URL
-`http://localhost:5000/api`
+
+```text
+http://localhost:5000/api
+```
+
+The frontend currently sends requests to this local URL. Change `frontend/src/services/api.js` if the API is hosted elsewhere.
 
 ## Authentication
-All endpoints (except auth endpoints) require JWT token in the Authorization header:
-`Authorization: Bearer <your_jwt_token>`
 
-## API Endpoints Organized by Module
+Login with `POST /auth/login` to receive a JWT. For protected routes, send it as:
 
-### 1. Authentication Module (`/api/auth`)
-- `POST /login` - User login
-- `POST /register` - User registration
-- `GET /profile` - Get user profile
-- `PUT /profile` - Update user profile
-- `POST /change-password` - Change password
+```http
+Authorization: Bearer <token>
+```
 
-### 2. Guest Management Module (`/api/guests`)
-- `POST /` - Create new guest
-- `GET /` - Get all guests with pagination
-- `GET /:id` - Get guest by ID
-- `GET /user/:userId` - Find guest by user ID
-- `PUT /:id` - Update guest information
-- `GET /search` - Search guests by name, email, or phone
-- `DELETE /:id` - Delete guest
+Routes marked public below do not require a token. Other routes require authentication, and some also check the user's role. The route implementation is the authority for exact permissions.
 
-### 3. Room Management Module (`/api/rooms`)
-- `POST /` - Create new room
-- `GET /` - Get all rooms with filters
-- `GET /:id` - Get room by ID
-- `PUT /:id` - Update room information
-- `GET /available` - Get available rooms for date range
-- `GET /types` - Get all room types
-- `POST /types` - Create room type
-- `GET /types/search` - Find room type by name
-- `PUT /types/:id` - Update room type
-- `DELETE /types/:id` - Delete room type
-- `GET /types/availability` - Get room types with availability info
-- `GET /occupancy` - Get room occupancy rate
-- `GET /search/room-number` - Find room by room number
+## Routes
 
-### 4. Reservation Management Module (`/api/reservations`)
-- `POST /` - Create new reservation
-- `GET /` - Get all reservations with filters
-- `GET /:id` - Get reservation by ID
-- `PUT /:id` - Update reservation
-- `PUT /:id/cancel` - Cancel reservation
-- `PUT /:id/check-in` - Check in guest
-- `PUT /:id/check-out` - Check out guest
-- `GET /guest/:guest_id` - Get guest's reservations
-- `POST /calculate-price` - Calculate reservation price
+### Authentication — `/auth`
 
-### 5. Payment Management Module (`/api/payments`)
-- `POST /` - Create new payment
-- `GET /` - Get all payments with filters
-- `GET /:id` - Get payment by ID
-- `PUT /:id/process` - Process payment (mark as completed)
-- `GET /financial-report` - Get financial report
-- `PUT /:id` - Update payment
-- `PUT /:id/refund` - Process refund
-- `GET /reservation/:reservation_id/summary` - Get payments summary for a reservation
+| Method | Path | Access | Purpose |
+| --- | --- | --- | --- |
+| POST | `/auth/register` | Public | Register an account |
+| POST | `/auth/login` | Public | Log in and receive a token |
+| POST | `/auth/forgot-password` | Public | Request a password-reset email |
+| POST | `/auth/reset-password` | Public | Set a password using a reset token |
+| GET | `/auth/me` | Authenticated | Get the current user |
+| POST | `/auth/refresh` | Authenticated | Refresh the token |
+| POST | `/auth/logout` | Authenticated | Log out |
+| POST | `/auth/change-password` | Authenticated | Change the current user's password |
+| GET | `/auth/profile` | Authenticated | Get the current user's profile |
+| PUT | `/auth/profile` | Authenticated | Update the current user's profile |
 
-### 6. Report Management Module (`/api/reports`)
-- `GET /daily` - Get daily report
-- `GET /weekly` - Get weekly report
-- `GET /monthly` - Get monthly report
-- `GET /custom` - Get custom report
+### Guests — `/guests`
 
-### 7. Audit Log Management Module (`/api/audit-logs`)
-- `POST /` - Create audit log entry
-- `GET /` - Get audit logs with filters
-- `GET /:id` - Get audit log by ID
-- `GET /record/:table_name/:record_id` - Get audit trail for specific record
-- `GET /recent/:limit?` - Get recent activity
+| Method | Path | Purpose |
+| --- | --- | --- |
+| GET | `/guests` | List guests |
+| GET | `/guests/search` | Search guests |
+| GET | `/guests/:id` | Get a guest by ID |
+| POST | `/guests` | Create a guest |
+| PUT | `/guests/:id` | Update a guest |
+| DELETE | `/guests/:id` | Delete a guest |
 
-### 8. Role Management Module (`/api/roles`)
-- `GET /:id` - Find role by ID
-- `GET /name/:roleName` - Find role by name
-- `GET /` - Get all roles
-- `POST /check-permission` - Check if user has permission
-- `GET /:id/permissions` - Get role permissions
+### Rooms — `/rooms`
 
-## Sample Requests
+| Method | Path | Purpose |
+| --- | --- | --- |
+| GET | `/rooms` | List rooms |
+| GET | `/rooms/available` | Find available rooms |
+| GET | `/rooms/types` | List room types |
+| GET | `/rooms/occupancy` | Get occupancy information |
+| GET | `/rooms/:id` | Get a room by ID |
+| POST | `/rooms` | Create a room (admin) |
+| POST | `/rooms/types` | Create a room type (admin) |
+| PUT | `/rooms/:id` | Update a room |
 
-### Create a Guest
+### Reservations — `/reservations`
+
+| Method | Path | Purpose |
+| --- | --- | --- |
+| GET | `/reservations` | List reservations |
+| GET | `/reservations/guest/:guest_id` | List a guest's reservations |
+| GET | `/reservations/:id` | Get a reservation |
+| POST | `/reservations` | Create a reservation |
+| POST | `/reservations/calculate-price` | Calculate a reservation price |
+| PUT | `/reservations/:id` | Update a reservation |
+| PUT | `/reservations/:id/cancel` | Cancel a reservation |
+| PUT | `/reservations/:id/check-in` | Check in a guest |
+| PUT | `/reservations/:id/check-out` | Check out a guest |
+
+### Payments — `/payments`
+
+| Method | Path | Purpose |
+| --- | --- | --- |
+| GET | `/payments` | List payments |
+| GET | `/payments/reservation/:reservation_id` | Get payments for a reservation |
+| GET | `/payments/financial-report` | Get a financial report |
+| GET | `/payments/:id` | Get a payment |
+| POST | `/payments` | Create a payment |
+| PUT | `/payments/:id/process` | Process a payment |
+| PUT | `/payments/:id/refund` | Refund a payment |
+
+### Reports — `/reports`
+
+| Method | Path | Purpose |
+| --- | --- | --- |
+| GET | `/reports/daily` | Daily report |
+| GET | `/reports/weekly` | Weekly report |
+| GET | `/reports/monthly` | Monthly report |
+| GET | `/reports/custom` | Report for a requested period |
+
+### Staff — `/staff`
+
+| Method | Path | Purpose |
+| --- | --- | --- |
+| GET | `/staff/profile` | Get the authenticated staff member's profile |
+| PUT | `/staff/change-password` | Change staff password |
+| GET | `/staff/department/stats` | Get department statistics (admin) |
+| GET | `/staff` | List staff (admin) |
+| GET | `/staff/:id` | Get staff by ID |
+| POST | `/staff` | Create staff (admin) |
+| PUT | `/staff/:id` | Update staff |
+
+### Audit — `/audit`
+
+All audit routes require an authenticated admin.
+
+| Method | Path | Purpose |
+| --- | --- | --- |
+| GET | `/audit` | List audit records; accepts pagination and filter query parameters |
+| GET | `/audit/recent` | Get recent activity |
+| GET | `/audit/record/:table/:id` | Get the audit trail for a record |
+
+### Dashboard — `/dashboard`
+
+| Method | Path | Purpose |
+| --- | --- | --- |
+| GET | `/dashboard/summary` | Get dashboard summary |
+| GET | `/dashboard/revenue-chart` | Get revenue chart data |
+
+### System endpoints
+
+| Method | Path | Purpose |
+| --- | --- | --- |
+| GET | `/health` | Check API and database health |
+| GET | `/metrics` | Get process and system metrics |
+| GET | `/system/info` | Get service information |
+| GET | `/system/staff-status` | Get staff-system status |
+
+## Example: log in
+
 ```bash
-curl -X POST http://localhost:5000/api/guests \
-  -H "Authorization: Bearer <token>" \
-  -H "Content-Type: application/json" \
-  -d '{
-    "first_name": "Mehari",
-    "last_name": "Ashfare",
-    "email": "mehari@gmail.com",
-    "phone": "+251901298714",
-    "address": "Mekelle-MIT",
-    "id_type": "student-ID",
-    "id_number": "MIT/UR188418/16",
-    "date_of_birth": "2000-02-12",
-    "nationality": "Ethiopian",
-    "guest_type": "online"
-  }'
+curl -X POST http://localhost:5000/api/auth/login \
+  -H 'Content-Type: application/json' \
+  -d '{"email":"admin@hotel.com","password":"Admin123!"}'
+```
+
+The credentials above are created by the development seed script. Do not use them in a deployed environment.
+
+## Example: request a protected endpoint
+
+Replace `<token>` with the token returned by login:
+
+```bash
+curl http://localhost:5000/api/auth/me \
+  -H 'Authorization: Bearer <token>'
+```

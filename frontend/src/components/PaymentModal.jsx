@@ -146,7 +146,7 @@ const PaymentModal = ({ isOpen, onClose, reservation, onPaymentSuccess }) => {
         </form>
       ) : (
         <div style={{ padding: '20px', textAlign: 'center', backgroundColor: '#e8f5e9', color: '#2e7d32', borderRadius: '8px', marginBottom: '20px' }}>
-            <h3 style={{ margin: 0 }}>✅ Payment Complete</h3>
+            <h3 style={{ margin: 0 }}> Payment Complete</h3>
         </div>
       )}
 

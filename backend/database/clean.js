@@ -21,7 +21,7 @@ const pool = new pg.Pool({
 });
 
 const cleanDatabase = async () => {
-  console.log('🗑️  Cleaning Database...');
+  console.log('  Cleaning Database...');
   try {
     await pool.query(`
       TRUNCATE TABLE 
@@ -29,10 +29,10 @@ const cleanDatabase = async () => {
         rooms, room_types, staff, users, roles 
       RESTART IDENTITY CASCADE;
     `);
-    console.log('✅ All tables truncated and IDs reset.');
+    console.log(' All tables truncated and IDs reset.');
     process.exit(0);
   } catch (err) {
-    console.error('❌ Error cleaning database:', err);
+    console.error(' Error cleaning database:', err);
     process.exit(1);
   }
 };

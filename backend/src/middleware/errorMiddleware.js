@@ -161,7 +161,7 @@ class ErrorMiddleware {
 
     // Production error handling - hide sensitive info for non-operational errors
     if (process.env.NODE_ENV === 'production' && !err.isOperational) {
-      logger.error('ERROR 💥', err); // Log the real error to server
+      logger.error('ERROR ', err); // Log the real error to server
       response = {
         success: false,
         message: 'Something went wrong!', // Send generic message to client
@@ -185,7 +185,7 @@ class ErrorMiddleware {
    */
   static catchUnhandledRejections = () => {
     process.on('unhandledRejection', (reason, promise) => {
-      logger.error('UNHANDLED REJECTION! 💥 Shutting down...', {
+      logger.error('UNHANDLED REJECTION!  Shutting down...', {
         reason: reason.message || reason,
         stack: reason.stack,
         promise: promise,
@@ -201,7 +201,7 @@ class ErrorMiddleware {
    */
   static catchUncaughtExceptions = () => {
     process.on('uncaughtException', (err) => {
-      logger.error('UNCAUGHT EXCEPTION! 💥 Shutting down...', {
+      logger.error('UNCAUGHT EXCEPTION!  Shutting down...', {
         error: err.message,
         stack: err.stack,
       });

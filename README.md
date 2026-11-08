@@ -1,141 +1,138 @@
-﻿#  PHASE 1: BACKEND FOUNDATION
+# Hotel Reservation System
 
-##  PHASE 1 COMPLETE STATUS
+A full-stack hotel reservation application with a React/Vite frontend, an Express API, and a PostgreSQL database. The application supports guest accounts, hotel staff, rooms, reservations, payments, reports, and audit history.
 
+## Requirements
 
+- Node.js 18 or later and npm
+- PostgreSQL 14 or later
+- Git
 
-###  COMPLETE BACKEND ARCHITECTURE:
+## Project layout
 
-##  CORE MODELS (8 Models)
-1. **User** - Authentication & user management
-2. **Role** - Role-based access control
-3. **Guest** - Guest profile management
-4. **RoomType** - Room categories and pricing
-5. **Room** - Room inventory management
-6. **Reservation** - Booking system
-7. **Payment** - Payment processing
-8. **AuditLog** - Audit trail system
-9. **Staff** - Employee management
+```text
+backend/                 Express API and database scripts
+  database/schema.sql    PostgreSQL schema
+  database/seed.js       Development sample-data seeder
+  src/                   Routes, controllers, models, middleware, utilities
+  app.js                 Express app and API mounting
+  server.js              API startup
+frontend/                React application built with Vite
+docs/                    API reference
+```
 
-##  CONTROLLERS (6 Controllers)
-1. **AuthController** - Authentication
-2. **GuestController** - Guest management
-3. **RoomController** - Room management
-4. **ReservationController** - Reservation system
-5. **PaymentController** - Payment processing
-6. **ReportController** - Reporting system
+## Quick start
 
-##  MIDDLEWARE (6 Middleware Layers)
-1. **AuthMiddleware** - JWT authentication
-2. **ValidationMiddleware** - Request validation
-3. **ErrorMiddleware** - Enhanced error handling
-4. **SecurityMiddleware** - Security enhancements
-5. **PerformanceMiddleware** - Performance monitoring
-6. **RoleMiddleware** - Advanced RBAC
+Run the frontend and backend in separate terminals.
 
-## API ROUTES (35+ Endpoints)
-- **/api/auth** - 6 authentication endpoints
-- **/api/guests** - 6 guest management endpoints
-- **/api/rooms** - 8 room management endpoints
-- **/api/reservations** - 9 reservation endpoints
-- **/api/payments** - 7 payment endpoints
-- **/api/reports** - 4 reporting endpoints
-
-##  ADVANCED FEATURES IMPLEMENTED:
-
-### **SECURITY**
-- JWT authentication with refresh tokens
-- Role-based access control (admin/receptionist/guest)
-- Password hashing with bcrypt
-- Rate limiting (100 req/15 min, 5 login/hr)
-- Helmet security headers
-- XSS protection
-- Request sanitization
-- CORS configuration
-- Input validation
-
-### **LOGGING & MONITORING**
-- Winston logger with daily rotation
-- Structured JSON logging
-- Request/response logging
-- Error logging with stack traces
-- Performance monitoring
-- Database query logging
-- System resource monitoring
-
-### **ERROR HANDLING**
-- Custom error classes
-- Operational vs programming errors
-- Validation error formatting
-- Database error handling
-- Production vs development error responses
-- Graceful shutdown handling
-
-### **PERFORMANCE**
-- Connection pooling (PostgreSQL)
-- Response compression
-- Caching headers
-- Query optimization monitoring
-- Slow query detection
-- Memory usage monitoring
-
-### **DOCUMENTATION**
-- Swagger/OpenAPI documentation
-- Interactive API testing UI
-- Comprehensive API schemas
-- Request/response examples
-- Authentication documentation
-
-### **DEPLOYMENT READY**
-- Docker configuration
-- Docker Compose for full stack
-- Health checks
-- Environment validation
-- Production configuration
-
-## DATABASE FEATURES:
-- PostgreSQL with advanced schema
-- 12 tables with relationships
-- Views for reporting
-- Triggers for data integrity
-- Indexes for performance
-- Seed data with sample records
-- Connection pooling
-
-## TESTING READY:
-- Comprehensive test script
-- API endpoint testing
-- Authentication testing
-- Rate limiting testing
-- Error handling testing
-- Sample data for testing
-
-##  READY FOR PHASE 2:
-
-### **What's Next: Phase 2 - Core CRUD Operations (Days 8-14)**
-- Guest Management API (Complete)
-- Room Management API (Complete)
-- Reservation System (Complete)
-- Frontend integration preparation
-
-### **Current Status: BACKEND COMPLETE **
-The backend API is **production-ready** with all required features implemented.
-
-##  QUICK START:
+### 1. Install dependencies
 
 ```bash
-# 1. Install dependencies
 cd backend
 npm install
 
-# 2. Set up database
-cd ../database
-psql -U postgres -d hotel_reservation -f schema.sql
-node seed.js
+cd ../frontend
+npm install
+```
 
-# 3. Start server
-cd ../backend
+### 2. Create a PostgreSQL role and database
+
+If you already have a PostgreSQL role and database for this project, keep using them and skip this step. Otherwise, open a PostgreSQL shell as its administrator:
+
+```bash
+sudo -u postgres psql
+```
+
+Then create a login role and database (replace the example password with your own):
+
+```sql
+CREATE ROLE hotel_app WITH LOGIN PASSWORD 'choose-a-strong-password';
+CREATE DATABASE hotel_reservation OWNER hotel_app;
+\q
+```
+
+### 3. Configure the backend
+
+Create `backend/.env` and set the values for your local PostgreSQL setup:
+
+```env
+PORT=5000
+NODE_ENV=development
+DB_HOST=localhost
+DB_PORT=5432
+DB_NAME=hotel_reservation
+DB_USER=hotel_app
+DB_PASSWORD=your-database-password
+JWT_SECRET=replace-with-a-long-random-secret
+JWT_EXPIRES_IN=7d
+```
+
+Generate a random JWT secret with `openssl rand -hex 32`. Keep `.env` private and do not commit it. To enable Gmail password-reset emails, also configure `EMAIL_USER` and `EMAIL_PASS` in this file. See [Backend setup](backend/README.md).
+
+### 4. Create the schema
+
+From the repository root, run this once against a new, empty database:
+
+```bash
+psql -U hotel_app -d hotel_reservation -f backend/database/schema.sql
+```
+
+Enter the database role's password when prompted. The schema creates the tables, types, views, and other database objects.
+
+### 5. Add development sample data (optional)
+
+```bash
+cd backend
+node database/seed.js
+```
+
+The seeder **truncates and recreates its sample tables**. Use it only with a development database whose existing contents can be discarded. It creates a sample admin account: `admin@hotel.com` / `Admin123!`. Change or remove sample credentials before using the application beyond local development.
+
+### 6. Start the backend
+
+In the `backend` directory:
+
+```bash
 npm run dev
+```
 
-# 4. Test API
-node test-api.js
+The API listens on `http://localhost:5000` by default. Check `http://localhost:5000/api/health` for its health response and `http://localhost:5000/api-docs` for Swagger UI.
+
+### 7. Start the frontend
+
+In a second terminal, from the `frontend` directory:
+
+```bash
+npm run dev
+```
+
+Vite serves the frontend at `http://localhost:5173`. The Axios base URL is currently set to `http://localhost:5000/api` in `frontend/src/services/api.js`.
+
+## Useful commands
+
+| Directory | Command | Purpose |
+| --- | --- | --- |
+| `backend` | `npm run dev` | Start API with Nodemon |
+| `backend` | `npm start` | Start API without Nodemon |
+| `backend` | `node database/seed.js` | Clear and seed development tables |
+| `frontend` | `npm run dev` | Start Vite development server |
+| `frontend` | `npm run build` | Build frontend for deployment |
+| `frontend` | `npm run preview` | Preview the production build locally |
+
+## API overview
+
+The API base URL is `http://localhost:5000/api`. Main route groups are `/auth`, `/guests`, `/rooms`, `/reservations`, `/payments`, `/reports`, `/staff`, `/audit`, and `/dashboard`. Most application endpoints require a bearer token; role restrictions also apply. See [API documentation](docs/API_DOCUMENTATION.md) or open Swagger UI while the backend is running.
+
+## Troubleshooting
+
+- **Database connection fails:** Confirm PostgreSQL is running and that `DB_HOST`, `DB_PORT`, `DB_NAME`, `DB_USER`, and `DB_PASSWORD` in `backend/.env` match a role with access to the database.
+- **Frontend cannot reach the API:** Start the backend and check the URL in `frontend/src/services/api.js`.
+- **Password reset email is not sent:** Configure the mailer variables `EMAIL_USER` and `EMAIL_PASS`; check the backend terminal for SMTP errors. The reset link currently targets local Vite at port 5173.
+- **Seed command errors:** Apply `backend/database/schema.sql` to a clean database first. Seeding is destructive to the listed sample tables.
+
+## Documentation
+
+- [Backend setup and configuration](backend/README.md)
+- [Frontend setup](frontend/README.md)
+- [Database setup and sample data](backend/database/README.md)
+- [API reference](docs/API_DOCUMENTATION.md)

@@ -46,7 +46,7 @@ const rl = readline.createInterface({
 const sleep = (ms) => new Promise(resolve => setTimeout(resolve, ms));
 
 const logSuccess = (testName, message = '') => {
-  const log = `✅ ${testName}: ${message}`;
+  const log = ` ${testName}: ${message}`;
   testResults.push({ testName, success: true, message });
   console.log(log);
   return log;
@@ -54,19 +54,19 @@ const logSuccess = (testName, message = '') => {
 
 const logError = (testName, error) => {
   const message = error.response?.data?.message || error.message;
-  const log = `❌ ${testName}: ${message}`;
+  const log = ` ${testName}: ${message}`;
   testResults.push({ testName, success: false, message: error.message });
   console.log(log);
   return log;
 };
 
 const logInfo = (message) => {
-  console.log(`ℹ️  ${message}`);
+  console.log(`ℹ  ${message}`);
 };
 
 const logHeader = (title) => {
   console.log('\n' + '='.repeat(50));
-  console.log(`📋 ${title}`);
+  console.log(` ${title}`);
   console.log('='.repeat(50));
 };
 
@@ -224,7 +224,7 @@ async function runAllTests() {
     await sleep(500);
   } catch (error) {
     logError('Admin Login', error);
-    console.log('\n⚠️  Please ensure:');
+    console.log('\n  Please ensure:');
     console.log('1. Server is running: npm run dev');
     console.log('2. Admin credentials:', ADMIN_CREDENTIALS);
     console.log('3. Database is seeded');
@@ -251,7 +251,7 @@ async function runAllTests() {
     logSuccess('Create Room Type', 
       `Type: ${result.data.type_name}, ID: ${createdRoomTypeId}, Price: $${result.data.base_price}`);
     
-    console.log('\n📝 Created Room Type Details:');
+    console.log('\n Created Room Type Details:');
     logTable({
       Type: result.data.type_name,
       Price: `$${result.data.base_price}`,
@@ -294,7 +294,7 @@ async function runAllTests() {
     logSuccess('Create New Room', 
       `Room: ${result.data.room_number}, ID: ${createdRoomId}, Status: ${result.data.status}`);
     
-    console.log('\n🏨 Created Room Details:');
+    console.log('\n Created Room Details:');
     logTable({
       'Room Number': result.data.room_number,
       'Room ID': result.data.room_id,
@@ -313,7 +313,7 @@ async function runAllTests() {
       createdRoomId = rooms.data.rooms[0].room_id;
       logSuccess('Using Existing Room', `ID: ${createdRoomId}`);
     } else {
-      console.log('❌ Cannot proceed without a room. Please create a room manually.');
+      console.log(' Cannot proceed without a room. Please create a room manually.');
       process.exit(1);
     }
   }
@@ -326,7 +326,7 @@ async function runAllTests() {
     logSuccess('Get Room by ID', 
       `Room ${result.data.room_number} retrieved successfully`);
     
-    console.log('\n🔍 Room Details:');
+    console.log('\n Room Details:');
     logTable({
       'Room ID': result.data.room_id,
       'Room Number': result.data.room_number,
@@ -356,12 +356,12 @@ async function runAllTests() {
     logSuccess('Update Room Information', 
       `Room ${createdRoomId} updated successfully`);
     
-    console.log('\n✏️ Updated Fields:');
+    console.log('\n Updated Fields:');
     logTable(updateData);
     
     // Verify update
     const verifyResult = await tester.getRoomById(createdRoomId);
-    console.log('\n✅ Verified Update:');
+    console.log('\n Verified Update:');
     console.log(`   Floor: ${verifyResult.data.floor} (Was: ${roomData.floor})`);
     console.log(`   Notes: ${verifyResult.data.notes}`);
   } catch (error) {
@@ -393,7 +393,7 @@ async function runAllTests() {
         `Found ${count} rooms (Total: ${total})`);
       
       if (rooms.length > 0) {
-        console.log(`   📊 Sample (${test.name}):`);
+        console.log(`    Sample (${test.name}):`);
         rooms.slice(0, 2).forEach(room => {
           console.log(`   - ${room.room_number}: ${room.type_name} (${room.status})`);
         });
@@ -423,7 +423,7 @@ async function runAllTests() {
       `Found ${availableRooms.length} available rooms from ${checkInStr} to ${checkOutStr}`);
     
     if (availableRooms.length > 0) {
-      console.log('\n📅 Available Rooms:');
+      console.log('\n Available Rooms:');
       const roomSummary = availableRooms.slice(0, 3).map(room => ({
         'Room Number': room.room_number,
         'Room Type': room.type_name,
@@ -438,7 +438,7 @@ async function runAllTests() {
         console.log(`   ... and ${availableRooms.length - 3} more rooms`);
       }
     } else {
-      console.log('   ℹ️  No available rooms for the selected dates');
+      console.log('   ℹ  No available rooms for the selected dates');
     }
   } catch (error) {
     logError('Get Available Rooms', error);
@@ -454,7 +454,7 @@ async function runAllTests() {
     logSuccess('Get Room Types', 
       `Found ${roomTypes.length} room types`);
     
-    console.log('\n🏷️ Room Types Available:');
+    console.log('\n Room Types Available:');
     const typeSummary = roomTypes.map(type => ({
       'Type ID': type.room_type_id,
       'Type Name': type.type_name,
@@ -487,7 +487,7 @@ async function runAllTests() {
     logSuccess('Get Occupancy Rate', 
       `Occupancy rate: ${occupancyData.occupancy_rate || 0}%`);
     
-    console.log('\n📈 Occupancy Statistics:');
+    console.log('\n Occupancy Statistics:');
     logTable({
       Period: `${occupancyStartStr} to ${occupancyEndStr}`,
       'Total Rooms': occupancyData.total_rooms || 'N/A',
@@ -512,7 +512,7 @@ async function runAllTests() {
     
     // Verify status change
     const verifyRoom = await tester.getRoomById(createdRoomId);
-    console.log(`   ✅ Verified: Status is now "${verifyRoom.data.status}"`);
+    console.log(`    Verified: Status is now "${verifyRoom.data.status}"`);
     
     // Change back to available
     await sleep(300);
@@ -531,31 +531,31 @@ async function runAllTests() {
     
     logSuccess('Get Room Statistics', 'Statistics retrieved successfully');
     
-    console.log('\n📊 Room Statistics Overview:');
+    console.log('\n Room Statistics Overview:');
     
     if (stats.by_status) {
-      console.log('   📋 By Status:');
+      console.log('    By Status:');
       Object.entries(stats.by_status).forEach(([status, count]) => {
         console.log(`     - ${status}: ${count} rooms`);
       });
     }
     
     if (stats.by_floor) {
-      console.log('\n   🏢 By Floor:');
+      console.log('\n    By Floor:');
       Object.entries(stats.by_floor).forEach(([floor, count]) => {
         console.log(`     - Floor ${floor}: ${count} rooms`);
       });
     }
     
     if (stats.by_type) {
-      console.log('\n   🏷️ By Room Type:');
+      console.log('\n    By Room Type:');
       Object.entries(stats.by_type).forEach(([type, count]) => {
         console.log(`     - ${type}: ${count} rooms`);
       });
     }
     
     if (stats.total_revenue) {
-      console.log(`\n   💰 Total Revenue: $${stats.total_revenue.toFixed(2)}`);
+      console.log(`\n    Total Revenue: $${stats.total_revenue.toFixed(2)}`);
     }
   } catch (error) {
     logInfo('Room statistics endpoint might not be implemented');
@@ -567,13 +567,13 @@ async function runAllTests() {
   const total = testResults.length;
   const successRate = ((passed / total) * 100).toFixed(1);
 
-  console.log(`📊 Total Tests: ${total}`);
-  console.log(`✅ Passed: ${passed}`);
-  console.log(`❌ Failed: ${total - passed}`);
-  console.log(`🎯 Success Rate: ${successRate}%`);
+  console.log(` Total Tests: ${total}`);
+  console.log(` Passed: ${passed}`);
+  console.log(` Failed: ${total - passed}`);
+  console.log(` Success Rate: ${successRate}%`);
 
   // Performance metrics
-  console.log('\n⚡ PERFORMANCE METRICS:');
+  console.log('\n PERFORMANCE METRICS:');
   const totalTime = testResults.length * 500; // Approximate
   console.log(`   Estimated Test Time: ${(totalTime / 1000).toFixed(1)} seconds`);
   console.log(`   Average Response Time: ~500ms per request`);
@@ -629,28 +629,28 @@ async function runAllTests() {
   };
 
   fs.writeFileSync(resultsFile, JSON.stringify(report, null, 2));
-  console.log(`\n📄 Detailed results saved to: ${resultsFile}`);
+  console.log(`\n Detailed results saved to: ${resultsFile}`);
 
   // Recommendations
-  console.log('\n💡 RECOMMENDATIONS & NEXT STEPS:');
+  console.log('\n RECOMMENDATIONS & NEXT STEPS:');
   if (successRate === '100.0') {
-    console.log('🎉 EXCELLENT! All Room API endpoints are fully functional.');
+    console.log(' EXCELLENT! All Room API endpoints are fully functional.');
     console.log('   Next steps:');
     console.log('   1. Test with different user roles (receptionist, guest)');
     console.log('   2. Test edge cases (invalid dates, wrong room types)');
     console.log('   3. Load test with multiple concurrent requests');
   } else if (successRate >= '80.0') {
-    console.log('👍 GOOD! Most endpoints are working.');
+    console.log(' GOOD! Most endpoints are working.');
     console.log('   Focus on fixing the failed endpoints.');
   } else {
-    console.log('⚠️  NEEDS IMPROVEMENT. Several endpoints failed.');
+    console.log('  NEEDS IMPROVEMENT. Several endpoints failed.');
     console.log('   Common issues:');
     console.log('   1. Database not seeded - run: npm run seed');
     console.log('   2. Server not running - run: npm run dev');
     console.log('   3. Check .env file configuration');
   }
 
-  console.log('\n🔗 QUICK LINKS:');
+  console.log('\n QUICK LINKS:');
   console.log('   API Documentation: http://localhost:5000/api-docs');
   console.log('   Health Check: http://localhost:5000/api/health');
   console.log('   Admin Login: Use credentials above');
@@ -660,7 +660,7 @@ async function runAllTests() {
 
 // Interactive test menu
 async function showMenu() {
-  console.log('\n🏨 HOTEL ROOM API TESTER');
+  console.log('\n HOTEL ROOM API TESTER');
   console.log('=======================');
   console.log('1. Run All Tests');
   console.log('2. Test Specific Endpoint');
@@ -694,7 +694,7 @@ async function showMenu() {
 }
 
 async function testSpecificEndpoint() {
-  console.log('\n🔧 SPECIFIC ENDPOINT TESTING');
+  console.log('\n SPECIFIC ENDPOINT TESTING');
   console.log('============================');
   console.log('1. GET /rooms - Get all rooms');
   console.log('2. GET /rooms/available - Get available rooms');
@@ -711,9 +711,9 @@ async function testSpecificEndpoint() {
     
     try {
       await tester.login(ADMIN_CREDENTIALS);
-      console.log('✅ Logged in successfully');
+      console.log(' Logged in successfully');
     } catch (error) {
-      console.log('❌ Login failed:', error.message);
+      console.log(' Login failed:', error.message);
       rl.close();
       return;
     }
@@ -724,10 +724,10 @@ async function testSpecificEndpoint() {
           try {
             const filters = filterInput ? JSON.parse(filterInput) : {};
             const result = await tester.getAllRooms(filters);
-            console.log('✅ GET /rooms - Success:');
+            console.log(' GET /rooms - Success:');
             console.log(JSON.stringify(result.data, null, 2));
           } catch (error) {
-            console.log('❌ Error:', error.response?.data || error.message);
+            console.log(' Error:', error.response?.data || error.message);
           }
           rl.close();
         });
@@ -738,13 +738,13 @@ async function testSpecificEndpoint() {
           rl.question('Enter check-out date (YYYY-MM-DD): ', async (checkOut) => {
             try {
               const result = await tester.getAvailableRooms(checkIn, checkOut);
-              console.log('✅ GET /rooms/available - Success:');
+              console.log(' GET /rooms/available - Success:');
               console.log(`Found ${result.data.length} available rooms`);
               result.data.forEach(room => {
                 console.log(`  - ${room.room_number}: ${room.type_name} ($${room.base_price})`);
               });
             } catch (error) {
-              console.log('❌ Error:', error.response?.data || error.message);
+              console.log(' Error:', error.response?.data || error.message);
             }
             rl.close();
           });
@@ -762,10 +762,10 @@ async function testSpecificEndpoint() {
           else if (result.data && Array.isArray(result.data.data)) roomTypes = result.data.data;
           else if (result.data && Array.isArray(result.data.roomTypes)) roomTypes = result.data.roomTypes; // Check for named key
 
-          console.log('✅ GET /rooms/types - Success:');
+          console.log(' GET /rooms/types - Success:');
           
           if (roomTypes.length === 0) {
-             console.log('⚠️ Warning: 0 types found. Debugging response structure:');
+             console.log(' Warning: 0 types found. Debugging response structure:');
              console.log(JSON.stringify(result, null, 2)); // Print raw data to see where the array is
           } else {
              console.log(`Found ${roomTypes.length} room types:`);
@@ -774,7 +774,7 @@ async function testSpecificEndpoint() {
              });
           }
         } catch (error) {
-          console.log('❌ Error:', error.response?.data || error.message);
+          console.log(' Error:', error.response?.data || error.message);
         }
         rl.close();
         break;
@@ -784,10 +784,10 @@ async function testSpecificEndpoint() {
           rl.question('Enter end date (YYYY-MM-DD): ', async (endDate) => {
             try {
               const result = await tester.getOccupancyRate(startDate, endDate);
-              console.log('✅ GET /rooms/occupancy - Success:');
+              console.log(' GET /rooms/occupancy - Success:');
               console.log(JSON.stringify(result.data, null, 2));
             } catch (error) {
-              console.log('❌ Error:', error.response?.data || error.message);
+              console.log(' Error:', error.response?.data || error.message);
             }
             rl.close();
           });
@@ -798,10 +798,10 @@ async function testSpecificEndpoint() {
         rl.question('Enter Room ID: ', async (roomId) => {
           try {
             const result = await tester.getRoomById(parseInt(roomId));
-            console.log('✅ GET /rooms/:id - Success:');
+            console.log(' GET /rooms/:id - Success:');
             console.log(JSON.stringify(result.data, null, 2));
           } catch (error) {
-            console.log('❌ Error:', error.response?.data || error.message);
+            console.log(' Error:', error.response?.data || error.message);
           }
           rl.close();
         });
@@ -817,11 +817,11 @@ async function testSpecificEndpoint() {
         };
         try {
           const result = await tester.createRoom(roomData);
-          console.log('✅ POST /rooms - Success:');
+          console.log(' POST /rooms - Success:');
           console.log(`Created room ID: ${result.data.room_id}`);
           console.log(JSON.stringify(result.data, null, 2));
         } catch (error) {
-          console.log('❌ Error:', error.response?.data || error.message);
+          console.log(' Error:', error.response?.data || error.message);
         }
         rl.close();
         break;
@@ -835,11 +835,11 @@ async function testSpecificEndpoint() {
         };
         try {
           const result = await tester.createRoomType(roomTypeData);
-          console.log('✅ POST /rooms/types - Success:');
+          console.log(' POST /rooms/types - Success:');
           console.log(`Created room type ID: ${result.data.room_type_id}`);
           console.log(JSON.stringify(result.data, null, 2));
         } catch (error) {
-          console.log('❌ Error:', error.response?.data || error.message);
+          console.log(' Error:', error.response?.data || error.message);
         }
         rl.close();
         break;
@@ -853,10 +853,10 @@ async function testSpecificEndpoint() {
           };
           try {
             const result = await tester.updateRoom(parseInt(roomId), updateData);
-            console.log('✅ PUT /rooms/:id - Success:');
+            console.log(' PUT /rooms/:id - Success:');
             console.log(JSON.stringify(result.data, null, 2));
           } catch (error) {
-            console.log('❌ Error:', error.response?.data || error.message);
+            console.log(' Error:', error.response?.data || error.message);
           }
           rl.close();
         });
@@ -888,7 +888,7 @@ async function viewPreviousResults() {
   if (files.length === 0) {
     console.log('No previous test results found.');
   } else {
-    console.log('\n📄 PREVIOUS TEST RESULTS:');
+    console.log('\n PREVIOUS TEST RESULTS:');
     files.forEach((file, index) => {
       const filePath = path.join(resultsDir, file);
       const stats = fs.statSync(filePath);
@@ -911,7 +911,7 @@ async function viewPreviousResults() {
 }
 
 async function quickHealthCheck() {
-  console.log('\n⚡ QUICK HEALTH CHECK');
+  console.log('\n QUICK HEALTH CHECK');
   console.log('====================');
   
   const tester = new RoomAPITester(API_BASE_URL);
@@ -920,32 +920,32 @@ async function quickHealthCheck() {
     // Test 1: API Health
     console.log('1. Testing API health...');
     const healthResponse = await axios.get(`${API_BASE_URL}/health`);
-    console.log(`   ✅ API Health: ${healthResponse.data.status}`);
+    console.log(`    API Health: ${healthResponse.data.status}`);
     
     // Test 2: Login
     console.log('2. Testing authentication...');
     const token = await tester.login(ADMIN_CREDENTIALS);
-    console.log(`   ✅ Authentication: Success (Token: ${token.substring(0, 20)}...)`);
+    console.log(`    Authentication: Success (Token: ${token.substring(0, 20)}...)`);
     
     // Test 3: Basic room fetch
     console.log('3. Testing room endpoint...');
     const rooms = await tester.getAllRooms({ limit: 1 });
-    console.log(`   ✅ Room API: Accessible (Found ${rooms.data.total || 0} rooms)`);
+    console.log(`    Room API: Accessible (Found ${rooms.data.total || 0} rooms)`);
     
     // Test 4: Room types
     console.log('4. Testing room types...');
     const roomTypes = await tester.getRoomTypes();
-    console.log(`   ✅ Room Types: ${roomTypes.data.length} types available`);
+    console.log(`    Room Types: ${roomTypes.data.length} types available`);
     
-    console.log('\n🎉 ALL CHECKS PASSED! System is healthy.');
-    console.log('\n📊 Quick Stats:');
+    console.log('\n ALL CHECKS PASSED! System is healthy.');
+    console.log('\n Quick Stats:');
     console.log(`   - Total Rooms: ${rooms.data.total || 0}`);
     console.log(`   - Room Types: ${roomTypes.data.length}`);
     console.log(`   - API Status: ${healthResponse.data.status}`);
     
   } catch (error) {
-    console.log(`❌ Health check failed: ${error.message}`);
-    console.log('\n🔧 Troubleshooting:');
+    console.log(` Health check failed: ${error.message}`);
+    console.log('\n Troubleshooting:');
     console.log('   1. Is the server running? (npm run dev)');
     console.log('   2. Is PostgreSQL running?');
     console.log('   3. Check backend/logs for errors');
@@ -970,7 +970,7 @@ if (process.argv.length > 2) {
     quickHealthCheck().then(() => process.exit(0));
   } else if (command === '--help' || command === '-h') {
     console.log(`
-🏨 Hotel Room API Test Script
+ Hotel Room API Test Script
 ============================
 Usage:
   node room-api-test.js [option]
@@ -995,7 +995,7 @@ Examples:
 
 // Handle errors gracefully
 process.on('unhandledRejection', (error) => {
-  console.error('\n❌ Unhandled rejection:', error.message);
+  console.error('\n Unhandled rejection:', error.message);
   if (error.response) {
     console.error('   Response:', error.response.data);
     console.error('   Status:', error.response.status);
@@ -1004,7 +1004,7 @@ process.on('unhandledRejection', (error) => {
 });
 
 process.on('uncaughtException', (error) => {
-  console.error('\n💥 Uncaught exception:', error.message);
+  console.error('\n Uncaught exception:', error.message);
   console.error('   Stack:', error.stack);
   process.exit(1);
 });

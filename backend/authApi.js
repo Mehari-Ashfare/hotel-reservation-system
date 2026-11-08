@@ -743,7 +743,7 @@ async function quickHealthCheck() {
     const userData = userResult.data?.data?.user || userResult.data?.user || userResult.data;
     console.log(`    Current User: ${userData?.email || 'Unknown'}`);
     
-    console.log('\n🎉 AUTH SYSTEM IS HEALTHY!');
+    console.log('\n AUTH SYSTEM IS HEALTHY!');
     
   } catch (error) {
     console.log(` Auth health check failed: ${error.message}`);
@@ -1266,7 +1266,7 @@ process.on('uncaughtException', (error) => {
 //   console.log(` Success Rate: ${successRate}%`);
 
 //   // Test coverage summary
-//   console.log('\n📋 TEST COVERAGE:');
+//   console.log('\n TEST COVERAGE:');
 //   console.log('    POST /register       - User registration');
 //   console.log('    POST /login          - User login');
 //   console.log('    GET  /me             - Get current user');
@@ -1321,11 +1321,11 @@ process.on('uncaughtException', (error) => {
 //   console.log(`\n Detailed results saved to: ${resultsFile}`);
 
 //   // Recommendations
-//   console.log('\n💡 RECOMMENDATIONS:');
+//   console.log('\n RECOMMENDATIONS:');
 //   if (successRate === '100.0') {
-//     console.log('🎉 EXCELLENT! All Auth API endpoints are fully functional.');
+//     console.log(' EXCELLENT! All Auth API endpoints are fully functional.');
 //   } else if (successRate >= '80.0') {
-//     console.log('👍 GOOD! Most endpoints are working.');
+//     console.log(' GOOD! Most endpoints are working.');
 //     console.log('   Review failed tests and check server logs.');
 //   } else {
 //     console.log('  NEEDS ATTENTION. Several auth endpoints failed.');
@@ -1335,7 +1335,7 @@ process.on('uncaughtException', (error) => {
 //     console.log('   3. Password hashing implementation');
 //   }
 
-//   console.log('\n🔗 QUICK LINKS:');
+//   console.log('\n QUICK LINKS:');
 //   console.log('   Test User Created:');
 //   console.log(`     Email: ${testUserEmail}`);
 //   console.log(`     Password: ${currentPassword}`);
@@ -1633,7 +1633,7 @@ process.on('uncaughtException', (error) => {
 //       console.log(`     Refresh Token: Not available in response`);
 //     }
     
-//     console.log('\n🎉 AUTH SYSTEM IS HEALTHY!');
+//     console.log('\n AUTH SYSTEM IS HEALTHY!');
 //     console.log('\n Quick Stats:');
 //     console.log(`   - Admin Access:  Working`);
 //     console.log(`   - Token System:  Working`);

@@ -52,7 +52,7 @@ const rl = readline.createInterface({
 const sleep = (ms) => new Promise(resolve => setTimeout(resolve, ms));
 
 const logSuccess = (testName, message = '') => {
-  const log = `✅ ${testName}: ${message}`;
+  const log = ` ${testName}: ${message}`;
   testResults.push({ testName, success: true, message });
   console.log(log);
   return log;
@@ -60,23 +60,23 @@ const logSuccess = (testName, message = '') => {
 
 const logError = (testName, error) => {
   const message = error.response?.data?.message || error.message;
-  const log = `❌ ${testName}: ${message}`;
+  const log = ` ${testName}: ${message}`;
   testResults.push({ testName, success: false, message: error.message });
   console.log(log);
   return log;
 };
 
 const logInfo = (message) => {
-  console.log(`ℹ️  ${message}`);
+  console.log(`ℹ  ${message}`);
 };
 
 const logWarning = (message) => {
-  console.log(`⚠️  ${message}`);
+  console.log(`  ${message}`);
 };
 
 const logHeader = (title) => {
   console.log('\n' + '='.repeat(60));
-  console.log(`📊 ${title}`);
+  console.log(` ${title}`);
   console.log('='.repeat(60));
 };
 
@@ -202,7 +202,7 @@ async function runAllTests() {
     await sleep(500);
   } catch (error) {
     logError('Admin Login', error);
-    console.log('\n⚠️  Please ensure:');
+    console.log('\n  Please ensure:');
     console.log('1. Server is running: npm run dev');
     console.log('2. Database is seeded with admin user');
     console.log('3. Admin credentials:', ADMIN_CREDENTIALS);
@@ -250,11 +250,11 @@ async function runAllTests() {
       logSuccess(`Daily Report - ${testCase.name}`, 
         `Report generated successfully`);
       
-      console.log(`\n📅 DAILY REPORT (${testCase.date || 'Today'}):`);
+      console.log(`\n DAILY REPORT (${testCase.date || 'Today'}):`);
       
       // Display summary
       if (report.summary) {
-        console.log('   📊 Summary:');
+        console.log('    Summary:');
         console.table({
           'Date': report.summary.date || testCase.date || formatDate(today),
           'Total Reservations': report.summary.total_reservations || 0,
@@ -269,7 +269,7 @@ async function runAllTests() {
       
       // Display reservations if available
       if (report.reservations && report.reservations.length > 0) {
-        console.log('\n   🏨 Today\'s Reservations:');
+        console.log('\n    Today\'s Reservations:');
         report.reservations.slice(0, 3).forEach(res => {
           console.log(`     - ${res.guest_name}: ${res.room_number} (${res.status}) - ${formatCurrency(res.total_amount)}`);
         });
@@ -281,7 +281,7 @@ async function runAllTests() {
       
       // Display payments if available
       if (report.payments && report.payments.length > 0) {
-        console.log('\n   💳 Today\'s Payments:');
+        console.log('\n    Today\'s Payments:');
         const completedPayments = report.payments.filter(p => p.status === 'completed');
         const totalPaid = completedPayments.reduce((sum, p) => sum + (p.amount || 0), 0);
         console.log(`     Total Paid Today: ${formatCurrency(totalPaid)} (${completedPayments.length} payments)`);
@@ -317,11 +317,11 @@ async function runAllTests() {
       logSuccess(`Weekly Report - ${testCase.name}`, 
         `Report generated for ${weekLabel}`);
       
-      console.log(`\n📅 WEEKLY REPORT (${weekLabel}):`);
+      console.log(`\n WEEKLY REPORT (${weekLabel}):`);
       
       // Display summary
       if (report.summary) {
-        console.log('   📊 Weekly Summary:');
+        console.log('    Weekly Summary:');
         console.table({
           'Period': `${report.summary.start_date || 'N/A'} to ${report.summary.end_date || 'N/A'}`,
           'Total Reservations': report.summary.total_reservations || 0,
@@ -337,7 +337,7 @@ async function runAllTests() {
       
       // Display daily breakdown if available
       if (report.daily_breakdown && report.daily_breakdown.length > 0) {
-        console.log('\n   📈 Daily Breakdown:');
+        console.log('\n    Daily Breakdown:');
         report.daily_breakdown.slice(0, 5).forEach(day => {
           console.log(`     - ${day.date}: ${day.occupancy_rate || 0}% occupancy, ${formatCurrency(day.revenue || 0)} revenue`);
         });
@@ -349,7 +349,7 @@ async function runAllTests() {
       
       // Display top performing rooms if available
       if (report.top_rooms && report.top_rooms.length > 0) {
-        console.log('\n   🏆 Top Performing Rooms:');
+        console.log('\n    Top Performing Rooms:');
         report.top_rooms.slice(0, 3).forEach(room => {
           console.log(`     - ${room.room_number}: ${formatCurrency(room.revenue)} revenue (${room.occupancy_rate || 0}% occupancy)`);
         });
@@ -387,11 +387,11 @@ async function runAllTests() {
       logSuccess(`Monthly Report - ${testCase.name}`, 
         `Report generated for ${monthLabel}`);
       
-      console.log(`\n📅 MONTHLY REPORT (${monthLabel}):`);
+      console.log(`\n MONTHLY REPORT (${monthLabel}):`);
       
       // Display summary
       if (report.summary) {
-        console.log('   📊 Monthly Summary:');
+        console.log('    Monthly Summary:');
         console.table({
           'Month': monthLabel,
           'Total Reservations': report.summary.total_reservations || 0,
@@ -407,7 +407,7 @@ async function runAllTests() {
       
       // Display weekly breakdown if available
       if (report.weekly_breakdown && report.weekly_breakdown.length > 0) {
-        console.log('\n   📈 Weekly Breakdown:');
+        console.log('\n    Weekly Breakdown:');
         report.weekly_breakdown.forEach(week => {
           console.log(`     - Week ${week.week}: ${formatCurrency(week.revenue || 0)} revenue, ${week.occupancy_rate || 0}% occupancy`);
         });
@@ -415,7 +415,7 @@ async function runAllTests() {
       
       // Display room type performance if available
       if (report.room_type_performance && report.room_type_performance.length > 0) {
-        console.log('\n   🏷️ Room Type Performance:');
+        console.log('\n    Room Type Performance:');
         report.room_type_performance.forEach(type => {
           console.log(`     - ${type.room_type}: ${type.occupancy_rate || 0}% occupancy, ${formatCurrency(type.revenue || 0)} revenue`);
         });
@@ -423,7 +423,7 @@ async function runAllTests() {
       
       // Display top guests if available
       if (report.top_guests && report.top_guests.length > 0) {
-        console.log('\n   👥 Top Guests:');
+        console.log('\n    Top Guests:');
         report.top_guests.slice(0, 3).forEach(guest => {
           console.log(`     - ${guest.guest_name}: ${guest.total_stays || 0} stays, ${formatCurrency(guest.total_spent || 0)} spent`);
         });
@@ -472,7 +472,7 @@ async function runAllTests() {
         logSuccess(`Custom Report - ${dateRange.name} (${reportType})`, 
           `Report generated from ${dateRange.startDate} to ${dateRange.endDate}`);
         
-        console.log(`\n📅 CUSTOM REPORT (${dateRange.name} - ${reportType}):`);
+        console.log(`\n CUSTOM REPORT (${dateRange.name} - ${reportType}):`);
         console.log(`   Period: ${dateRange.startDate} to ${dateRange.endDate}`);
         
         // Display based on report type
@@ -491,7 +491,7 @@ async function runAllTests() {
             
           case 'detailed':
             if (report.reservations && report.reservations.length > 0) {
-              console.log(`   📋 Reservations (${report.reservations.length}):`);
+              console.log(`    Reservations (${report.reservations.length}):`);
               report.reservations.slice(0, 3).forEach(res => {
                 console.log(`     - ${res.reservation_id}: ${res.guest_name}, ${res.room_number}, ${res.status}`);
               });
@@ -513,7 +513,7 @@ async function runAllTests() {
               });
               
               if (report.revenue_by_source) {
-                console.log('\n   💰 Revenue by Source:');
+                console.log('\n    Revenue by Source:');
                 Object.entries(report.revenue_by_source).forEach(([source, amount]) => {
                   console.log(`     - ${source}: ${formatCurrency(amount)}`);
                 });
@@ -533,7 +533,7 @@ async function runAllTests() {
               });
               
               if (report.daily_occupancy && report.daily_occupancy.length > 0) {
-                console.log('\n   📈 Daily Occupancy Trend:');
+                console.log('\n    Daily Occupancy Trend:');
                 report.daily_occupancy.slice(-5).forEach(day => {
                   console.log(`     - ${day.date}: ${day.occupancy_rate || 0}%`);
                 });
@@ -692,7 +692,7 @@ async function runAllTests() {
     const monthlyResult = await tester.getMonthlyReport(currentYear, currentMonth);
     const monthlyReport = monthlyResult.data;
     
-    console.log('📋 Data Consistency Check:');
+    console.log(' Data Consistency Check:');
     
     // Check if today is included in weekly report
     if (weeklyReport.daily_breakdown) {
@@ -719,7 +719,7 @@ async function runAllTests() {
     const weeklyOccupancy = weeklyReport.summary?.average_occupancy || 0;
     const monthlyOccupancy = monthlyReport.summary?.average_occupancy || 0;
     
-    console.log(`   📈 Occupancy Rates:`);
+    console.log(`    Occupancy Rates:`);
     console.log(`      Daily: ${dailyOccupancy}%`);
     console.log(`      Weekly Avg: ${weeklyOccupancy}%`);
     console.log(`      Monthly Avg: ${monthlyOccupancy}%`);
@@ -746,7 +746,7 @@ async function runAllTests() {
     )}
   ];
 
-  console.log('⏱️  Performance Metrics:');
+  console.log('  Performance Metrics:');
   
   for (const test of performanceTests) {
     const startTime = Date.now();
@@ -791,31 +791,31 @@ async function printSummary() {
   const total = testResults.length;
   const successRate = ((passed / total) * 100).toFixed(1);
 
-  console.log(`📊 Total Tests: ${total}`);
-  console.log(`✅ Passed: ${passed}`);
-  console.log(`❌ Failed: ${total - passed}`);
-  console.log(`🎯 Success Rate: ${successRate}%`);
+  console.log(` Total Tests: ${total}`);
+  console.log(` Passed: ${passed}`);
+  console.log(` Failed: ${total - passed}`);
+  console.log(` Success Rate: ${successRate}%`);
 
   // Test coverage summary
-  console.log('\n📋 TEST COVERAGE:');
-  console.log('   ✅ GET /daily     - Get daily report');
-  console.log('   ✅ GET /weekly    - Get weekly report');
-  console.log('   ✅ GET /monthly   - Get monthly report');
-  console.log('   ✅ GET /custom    - Get custom report');
-  console.log('   ✅ RBAC Testing   - Role-based access control');
-  console.log('   ✅ Error Cases    - Validation and edge cases');
-  console.log('   ✅ Data Consistency - Report data validation');
-  console.log('   ✅ Performance    - Report generation speed');
+  console.log('\n TEST COVERAGE:');
+  console.log('    GET /daily     - Get daily report');
+  console.log('    GET /weekly    - Get weekly report');
+  console.log('    GET /monthly   - Get monthly report');
+  console.log('    GET /custom    - Get custom report');
+  console.log('    RBAC Testing   - Role-based access control');
+  console.log('    Error Cases    - Validation and edge cases');
+  console.log('    Data Consistency - Report data validation');
+  console.log('    Performance    - Report generation speed');
 
   // Report statistics
-  console.log('\n📈 REPORT FEATURES TESTED:');
-  console.log('   ✓ Daily reports with/without date parameter');
-  console.log('   ✓ Weekly reports with year/week parameters');
-  console.log('   ✓ Monthly reports with year/month parameters');
-  console.log('   ✓ Custom reports with date ranges and types');
-  console.log('   ✓ Multiple report types: summary, detailed, financial, occupancy');
-  console.log('   ✓ Role-based access (admin, receptionist, guest)');
-  console.log('   ✓ Data validation (dates, ranges, formats)');
+  console.log('\n REPORT FEATURES TESTED:');
+  console.log('    Daily reports with/without date parameter');
+  console.log('    Weekly reports with year/week parameters');
+  console.log('    Monthly reports with year/month parameters');
+  console.log('    Custom reports with date ranges and types');
+  console.log('    Multiple report types: summary, detailed, financial, occupancy');
+  console.log('    Role-based access (admin, receptionist, guest)');
+  console.log('    Data validation (dates, ranges, formats)');
 
   // Save test results to file
   const timestamp = new Date().toISOString().replace(/[:.]/g, '-');
@@ -855,22 +855,22 @@ async function printSummary() {
   };
 
   fs.writeFileSync(resultsFile, JSON.stringify(report, null, 2));
-  console.log(`\n📄 Detailed results saved to: ${resultsFile}`);
+  console.log(`\n Detailed results saved to: ${resultsFile}`);
 
   // Recommendations
-  console.log('\n💡 RECOMMENDATIONS:');
+  console.log('\n RECOMMENDATIONS:');
   if (successRate === '100.0') {
-    console.log('🎉 EXCELLENT! All Report API endpoints are fully functional.');
+    console.log(' EXCELLENT! All Report API endpoints are fully functional.');
     console.log('   Next steps:');
     console.log('   1. Test report export functionality (PDF, Excel)');
     console.log('   2. Test report scheduling and email delivery');
     console.log('   3. Test advanced analytics and forecasting reports');
     console.log('   4. Load test with multiple concurrent report requests');
   } else if (successRate >= '80.0') {
-    console.log('👍 GOOD! Most report endpoints are working.');
+    console.log(' GOOD! Most report endpoints are working.');
     console.log('   Review failed tests - check report generation logic.');
   } else {
-    console.log('⚠️  NEEDS ATTENTION. Several report endpoints failed.');
+    console.log('  NEEDS ATTENTION. Several report endpoints failed.');
     console.log('   Check:');
     console.log('   1. Database views/functions for report generation');
     console.log('   2. Date parameter validation in controllers');
@@ -878,7 +878,7 @@ async function printSummary() {
     console.log('   4. Check backend/logs for detailed errors');
   }
 
-  console.log('\n🔗 QUICK LINKS:');
+  console.log('\n QUICK LINKS:');
   console.log('   API Documentation: http://localhost:5000/api-docs');
   console.log('   Report Endpoints: /api/reports/[daily|weekly|monthly|custom]');
   console.log('   Required Role: admin or receptionist');
@@ -886,7 +886,7 @@ async function printSummary() {
 
 // Interactive test menu
 async function showMenu() {
-  console.log('\n📊 REPORT API TESTER');
+  console.log('\n REPORT API TESTER');
   console.log('==================');
   console.log('1. Run All Tests');
   console.log('2. Test Specific Endpoint');
@@ -920,7 +920,7 @@ async function showMenu() {
 }
 
 async function testSpecificEndpoint() {
-  console.log('\n🔧 SPECIFIC REPORT ENDPOINT TESTING');
+  console.log('\n SPECIFIC REPORT ENDPOINT TESTING');
   console.log('===================================');
   console.log('1. GET /reports/daily - Get daily report');
   console.log('2. GET /reports/weekly - Get weekly report');
@@ -935,9 +935,9 @@ async function testSpecificEndpoint() {
     try {
       const token = await tester.login(ADMIN_CREDENTIALS);
       tester.setAuthToken(token);
-      console.log('✅ Logged in successfully as admin');
+      console.log(' Logged in successfully as admin');
     } catch (error) {
-      console.log('❌ Login failed:', error.message);
+      console.log(' Login failed:', error.message);
       rl.close();
       return;
     }
@@ -947,10 +947,10 @@ async function testSpecificEndpoint() {
         rl.question('Enter date (YYYY-MM-DD) or press enter for today: ', async (date) => {
           try {
             const result = await tester.getDailyReport(date || null);
-            console.log('✅ GET /reports/daily - Success:');
+            console.log(' GET /reports/daily - Success:');
             console.log(JSON.stringify(result.data, null, 2));
           } catch (error) {
-            console.log('❌ Error:', error.response?.data || error.message);
+            console.log(' Error:', error.response?.data || error.message);
           }
           rl.close();
         });
@@ -964,10 +964,10 @@ async function testSpecificEndpoint() {
                 year ? parseInt(year) : null,
                 week ? parseInt(week) : null
               );
-              console.log('✅ GET /reports/weekly - Success:');
+              console.log(' GET /reports/weekly - Success:');
               console.log(JSON.stringify(result.data, null, 2));
             } catch (error) {
-              console.log('❌ Error:', error.response?.data || error.message);
+              console.log(' Error:', error.response?.data || error.message);
             }
             rl.close();
           });
@@ -982,10 +982,10 @@ async function testSpecificEndpoint() {
                 year ? parseInt(year) : null,
                 month ? parseInt(month) : null
               );
-              console.log('✅ GET /reports/monthly - Success:');
+              console.log(' GET /reports/monthly - Success:');
               console.log(JSON.stringify(result.data, null, 2));
             } catch (error) {
-              console.log('❌ Error:', error.response?.data || error.message);
+              console.log(' Error:', error.response?.data || error.message);
             }
             rl.close();
           });
@@ -998,10 +998,10 @@ async function testSpecificEndpoint() {
             rl.question('Enter report type (summary, detailed, financial, occupancy): ', async (reportType) => {
               try {
                 const result = await tester.getCustomReport(startDate, endDate, reportType);
-                console.log('✅ GET /reports/custom - Success:');
+                console.log(' GET /reports/custom - Success:');
                 console.log(JSON.stringify(result.data, null, 2));
               } catch (error) {
-                console.log('❌ Error:', error.response?.data || error.message);
+                console.log(' Error:', error.response?.data || error.message);
               }
               rl.close();
             });
@@ -1035,7 +1035,7 @@ async function viewPreviousResults() {
   if (files.length === 0) {
     console.log('No previous report test results found.');
   } else {
-    console.log('\n📄 PREVIOUS REPORT TEST RESULTS:');
+    console.log('\n PREVIOUS REPORT TEST RESULTS:');
     files.forEach((file, index) => {
       const filePath = path.join(resultsDir, file);
       const stats = fs.statSync(filePath);
@@ -1058,7 +1058,7 @@ async function viewPreviousResults() {
 }
 
 async function quickHealthCheck() {
-  console.log('\n⚡ QUICK REPORT API HEALTH CHECK');
+  console.log('\n QUICK REPORT API HEALTH CHECK');
   console.log('================================');
   
   const tester = new ReportAPITester(API_BASE_URL);
@@ -1067,39 +1067,39 @@ async function quickHealthCheck() {
     // Test 1: API Health
     console.log('1. Testing API health...');
     const healthResponse = await axios.get(`${API_BASE_URL}/health`);
-    console.log(`   ✅ API Health: ${healthResponse.data.status}`);
+    console.log(`    API Health: ${healthResponse.data.status}`);
     
     // Test 2: Login
     console.log('2. Testing authentication...');
     const token = await tester.login(ADMIN_CREDENTIALS);
     tester.setAuthToken(token);
-    console.log(`   ✅ Authentication: Success`);
+    console.log(`    Authentication: Success`);
     
     // Test 3: Daily report
     console.log('3. Testing daily report...');
     const dailyReport = await tester.getDailyReport();
-    console.log(`   ✅ Daily Report: Accessible`);
+    console.log(`    Daily Report: Accessible`);
     
     // Test 4: Weekly report
     console.log('4. Testing weekly report...');
     const weeklyReport = await tester.getWeeklyReport();
-    console.log(`   ✅ Weekly Report: Accessible`);
+    console.log(`    Weekly Report: Accessible`);
     
     // Test 5: Monthly report
     console.log('5. Testing monthly report...');
     const monthlyReport = await tester.getMonthlyReport();
-    console.log(`   ✅ Monthly Report: Accessible`);
+    console.log(`    Monthly Report: Accessible`);
     
     // Test 6: Check report data structure
     console.log('6. Checking report structure...');
     if (dailyReport.data && (dailyReport.data.summary || dailyReport.data.reservations)) {
-      console.log(`   ✅ Report structure: Correct`);
+      console.log(`    Report structure: Correct`);
     } else {
-      console.log(`   ⚠️  Report structure: Unexpected format`);
+      console.log(`     Report structure: Unexpected format`);
     }
     
-    console.log('\n🎉 REPORT API IS HEALTHY!');
-    console.log('\n📊 Quick Stats:');
+    console.log('\n REPORT API IS HEALTHY!');
+    console.log('\n Quick Stats:');
     console.log(`   - Daily Report: Working`);
     console.log(`   - Weekly Report: Working`);
     console.log(`   - Monthly Report: Working`);
@@ -1107,8 +1107,8 @@ async function quickHealthCheck() {
     console.log(`   - Authentication: Working`);
     
   } catch (error) {
-    console.log(`❌ Health check failed: ${error.message}`);
-    console.log('\n🔧 Troubleshooting:');
+    console.log(` Health check failed: ${error.message}`);
+    console.log('\n Troubleshooting:');
     console.log('   1. Is the server running? (npm run dev)');
     console.log('   2. Check admin credentials in database');
     console.log('   3. Verify report routes are registered');
@@ -1134,7 +1134,7 @@ if (process.argv.length > 2) {
     quickHealthCheck().then(() => process.exit(0));
   } else if (command === '--help' || command === '-h') {
     console.log(`
-📊 Report API Test Script
+ Report API Test Script
 =========================
 Usage:
   node report-api-test.js [option]
@@ -1159,7 +1159,7 @@ Examples:
 
 // Handle errors gracefully
 process.on('unhandledRejection', (error) => {
-  console.error('\n❌ Unhandled rejection:', error.message);
+  console.error('\n Unhandled rejection:', error.message);
   if (error.response) {
     console.error('   Response:', error.response.data);
     console.error('   Status:', error.response.status);
@@ -1168,7 +1168,7 @@ process.on('unhandledRejection', (error) => {
 });
 
 process.on('uncaughtException', (error) => {
-  console.error('\n💥 Uncaught exception:', error.message);
+  console.error('\n Uncaught exception:', error.message);
   console.error('   Stack:', error.stack);
   process.exit(1);
 });

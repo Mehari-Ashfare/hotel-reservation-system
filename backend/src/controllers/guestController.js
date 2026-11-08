@@ -142,8 +142,8 @@ class GuestController {
         table_name: 'guests',
         record_id: parseInt(id),
         action: 'UPDATE',
-        old_values: oldGuest,     // ✅ Now this exists
-        new_values: updatedGuest, // ✅ Now this exists
+        old_values: oldGuest,     //  Now this exists
+        new_values: updatedGuest, //  Now this exists
         user_id: req.user?.id || null,
         ip_address: AuditLogger.getClientIp(req),
         user_agent: req.get('user-agent')
@@ -377,8 +377,8 @@ export default GuestController;
 //         table_name: 'guests',
 //         record_id: parseInt(id),
 //         action: 'UPDATE',
-//         old_values: oldGuest,     // ✅ Now this exists
-//         new_values: updatedGuest, // ✅ Now this exists
+//         old_values: oldGuest,     //  Now this exists
+//         new_values: updatedGuest, //  Now this exists
 //         user_id: req.user?.id || null,
 //         ip_address: AuditLogger.getClientIp(req),
 //         user_agent: req.get('user-agent')

@@ -44,7 +44,7 @@ const rl = readline.createInterface({
 const sleep = (ms) => new Promise(resolve => setTimeout(resolve, ms));
 
 const logSuccess = (testName, message = '') => {
-  const log = `✅ ${testName}: ${message}`;
+  const log = ` ${testName}: ${message}`;
   testResults.push({ testName, success: true, message });
   console.log(log);
   return log;
@@ -52,19 +52,19 @@ const logSuccess = (testName, message = '') => {
 
 const logError = (testName, error) => {
   const message = error.response?.data?.message || error.message;
-  const log = `❌ ${testName}: ${message}`;
+  const log = ` ${testName}: ${message}`;
   testResults.push({ testName, success: false, message: error.message });
   console.log(log);
   return log;
 };
 
 const logInfo = (message) => {
-  console.log(`ℹ️  ${message}`);
+  console.log(`ℹ  ${message}`);
 };
 
 const logHeader = (title) => {
   console.log('\n' + '='.repeat(60));
-  console.log(`👥 ${title}`);
+  console.log(` ${title}`);
   console.log('='.repeat(60));
 };
 
@@ -183,7 +183,7 @@ async function runAllTests() {
     await sleep(500);
   } catch (error) {
     logError('Admin Login', error);
-    console.log('\n⚠️  Please ensure:');
+    console.log('\n  Please ensure:');
     console.log('1. Server is running: npm run dev');
     console.log('2. Database is seeded with admin user');
     console.log('3. Admin credentials:', ADMIN_CREDENTIALS);
@@ -215,7 +215,7 @@ async function runAllTests() {
     logSuccess('Create New Guest', 
       `Guest ${guestData.first_name} ${guestData.last_name} created successfully`);
     
-    console.log('\n👤 Created Guest Details:');
+    console.log('\n Created Guest Details:');
     console.table({
       'Guest ID': createdGuestId,
       'First Name': guestData.first_name,
@@ -229,7 +229,7 @@ async function runAllTests() {
     });
   } catch (error) {
     logError('Create New Guest', error);
-    console.log('⚠️  Trying to find existing guest for testing...');
+    console.log('  Trying to find existing guest for testing...');
     
     // Try to get existing guest for further tests
     try {
@@ -238,7 +238,7 @@ async function runAllTests() {
         createdGuestId = guests.data.guests[0].guest_id;
         logSuccess('Using Existing Guest', `ID: ${createdGuestId}`);
       } else {
-        console.log('❌ Cannot proceed without a guest.');
+        console.log(' Cannot proceed without a guest.');
         process.exit(1);
       }
     } catch (fetchError) {
@@ -257,7 +257,7 @@ async function runAllTests() {
     logSuccess('Get Guest by ID', 
       `Guest ${guest.first_name} ${guest.last_name} retrieved successfully`);
     
-    console.log('\n🔍 Guest Details:');
+    console.log('\n Guest Details:');
     console.table({
       'Guest ID': guest.guest_id,
       'Full Name': `${guest.first_name} ${guest.last_name}`,
@@ -293,18 +293,18 @@ async function runAllTests() {
     logSuccess('Update Guest Information', 
       `Guest ${createdGuestId} updated successfully`);
     
-    console.log('\n✏️ Updated Fields:');
+    console.log('\n Updated Fields:');
     console.table(updateData);
     
     // Verify update
     const verifyResult = await tester.getGuestById(createdGuestId);
-    console.log('\n✅ Verified Update:');
+    console.log('\n Verified Update:');
     console.log(`   Name: ${verifyResult.data.first_name} ${verifyResult.data.last_name}`);
     console.log(`   Phone: ${verifyResult.data.phone}`);
     console.log(`   Guest Type: ${verifyResult.data.guest_type}`);
   } catch (error) {
     logError('Update Guest Information', error);
-    console.log('ℹ️  Note: Check if all fields exist in your database schema');
+    console.log('ℹ  Note: Check if all fields exist in your database schema');
   }
   await sleep(500);
 
@@ -334,7 +334,7 @@ async function runAllTests() {
         `Page ${page}/${totalPages}, Showing ${guests.length} of ${total} guests`);
       
       if (guests.length > 0) {
-        console.log(`   📊 Sample (${test.name}):`);
+        console.log(`    Sample (${test.name}):`);
         guests.slice(0, 2).forEach(guest => {
           console.log(`   - ${guest.first_name} ${guest.last_name}: ${guest.email} (${guest.guest_type})`);
         });
@@ -365,7 +365,7 @@ async function runAllTests() {
         `Found ${guests.length} guests for query: "${test.params.q}"`);
       
       if (guests.length > 0) {
-        console.log(`   🔍 Results (${test.name}):`);
+        console.log(`    Results (${test.name}):`);
         guests.slice(0, 2).forEach(guest => {
           console.log(`   - ${guest.first_name} ${guest.last_name} (${guest.email})`);
         });
@@ -513,20 +513,20 @@ async function printSummary() {
   const total = testResults.length;
   const successRate = ((passed / total) * 100).toFixed(1);
 
-  console.log(`📊 Total Tests: ${total}`);
-  console.log(`✅ Passed: ${passed}`);
-  console.log(`❌ Failed: ${total - passed}`);
-  console.log(`🎯 Success Rate: ${successRate}%`);
+  console.log(` Total Tests: ${total}`);
+  console.log(` Passed: ${passed}`);
+  console.log(` Failed: ${total - passed}`);
+  console.log(` Success Rate: ${successRate}%`);
 
   // Test coverage summary
-  console.log('\n📋 TEST COVERAGE:');
-  console.log('   ✅ GET /              - Get all guests (with pagination)');
-  console.log('   ✅ GET /search        - Search guests');
-  console.log('   ✅ GET /:id           - Get guest by ID');
-  console.log('   ✅ POST /             - Create new guest');
-  console.log('   ✅ PUT /:id           - Update guest');
-  console.log('   ✅ DELETE /:id        - Delete guest');
-  console.log('   ✅ Validation tests   - Edge cases and error handling');
+  console.log('\n TEST COVERAGE:');
+  console.log('    GET /              - Get all guests (with pagination)');
+  console.log('    GET /search        - Search guests');
+  console.log('    GET /:id           - Get guest by ID');
+  console.log('    POST /             - Create new guest');
+  console.log('    PUT /:id           - Update guest');
+  console.log('    DELETE /:id        - Delete guest');
+  console.log('    Validation tests   - Edge cases and error handling');
 
   // Save test results to file
   const timestamp = new Date().toISOString().replace(/[:.]/g, '-');
@@ -573,21 +573,21 @@ async function printSummary() {
   };
 
   fs.writeFileSync(resultsFile, JSON.stringify(report, null, 2));
-  console.log(`\n📄 Detailed results saved to: ${resultsFile}`);
+  console.log(`\n Detailed results saved to: ${resultsFile}`);
 
   // Recommendations
-  console.log('\n💡 RECOMMENDATIONS:');
+  console.log('\n RECOMMENDATIONS:');
   if (successRate === '100.0') {
-    console.log('🎉 EXCELLENT! All Guest API endpoints are fully functional and compatible.');
+    console.log(' EXCELLENT! All Guest API endpoints are fully functional and compatible.');
     console.log('   Next steps:');
     console.log('   1. Test with different user roles (receptionist vs admin)');
     console.log('   2. Test guest reservation history endpoints');
     console.log('   3. Load test with multiple concurrent guest creations');
   } else if (successRate >= '80.0') {
-    console.log('👍 GOOD! Most endpoints are working.');
+    console.log(' GOOD! Most endpoints are working.');
     console.log('   Review failed tests - check schema compatibility.');
   } else {
-    console.log('⚠️  NEEDS ATTENTION. Several endpoints failed.');
+    console.log('  NEEDS ATTENTION. Several endpoints failed.');
     console.log('   Check:');
     console.log('   1. Database schema matches our field names');
     console.log('   2. Authentication is properly configured');
@@ -595,7 +595,7 @@ async function printSummary() {
     console.log('   4. Check backend/logs for detailed errors');
   }
 
-  console.log('\n🔗 QUICK LINKS:');
+  console.log('\n QUICK LINKS:');
   console.log('   Test Guest Created:');
   if (createdGuestId) {
     console.log(`     Guest ID: ${createdGuestId}`);
@@ -610,7 +610,7 @@ async function printSummary() {
 
 // Interactive test menu
 async function showMenu() {
-  console.log('\n👥 GUEST API TESTER');
+  console.log('\n GUEST API TESTER');
   console.log('==================');
   console.log('1. Run All Tests');
   console.log('2. Test Specific Endpoint');
@@ -644,7 +644,7 @@ async function showMenu() {
 }
 
 async function testSpecificEndpoint() {
-  console.log('\n🔧 SPECIFIC GUEST ENDPOINT TESTING');
+  console.log('\n SPECIFIC GUEST ENDPOINT TESTING');
   console.log('==================================');
   console.log('1. GET /guests - Get all guests');
   console.log('2. GET /guests/search - Search guests');
@@ -660,9 +660,9 @@ async function testSpecificEndpoint() {
     // Login first
     try {
       await tester.login(ADMIN_CREDENTIALS);
-      console.log('✅ Logged in successfully');
+      console.log(' Logged in successfully');
     } catch (error) {
-      console.log('❌ Login failed:', error.message);
+      console.log(' Login failed:', error.message);
       rl.close();
       return;
     }
@@ -673,11 +673,11 @@ async function testSpecificEndpoint() {
           try {
             const filters = filterInput ? JSON.parse(filterInput) : {};
             const result = await tester.getAllGuests(filters);
-            console.log('✅ GET /guests - Success:');
+            console.log(' GET /guests - Success:');
             console.log(`Total: ${result.data.total || result.data.guests?.length || 0} guests`);
             console.log(JSON.stringify(result.data, null, 2));
           } catch (error) {
-            console.log('❌ Error:', error.response?.data || error.message);
+            console.log(' Error:', error.response?.data || error.message);
           }
           rl.close();
         });
@@ -688,11 +688,11 @@ async function testSpecificEndpoint() {
           try {
             // CHANGE THIS LINE: Use 'query' instead of 'q'
             const result = await tester.searchGuests({ query: query });
-            console.log('✅ GET /guests/search - Success:');
+            console.log(' GET /guests/search - Success:');
             console.log(`Found ${result.data.guests?.length || 0} guests`);
             console.log(JSON.stringify(result.data, null, 2));
           } catch (error) {
-            console.log('❌ Error:', error.response?.data || error.message);
+            console.log(' Error:', error.response?.data || error.message);
           }
           rl.close();
         });
@@ -702,10 +702,10 @@ async function testSpecificEndpoint() {
         rl.question('Enter Guest ID: ', async (guestId) => {
           try {
             const result = await tester.getGuestById(parseInt(guestId));
-            console.log('✅ GET /guests/:id - Success:');
+            console.log(' GET /guests/:id - Success:');
             console.log(JSON.stringify(result.data, null, 2));
           } catch (error) {
-            console.log('❌ Error:', error.response?.data || error.message);
+            console.log(' Error:', error.response?.data || error.message);
           }
           rl.close();
         });
@@ -722,11 +722,11 @@ async function testSpecificEndpoint() {
         };
         try {
           const result = await tester.createGuest(guestData);
-          console.log('✅ POST /guests - Success:');
+          console.log(' POST /guests - Success:');
           console.log(`Created guest ID: ${result.data.guest_id || result.data.id}`);
           console.log(JSON.stringify(result.data, null, 2));
         } catch (error) {
-          console.log('❌ Error:', error.response?.data || error.message);
+          console.log(' Error:', error.response?.data || error.message);
         }
         rl.close();
         break;
@@ -740,10 +740,10 @@ async function testSpecificEndpoint() {
           };
           try {
             const result = await tester.updateGuest(parseInt(guestId), updateData);
-            console.log('✅ PUT /guests/:id - Success:');
+            console.log(' PUT /guests/:id - Success:');
             console.log(JSON.stringify(result.data, null, 2));
           } catch (error) {
-            console.log('❌ Error:', error.response?.data || error.message);
+            console.log(' Error:', error.response?.data || error.message);
           }
           rl.close();
         });
@@ -755,10 +755,10 @@ async function testSpecificEndpoint() {
             if (confirm.toLowerCase() === 'y') {
               try {
                 const result = await tester.deleteGuest(parseInt(guestId));
-                console.log('✅ DELETE /guests/:id - Success:');
+                console.log(' DELETE /guests/:id - Success:');
                 console.log(JSON.stringify(result, null, 2));
               } catch (error) {
-                console.log('❌ Error:', error.response?.data || error.message);
+                console.log(' Error:', error.response?.data || error.message);
               }
             } else {
               console.log('Deletion cancelled');
@@ -794,7 +794,7 @@ async function viewPreviousResults() {
   if (files.length === 0) {
     console.log('No previous guest test results found.');
   } else {
-    console.log('\n📄 PREVIOUS GUEST TEST RESULTS:');
+    console.log('\n PREVIOUS GUEST TEST RESULTS:');
     files.forEach((file, index) => {
       const filePath = path.join(resultsDir, file);
       const stats = fs.statSync(filePath);
@@ -818,7 +818,7 @@ async function viewPreviousResults() {
 }
 
 async function quickHealthCheck() {
-  console.log('\n⚡ QUICK GUEST API HEALTH CHECK');
+  console.log('\n QUICK GUEST API HEALTH CHECK');
   console.log('===============================');
   
   const tester = new GuestAPITester(API_BASE_URL);
@@ -827,36 +827,36 @@ async function quickHealthCheck() {
     // Test 1: API Health
     console.log('1. Testing API health...');
     const healthResponse = await axios.get(`${API_BASE_URL}/health`);
-    console.log(`   ✅ API Health: ${healthResponse.data.status}`);
+    console.log(`    API Health: ${healthResponse.data.status}`);
     
     // Test 2: Login
     console.log('2. Testing authentication...');
     await tester.login(ADMIN_CREDENTIALS);
-    console.log(`   ✅ Authentication: Success`);
+    console.log(`    Authentication: Success`);
     
     // Test 3: Get all guests
     console.log('3. Testing guest endpoint...');
     const guests = await tester.getAllGuests({ limit: 1 });
     const totalGuests = guests.data.total || guests.data.guests?.length || 0;
-    console.log(`   ✅ Guest API: Accessible (Found ${totalGuests} guests)`);
+    console.log(`    Guest API: Accessible (Found ${totalGuests} guests)`);
     
     // Test 4: Check response structure
     console.log('4. Checking response structure...');
     if (guests.data.guests || guests.data.data) {
-      console.log(`   ✅ Response structure: Correct`);
+      console.log(`    Response structure: Correct`);
     } else {
-      console.log(`   ⚠️  Response structure: Unexpected format`);
+      console.log(`     Response structure: Unexpected format`);
     }
     
-    console.log('\n🎉 GUEST API IS HEALTHY!');
-    console.log('\n📊 Quick Stats:');
+    console.log('\n GUEST API IS HEALTHY!');
+    console.log('\n Quick Stats:');
     console.log(`   - Total Guests: ${totalGuests}`);
     console.log(`   - API Status: ${healthResponse.data.status}`);
     console.log(`   - Authentication: Working`);
     
   } catch (error) {
-    console.log(`❌ Health check failed: ${error.message}`);
-    console.log('\n🔧 Troubleshooting:');
+    console.log(` Health check failed: ${error.message}`);
+    console.log('\n Troubleshooting:');
     console.log('   1. Is the server running? (npm run dev)');
     console.log('   2. Is the database seeded? (npm run seed)');
     console.log('   3. Check authentication credentials');
@@ -882,7 +882,7 @@ if (process.argv.length > 2) {
     quickHealthCheck().then(() => process.exit(0));
   } else if (command === '--help' || command === '-h') {
     console.log(`
-👥 Guest API Test Script
+ Guest API Test Script
 ========================
 Usage:
   node guest-api-test.js [option]
@@ -907,7 +907,7 @@ Examples:
 
 // Handle errors gracefully
 process.on('unhandledRejection', (error) => {
-  console.error('\n❌ Unhandled rejection:', error.message);
+  console.error('\n Unhandled rejection:', error.message);
   if (error.response) {
     console.error('   Response:', error.response.data);
     console.error('   Status:', error.response.status);
@@ -916,7 +916,7 @@ process.on('unhandledRejection', (error) => {
 });
 
 process.on('uncaughtException', (error) => {
-  console.error('\n💥 Uncaught exception:', error.message);
+  console.error('\n Uncaught exception:', error.message);
   console.error('   Stack:', error.stack);
   process.exit(1);
 });

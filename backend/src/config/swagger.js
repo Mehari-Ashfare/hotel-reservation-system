@@ -302,7 +302,7 @@ export const setupSwagger = (app) => {
     res.send(swaggerSpec);
   });
   
-  console.log('📚 API Documentation available at: http://localhost:5000/api-docs');
+  console.log(' API Documentation available at: http://localhost:5000/api-docs');
 };
 
 export default setupSwagger;

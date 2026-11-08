@@ -37,13 +37,13 @@ const rl = readline.createInterface({
 // Utility functions
 const sleep = (ms) => new Promise(resolve => setTimeout(resolve, ms));
 
-const logSuccess = (message) => console.log(`✅ ${message}`);
-const logError = (message) => console.log(`❌ ${message}`);
-const logInfo = (message) => console.log(`ℹ️  ${message}`);
-const logWarning = (message) => console.log(`⚠️  ${message}`);
+const logSuccess = (message) => console.log(` ${message}`);
+const logError = (message) => console.log(` ${message}`);
+const logInfo = (message) => console.log(`ℹ  ${message}`);
+const logWarning = (message) => console.log(`  ${message}`);
 const logHeader = (title) => {
   console.log('\n' + '='.repeat(60));
-  console.log(`👔 ${title}`);
+  console.log(` ${title}`);
   console.log('='.repeat(60));
 };
 
@@ -181,11 +181,11 @@ async function loginAsReceptionist() {
 // Individual Test Functions
 async function testGetProfile() {
   logHeader('TEST: GET /staff/profile');
-  console.log('👨‍💼 This endpoint is for receptionist users only\n');
+  console.log(' This endpoint is for receptionist users only\n');
   
   console.log('Select user role:');
-  console.log('1. 👑 Admin');
-  console.log('2. 👨‍💼 Receptionist');
+  console.log('1.  Admin');
+  console.log('2.  Receptionist');
   
   rl.question('Select role (1-2): ', async (choice) => {
     let tester;
@@ -206,11 +206,11 @@ async function testGetProfile() {
     }
     
     try {
-      console.log('\n📤 Sending GET /staff/profile request...');
+      console.log('\n Sending GET /staff/profile request...');
       const result = await tester.getStaffProfile();
       
-      console.log('✅ Success!');
-      console.log('\n👤 Profile Details:');
+      console.log(' Success!');
+      console.log('\n Profile Details:');
       const profile = result.data;
       
       console.table({
@@ -226,9 +226,9 @@ async function testGetProfile() {
       });
       
     } catch (error) {
-      console.log('❌ Error:', error.response?.data?.message || error.message);
+      console.log(' Error:', error.response?.data?.message || error.message);
       if (error.response?.status === 403) {
-        console.log('\n⚠️  Note: This endpoint requires a staff profile.');
+        console.log('\n  Note: This endpoint requires a staff profile.');
         console.log('   Admin users may not have staff profiles.');
       }
     }
@@ -239,7 +239,7 @@ async function testGetProfile() {
 
 async function testGetAllStaff() {
   logHeader('TEST: GET /staff');
-  console.log('👑 This endpoint is for admin users only\n');
+  console.log(' This endpoint is for admin users only\n');
   
   const tester = await loginAsAdmin();
   if (!tester) {
@@ -256,11 +256,11 @@ async function testGetAllStaff() {
   rl.question('\nEnter filters as JSON (or press Enter for none): ', async (filterInput) => {
     try {
       const filters = filterInput ? JSON.parse(filterInput) : {};
-      console.log('\n📤 Sending GET /staff request...');
+      console.log('\n Sending GET /staff request...');
       const result = await tester.getAllStaff(filters);
       
-      console.log('✅ Success!');
-      console.log('\n📊 Response Summary:');
+      console.log(' Success!');
+      console.log('\n Response Summary:');
       
       if (result.data?.staff) {
         const staff = result.data.staff;
@@ -288,7 +288,7 @@ async function testGetAllStaff() {
       }
       
     } catch (error) {
-      console.log('❌ Error:', error.response?.data?.message || error.message);
+      console.log(' Error:', error.response?.data?.message || error.message);
     }
     
     rl.close();
@@ -297,7 +297,7 @@ async function testGetAllStaff() {
 
 async function testCreateStaff() {
   logHeader('TEST: POST /staff');
-  console.log('👑 This endpoint is for admin users only\n');
+  console.log(' This endpoint is for admin users only\n');
   
   const tester = await loginAsAdmin();
   if (!tester) {
@@ -311,7 +311,7 @@ async function testCreateStaff() {
   rl.question('Enter email for new staff member: ', async (email) => {
     rl.question('Enter password for new user: ', async (password) => {
       try {
-        console.log('\n📤 Creating user account...');
+        console.log('\n Creating user account...');
         
         // Create user first
         const userResponse = await axios.post(`${API_BASE_URL}/auth/register`, {
@@ -321,10 +321,10 @@ async function testCreateStaff() {
         });
         
         const userId = userResponse.data.data.user.id;
-        console.log(`✅ User created with ID: ${userId}`);
+        console.log(` User created with ID: ${userId}`);
         
         // Now create staff record
-        console.log('\n📤 Creating staff record...');
+        console.log('\n Creating staff record...');
         
         const staffData = {
           user_id: userId,
@@ -340,8 +340,8 @@ async function testCreateStaff() {
         
         const result = await tester.createStaff(staffData);
         
-        console.log('✅ Staff member created successfully!');
-        console.log('\n👔 New Staff Details:');
+        console.log(' Staff member created successfully!');
+        console.log('\n New Staff Details:');
         const staff = result.data;
         
         console.table({
@@ -356,12 +356,12 @@ async function testCreateStaff() {
           'Status': staff.is_active ? 'Active' : 'Inactive'
         });
         
-        console.log('\n💡 Staff member has been added to the database.');
+        console.log('\n Staff member has been added to the database.');
         
       } catch (error) {
-        console.log('❌ Error:', error.response?.data?.message || error.message);
+        console.log(' Error:', error.response?.data?.message || error.message);
         if (error.response?.status === 409) {
-          console.log('\n⚠️  User already exists. Try a different email.');
+          console.log('\n  User already exists. Try a different email.');
         }
       }
       
@@ -372,11 +372,11 @@ async function testCreateStaff() {
 
 async function testGetStaffById() {
   logHeader('TEST: GET /staff/:id');
-  console.log('👑 Admin or 👨‍💼 Self-access endpoint\n');
+  console.log(' Admin or  Self-access endpoint\n');
   
   console.log('Select user role:');
-  console.log('1. 👑 Admin (can view any staff)');
-  console.log('2. 👨‍💼 Receptionist (can only view own profile)');
+  console.log('1.  Admin (can view any staff)');
+  console.log('2.  Receptionist (can only view own profile)');
   
   rl.question('Select role (1-2): ', async (roleChoice) => {
     let tester;
@@ -397,17 +397,17 @@ async function testGetStaffById() {
     }
     
     if (roleChoice === '2' && currentStaffId) {
-      console.log(`\n⚠️  Note: As receptionist, you can only view staff ID: ${currentStaffId}`);
+      console.log(`\n  Note: As receptionist, you can only view staff ID: ${currentStaffId}`);
       console.log('   Entering a different ID will result in 403 error.\n');
     }
     
     rl.question('Enter Staff ID to view: ', async (staffId) => {
       try {
-        console.log(`\n📤 Fetching staff ID: ${staffId}...`);
+        console.log(`\n Fetching staff ID: ${staffId}...`);
         const result = await tester.getStaffById(staffId);
         
-        console.log('✅ Success!');
-        console.log('\n👤 Staff Details:');
+        console.log(' Success!');
+        console.log('\n Staff Details:');
         const staff = result.data;
         
         console.table({
@@ -428,9 +428,9 @@ async function testGetStaffById() {
         }
         
       } catch (error) {
-        console.log('❌ Error:', error.response?.data?.message || error.message);
+        console.log(' Error:', error.response?.data?.message || error.message);
         if (error.response?.status === 403) {
-          console.log('\n⚠️  Access Denied:');
+          console.log('\n  Access Denied:');
           console.log('   - Receptionists can only view their own profile');
           console.log('   - Check if the Staff ID belongs to you');
           console.log('   - Only admins can view all staff profiles');
@@ -444,11 +444,11 @@ async function testGetStaffById() {
 
 async function testUpdateStaff() {
   logHeader('TEST: PUT /staff/:id');
-  console.log('👑 Admin or 👨‍💼 Self-access endpoint\n');
+  console.log(' Admin or  Self-access endpoint\n');
   
   console.log('Select user role:');
-  console.log('1. 👑 Admin (can update any staff)');
-  console.log('2. 👨‍💼 Receptionist (can only update own profile)');
+  console.log('1.  Admin (can update any staff)');
+  console.log('2.  Receptionist (can only update own profile)');
   
   rl.question('Select role (1-2): ', async (roleChoice) => {
     let tester;
@@ -469,7 +469,7 @@ async function testUpdateStaff() {
     }
     
     if (roleChoice === '2' && currentStaffId) {
-      console.log(`\n⚠️  Note: As receptionist, you can only update staff ID: ${currentStaffId}`);
+      console.log(`\n  Note: As receptionist, you can only update staff ID: ${currentStaffId}`);
       console.log('   And only these fields: phone, email, address');
       console.log('   Other fields will be ignored.\n');
     }
@@ -486,11 +486,11 @@ async function testUpdateStaff() {
         rl.question('\nEnter update data as JSON: ', async (updateInput) => {
           try {
             const updateData = JSON.parse(updateInput);
-            console.log('\n📤 Sending update request...');
+            console.log('\n Sending update request...');
             const result = await tester.updateStaff(staffId, updateData);
             
-            console.log('✅ Staff updated successfully!');
-            console.log('\n✅ Updated Staff:');
+            console.log(' Staff updated successfully!');
+            console.log('\n Updated Staff:');
             const staff = result.data;
             
             console.log(`Name: ${staff.first_name} ${staff.last_name}`);
@@ -501,7 +501,7 @@ async function testUpdateStaff() {
             });
             
           } catch (error) {
-            console.log('❌ Error:', error.response?.data?.message || error.message);
+            console.log(' Error:', error.response?.data?.message || error.message);
           }
           
           rl.close();
@@ -514,14 +514,14 @@ async function testUpdateStaff() {
           address: 'My Updated Address'
         };
         
-        console.log(`\n📤 Updating receptionist profile (ID: ${staffId})...`);
+        console.log(`\n Updating receptionist profile (ID: ${staffId})...`);
         console.log('Update data:', updateData);
         
         try {
           const result = await tester.updateStaff(staffId, updateData);
           
-          console.log('✅ Profile updated successfully!');
-          console.log('\n✅ Updated Profile:');
+          console.log(' Profile updated successfully!');
+          console.log('\n Updated Profile:');
           const staff = result.data;
           
           console.table({
@@ -533,9 +533,9 @@ async function testUpdateStaff() {
           });
           
         } catch (error) {
-          console.log('❌ Error:', error.response?.data?.message || error.message);
+          console.log(' Error:', error.response?.data?.message || error.message);
           if (error.response?.status === 403) {
-            console.log('\n⚠️  Access Denied: Receptionists can only update their own profile');
+            console.log('\n  Access Denied: Receptionists can only update their own profile');
           }
         }
         
@@ -547,7 +547,7 @@ async function testUpdateStaff() {
 
 async function testGetDepartmentStats() {
   logHeader('TEST: GET /staff/department/stats');
-  console.log('👑 This endpoint is for admin users only\n');
+  console.log(' This endpoint is for admin users only\n');
   
   const tester = await loginAsAdmin();
   if (!tester) {
@@ -556,17 +556,17 @@ async function testGetDepartmentStats() {
   }
   
   try {
-    console.log('📤 Fetching department statistics...');
+    console.log(' Fetching department statistics...');
     const result = await tester.getDepartmentStats();
     
-    console.log('✅ Success!');
-    console.log('\n📈 Department Statistics:');
+    console.log(' Success!');
+    console.log('\n Department Statistics:');
     
     const stats = result.data;
     
     if (Array.isArray(stats)) {
       stats.forEach(dept => {
-        console.log(`\n📋 ${dept.department || dept.name}:`);
+        console.log(`\n ${dept.department || dept.name}:`);
         console.log(`   Total Staff: ${dept.count || dept.total}`);
         console.log(`   Active: ${dept.active_count || dept.active || 'N/A'}`);
         console.log(`   Inactive: ${dept.inactive_count || dept.inactive || 'N/A'}`);
@@ -580,7 +580,7 @@ async function testGetDepartmentStats() {
       });
     } else if (typeof stats === 'object') {
       Object.entries(stats).forEach(([dept, data]) => {
-        console.log(`\n📋 ${dept}:`);
+        console.log(`\n ${dept}:`);
         console.log(`   Total: ${data.count || data.total || 'N/A'}`);
         if (data.positions) {
           console.log('   Positions:');
@@ -593,10 +593,10 @@ async function testGetDepartmentStats() {
       console.log('Unexpected response format:', stats);
     }
     
-    console.log('\n💡 This data helps with HR planning and resource allocation.');
+    console.log('\n This data helps with HR planning and resource allocation.');
     
   } catch (error) {
-    console.log('❌ Error:', error.response?.data?.message || error.message);
+    console.log(' Error:', error.response?.data?.message || error.message);
   }
   
   rl.close();
@@ -613,46 +613,46 @@ async function quickHealthCheck() {
     console.log('1. Checking API health...');
     const healthResponse = await axios.get(`${API_BASE_URL}/health`);
     if (healthResponse.data.status === 'ok') {
-      console.log('   ✅ API is healthy');
+      console.log('    API is healthy');
     } else {
-      console.log('   ❌ API health check failed');
+      console.log('    API health check failed');
     }
     
     // Check 2: Admin Login
     console.log('2. Testing admin login...');
     const adminResponse = await axios.post(`${API_BASE_URL}/auth/login`, ADMIN_CREDENTIALS);
     adminToken = adminResponse.data.data.token;
-    console.log('   ✅ Admin login successful');
+    console.log('    Admin login successful');
     
     // Check 3: Admin endpoints
     console.log('3. Testing admin endpoints...');
     const staffResponse = await axios.get(`${API_BASE_URL}/staff`, {
       headers: { Authorization: `Bearer ${adminToken}` }
     });
-    console.log(`   ✅ GET /staff working (${staffResponse.data.data?.staff?.length || 0} staff)`);
+    console.log(`    GET /staff working (${staffResponse.data.data?.staff?.length || 0} staff)`);
     
     // Check 4: Receptionist Login
     console.log('4. Testing receptionist login...');
     try {
       const receptionistResponse = await axios.post(`${API_BASE_URL}/auth/login`, RECEPTIONIST_CREDENTIALS);
-      console.log('   ✅ Receptionist login successful');
+      console.log('    Receptionist login successful');
       
       // Check 5: Receptionist profile
       console.log('5. Testing receptionist profile...');
       const profileResponse = await axios.get(`${API_BASE_URL}/staff/profile`, {
         headers: { Authorization: `Bearer ${receptionistResponse.data.data.token}` }
       });
-      console.log(`   ✅ Receptionist profile accessible: ${profileResponse.data.data.first_name}`);
+      console.log(`    Receptionist profile accessible: ${profileResponse.data.data.first_name}`);
       
     } catch (error) {
-      console.log('   ⚠️  Receptionist login failed (create receptionist user first)');
+      console.log('     Receptionist login failed (create receptionist user first)');
     }
     
-    console.log('\n🎉 STAFF API IS OPERATIONAL!');
+    console.log('\n STAFF API IS OPERATIONAL!');
     
   } catch (error) {
-    console.log('\n❌ Health check failed:', error.message);
-    console.log('\n🔧 Troubleshooting:');
+    console.log('\n Health check failed:', error.message);
+    console.log('\n Troubleshooting:');
     console.log('   1. Ensure server is running: npm run dev');
     console.log('   2. Check database connection');
     console.log('   3. Verify admin credentials in database');
@@ -665,12 +665,12 @@ async function quickHealthCheck() {
 function showMainMenu() {
   logHeader('STAFF API TESTER');
   console.log('Test specific Staff API endpoints:\n');
-  console.log('1. GET    /profile              👨‍💼 Receptionist only');
-  console.log('2. GET    /                     👑 Admin only');
-  console.log('3. POST   /                     👑 Admin only');
-  console.log('4. GET    /:id                  👑 Admin or 👨‍💼 Self');
-  console.log('5. PUT    /:id                  👑 Admin or 👨‍💼 Self');
-  console.log('6. GET    /department/stats     👑 Admin only');
+  console.log('1. GET    /profile               Receptionist only');
+  console.log('2. GET    /                      Admin only');
+  console.log('3. POST   /                      Admin only');
+  console.log('4. GET    /:id                   Admin or  Self');
+  console.log('5. PUT    /:id                   Admin or  Self');
+  console.log('6. GET    /department/stats      Admin only');
   console.log('7. Quick Health Check');
   console.log('8. Exit');
   
@@ -718,7 +718,7 @@ if (process.argv.length > 2) {
     quickHealthCheck();
   } else if (command === '--help' || command === '-h') {
     console.log(`
-👔 Staff API Test Script
+ Staff API Test Script
 =======================
 Usage:
   node staff-api-test.js [option]
@@ -750,7 +750,7 @@ Endpoints:
 
 // Handle errors gracefully
 process.on('unhandledRejection', (error) => {
-  console.error('\n❌ Unhandled rejection:', error.message);
+  console.error('\n Unhandled rejection:', error.message);
   if (error.response) {
     console.error('   Response:', error.response.data);
   }
@@ -759,7 +759,7 @@ process.on('unhandledRejection', (error) => {
 });
 
 process.on('uncaughtException', (error) => {
-  console.error('\n💥 Uncaught exception:', error.message);
+  console.error('\n Uncaught exception:', error.message);
   rl.close();
   process.exit(1);
 });

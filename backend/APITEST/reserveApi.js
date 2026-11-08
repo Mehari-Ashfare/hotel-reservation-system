@@ -48,7 +48,7 @@ const rl = readline.createInterface({
 const sleep = (ms) => new Promise(resolve => setTimeout(resolve, ms));
 
 const logSuccess = (testName, message = '') => {
-  const log = `✅ ${testName}: ${message}`;
+  const log = ` ${testName}: ${message}`;
   testResults.push({ testName, success: true, message });
   console.log(log);
   return log;
@@ -56,19 +56,19 @@ const logSuccess = (testName, message = '') => {
 
 const logError = (testName, error) => {
   const message = error.response?.data?.message || error.message;
-  const log = `❌ ${testName}: ${message}`;
+  const log = ` ${testName}: ${message}`;
   testResults.push({ testName, success: false, message: error.message });
   console.log(log);
   return log;
 };
 
 const logInfo = (message) => {
-  console.log(`ℹ️  ${message}`);
+  console.log(`ℹ  ${message}`);
 };
 
 const logHeader = (title) => {
   console.log('\n' + '='.repeat(60));
-  console.log(`📅 ${title}`);
+  console.log(` ${title}`);
   console.log('='.repeat(60));
 };
 
@@ -272,7 +272,7 @@ async function runAllTests() {
     await sleep(500);
   } catch (error) {
     logError('Admin Login', error);
-    console.log('\n⚠️  Please ensure:');
+    console.log('\n  Please ensure:');
     console.log('1. Server is running: npm run dev');
     console.log('2. Database is seeded with admin user');
     console.log('3. Admin credentials:', ADMIN_CREDENTIALS);
@@ -296,7 +296,7 @@ async function runAllTests() {
     }
   } catch (error) {
     logError('Get Guest', error);
-    console.log('⚠️  Please create at least one guest first');
+    console.log('  Please create at least one guest first');
     process.exit(1);
   }
   
@@ -326,7 +326,7 @@ async function runAllTests() {
     }
   } catch (error) {
     logError('Get Available Room', error);
-    console.log('⚠️  Please ensure at least one room is available for the test dates');
+    console.log('  Please ensure at least one room is available for the test dates');
     process.exit(1);
   }
   
@@ -350,7 +350,7 @@ async function runAllTests() {
     logSuccess('Calculate Reservation Price', 
       `Total Price: $${priceInfo.total_amount || priceInfo.total_price}`);
     
-    console.log('\n💰 Price Calculation Details:');
+    console.log('\n Price Calculation Details:');
     console.table({
       'Room ID': testRoomId,
       'Check-in Date': checkInStr,
@@ -392,7 +392,7 @@ async function runAllTests() {
     logSuccess('Create New Reservation', 
       `Reservation ${createdReservationId} created successfully`);
     
-    console.log('\n📅 Created Reservation Details:');
+    console.log('\n Created Reservation Details:');
     console.table({
       'Reservation ID': createdReservationId,
       'Guest ID': testGuestId,
@@ -407,7 +407,7 @@ async function runAllTests() {
     });
   } catch (error) {
     logError('Create New Reservation', error);
-    console.log('⚠️  Trying to find existing reservation for testing...');
+    console.log('  Trying to find existing reservation for testing...');
     
     // Try to get existing reservation for further tests
     try {
@@ -420,7 +420,7 @@ async function runAllTests() {
         testRoomId = reservationsList[0].room_id;
         logSuccess('Using Existing Reservation', `ID: ${createdReservationId}`);
       } else {
-        console.log('❌ Cannot proceed without a reservation.');
+        console.log(' Cannot proceed without a reservation.');
         process.exit(1);
       }
     } catch (fetchError) {
@@ -439,7 +439,7 @@ async function runAllTests() {
     logSuccess('Get Reservation by ID', 
       `Reservation ${reservation.reservation_id} retrieved successfully`);
     
-    console.log('\n🔍 Reservation Details:');
+    console.log('\n Reservation Details:');
     console.table({
       'Reservation ID': reservation.reservation_id,
       'Guest Name': `${reservation.guest_first_name || ''} ${reservation.guest_last_name || ''}`.trim(),
@@ -467,7 +467,7 @@ async function runAllTests() {
       `Found ${guestReservations.length} reservations for guest ${testGuestId}`);
     
     if (guestReservations.length > 0) {
-      console.log('\n📊 Guest Reservation History:');
+      console.log('\n Guest Reservation History:');
       guestReservations.slice(0, 3).forEach(res => {
         console.log(`   - Reservation ${res.reservation_id}: ${res.status}, ${res.check_in_date} to ${res.check_out_date}, $${res.total_amount}`);
       });
@@ -508,7 +508,7 @@ async function runAllTests() {
         `Page ${page}/${totalPages}, Showing ${reservations.length} of ${total} reservations`);
       
       if (reservations.length > 0) {
-        console.log(`   📊 Sample (${test.name}):`);
+        console.log(`    Sample (${test.name}):`);
         reservations.slice(0, 2).forEach(res => {
           console.log(`   - #${res.reservation_id}: ${res.guest_name || 'Guest'} in ${res.room_number}, ${res.status}`);
         });
@@ -535,12 +535,12 @@ async function runAllTests() {
     logSuccess('Update Reservation', 
       `Reservation ${createdReservationId} updated successfully`);
     
-    console.log('\n✏️ Updated Fields:');
+    console.log('\n Updated Fields:');
     console.table(updateData);
     
     // Verify update
     const verifyResult = await tester.getReservationById(createdReservationId);
-    console.log('\n✅ Verified Update:');
+    console.log('\n Verified Update:');
     console.log(`   Guests: ${verifyResult.data.number_of_guests}`);
     console.log(`   Special Requests: ${verifyResult.data.special_requests || 'None'}`);
     console.log(`   Breakfast: ${verifyResult.data.has_breakfast ? 'Yes' : 'No'}`);
@@ -566,7 +566,7 @@ async function runAllTests() {
     logSuccess('Check-In Reservation', 
       `Reservation ${createdReservationId} checked in successfully`);
     
-    console.log('\n🏨 Check-In Details:');
+    console.log('\n Check-In Details:');
     console.table({
       'Reservation ID': createdReservationId,
       'New Status': result.data.status || 'checked-in',
@@ -576,7 +576,7 @@ async function runAllTests() {
     });
   } catch (error) {
     logError('Check-In Reservation', error);
-    console.log('ℹ️  Note: Reservation might already be checked in or in wrong status');
+    console.log('ℹ  Note: Reservation might already be checked in or in wrong status');
   }
   await sleep(500);
 
@@ -599,7 +599,7 @@ async function runAllTests() {
     logSuccess('Check-Out Reservation', 
       `Reservation ${createdReservationId} checked out successfully`);
     
-    console.log('\n🏨 Check-Out Details:');
+    console.log('\n Check-Out Details:');
     console.table({
       'Reservation ID': createdReservationId,
       'New Status': result.data.status || 'checked-out',
@@ -646,7 +646,7 @@ async function runAllTests() {
     logSuccess('Cancel Reservation', 
       `Reservation ${cancelReservationId} cancelled successfully`);
     
-    console.log('\n❌ Cancellation Details:');
+    console.log('\n Cancellation Details:');
     console.table({
       'Reservation ID': cancelReservationId,
       'New Status': cancelResult.data.status || 'cancelled',
@@ -687,7 +687,7 @@ async function runAllTests() {
     logSuccess('Create Flow Test Reservation', `ID: ${flowReservationId}`);
     
     // Test invalid status transitions
-    console.log('\n🔄 Testing Status Transitions:');
+    console.log('\n Testing Status Transitions:');
     
     // Try to check-in a pending reservation (should fail)
     try {
@@ -799,24 +799,24 @@ async function printSummary() {
   const total = testResults.length;
   const successRate = ((passed / total) * 100).toFixed(1);
 
-  console.log(`📊 Total Tests: ${total}`);
-  console.log(`✅ Passed: ${passed}`);
-  console.log(`❌ Failed: ${total - passed}`);
-  console.log(`🎯 Success Rate: ${successRate}%`);
+  console.log(` Total Tests: ${total}`);
+  console.log(` Passed: ${passed}`);
+  console.log(` Failed: ${total - passed}`);
+  console.log(` Success Rate: ${successRate}%`);
 
   // Test coverage summary
-  console.log('\n📋 TEST COVERAGE:');
-  console.log('   ✅ GET /                       - Get all reservations');
-  console.log('   ✅ GET /guest/:guest_id        - Get guest\'s reservations');
-  console.log('   ✅ GET /:id                    - Get reservation by ID');
-  console.log('   ✅ GET /calculate-price        - Calculate reservation price');
-  console.log('   ✅ POST /                      - Create new reservation');
-  console.log('   ✅ PUT /:id                    - Update reservation');
-  console.log('   ✅ PUT /:id/cancel             - Cancel reservation');
-  console.log('   ✅ PUT /:id/check-in           - Check in guest');
-  console.log('   ✅ PUT /:id/check-out          - Check out guest');
-  console.log('   ✅ Status flow validation      - Reservation lifecycle');
-  console.log('   ✅ Error cases                 - Validation and edge cases');
+  console.log('\n TEST COVERAGE:');
+  console.log('    GET /                       - Get all reservations');
+  console.log('    GET /guest/:guest_id        - Get guest\'s reservations');
+  console.log('    GET /:id                    - Get reservation by ID');
+  console.log('    GET /calculate-price        - Calculate reservation price');
+  console.log('    POST /                      - Create new reservation');
+  console.log('    PUT /:id                    - Update reservation');
+  console.log('    PUT /:id/cancel             - Cancel reservation');
+  console.log('    PUT /:id/check-in           - Check in guest');
+  console.log('    PUT /:id/check-out          - Check out guest');
+  console.log('    Status flow validation      - Reservation lifecycle');
+  console.log('    Error cases                 - Validation and edge cases');
 
   // Save test results to file
   const timestamp = new Date().toISOString().replace(/[:.]/g, '-');
@@ -873,21 +873,21 @@ async function printSummary() {
   };
 
   fs.writeFileSync(resultsFile, JSON.stringify(report, null, 2));
-  console.log(`\n📄 Detailed results saved to: ${resultsFile}`);
+  console.log(`\n Detailed results saved to: ${resultsFile}`);
 
   // Recommendations
-  console.log('\n💡 RECOMMENDATIONS:');
+  console.log('\n RECOMMENDATIONS:');
   if (successRate === '100.0') {
-    console.log('🎉 EXCELLENT! All Reservation API endpoints are fully functional.');
+    console.log(' EXCELLENT! All Reservation API endpoints are fully functional.');
     console.log('   Next steps:');
     console.log('   1. Test payment integration with reservations');
     console.log('   2. Test reservation notifications (email/SMS)');
     console.log('   3. Load test with multiple concurrent reservations');
   } else if (successRate >= '80.0') {
-    console.log('👍 GOOD! Most endpoints are working.');
+    console.log(' GOOD! Most endpoints are working.');
     console.log('   Review failed tests - check business logic rules.');
   } else {
-    console.log('⚠️  NEEDS ATTENTION. Several reservation endpoints failed.');
+    console.log('  NEEDS ATTENTION. Several reservation endpoints failed.');
     console.log('   Check:');
     console.log('   1. Database constraints and triggers');
     console.log('   2. Room availability logic');
@@ -895,7 +895,7 @@ async function printSummary() {
     console.log('   4. Check backend/logs for detailed errors');
   }
 
-  console.log('\n🔗 QUICK LINKS:');
+  console.log('\n QUICK LINKS:');
   console.log('   Test Reservation Created:');
   if (createdReservationId) {
     console.log(`     Reservation ID: ${createdReservationId}`);
@@ -909,7 +909,7 @@ async function printSummary() {
 
 // Interactive test menu
 async function showMenu() {
-  console.log('\n📅 RESERVATION API TESTER');
+  console.log('\n RESERVATION API TESTER');
   console.log('=======================');
   console.log('1. Run All Tests');
   console.log('2. Test Specific Endpoint');
@@ -943,7 +943,7 @@ async function showMenu() {
 }
 
 async function testSpecificEndpoint() {
-  console.log('\n🔧 SPECIFIC RESERVATION ENDPOINT TESTING');
+  console.log('\n SPECIFIC RESERVATION ENDPOINT TESTING');
   console.log('=======================================');
   console.log('1. GET /reservations - Get all reservations');
   console.log('2. GET /reservations/guest/:id - Get guest reservations');
@@ -964,9 +964,9 @@ async function testSpecificEndpoint() {
     // Login first
     try {
       await tester.login(ADMIN_CREDENTIALS);
-      console.log('✅ Logged in successfully');
+      console.log(' Logged in successfully');
     } catch (error) {
-      console.log('❌ Login failed:', error.message);
+      console.log(' Login failed:', error.message);
       rl.close();
       return;
     }
@@ -977,11 +977,11 @@ async function testSpecificEndpoint() {
           try {
             const filters = filterInput ? JSON.parse(filterInput) : {};
             const result = await tester.getAllReservations(filters);
-            console.log('✅ GET /reservations - Success:');
+            console.log(' GET /reservations - Success:');
             console.log(`Total: ${result.data.total || result.data.reservations?.length || 0} reservations`);
             console.log(JSON.stringify(result.data, null, 2));
           } catch (error) {
-            console.log('❌ Error:', error.response?.data || error.message);
+            console.log(' Error:', error.response?.data || error.message);
           }
           rl.close();
         });
@@ -991,11 +991,11 @@ async function testSpecificEndpoint() {
         rl.question('Enter Guest ID: ', async (guestId) => {
           try {
             const result = await tester.getGuestReservations(parseInt(guestId));
-            console.log('✅ GET /reservations/guest/:id - Success:');
+            console.log(' GET /reservations/guest/:id - Success:');
             console.log(`Found ${result.data.reservations?.length || 0} reservations`);
             console.log(JSON.stringify(result.data, null, 2));
           } catch (error) {
-            console.log('❌ Error:', error.response?.data || error.message);
+            console.log(' Error:', error.response?.data || error.message);
           }
           rl.close();
         });
@@ -1005,10 +1005,10 @@ async function testSpecificEndpoint() {
         rl.question('Enter Reservation ID: ', async (reservationId) => {
           try {
             const result = await tester.getReservationById(parseInt(reservationId));
-            console.log('✅ GET /reservations/:id - Success:');
+            console.log(' GET /reservations/:id - Success:');
             console.log(JSON.stringify(result.data, null, 2));
           } catch (error) {
-            console.log('❌ Error:', error.response?.data || error.message);
+            console.log(' Error:', error.response?.data || error.message);
           }
           rl.close();
         });
@@ -1029,10 +1029,10 @@ async function testSpecificEndpoint() {
         
         try {
           const result = await tester.calculateReservationPrice(priceData);
-          console.log('✅ GET /reservations/calculate-price - Success:');
+          console.log(' GET /reservations/calculate-price - Success:');
           console.log(JSON.stringify(result.data, null, 2));
         } catch (error) {
-          console.log('❌ Error:', error.response?.data || error.message);
+          console.log(' Error:', error.response?.data || error.message);
         }
         rl.close();
         break;
@@ -1056,21 +1056,21 @@ async function testSpecificEndpoint() {
                   const result = await tester.createReservation(reservationData);
                   const newResId = result.data.reservation_id || result.data.id;
                   
-                  console.log('✅ POST /reservations - Success:');
+                  console.log(' POST /reservations - Success:');
                   console.log(`Created reservation ID: ${newResId}`);
                   console.log(JSON.stringify(result.data, null, 2));
 
                   // 2. ASK TO PAY IMMEDIATELY (The Fix)
-                  console.log('\n--- 💳 Payment Step ---');
+                  console.log('\n---  Payment Step ---');
                   rl.question('Do you want to process payment now? (y/n): ', async (payChoice) => {
                     if (payChoice.toLowerCase() === 'y') {
                       rl.question(`Enter Amount (Total is $${reservationData.total_amount}): `, async (amount) => {
                         try {
                           const payResult = await tester.createPayment(newResId, amount);
-                          console.log('✅ Payment Processed Successfully:');
+                          console.log(' Payment Processed Successfully:');
                           console.log(JSON.stringify(payResult.data || payResult, null, 2));
                         } catch (payError) {
-                          console.log('❌ Payment Error:', payError.response?.data || payError.message);
+                          console.log(' Payment Error:', payError.response?.data || payError.message);
                         }
                         rl.close();
                       });
@@ -1081,7 +1081,7 @@ async function testSpecificEndpoint() {
                   });
 
                 } catch (error) {
-                  console.log('❌ Error:', error.response?.data || error.message);
+                  console.log(' Error:', error.response?.data || error.message);
                   rl.close();
                 }
                 // Note: rl.close() is handled inside the payment callback
@@ -1100,10 +1100,10 @@ async function testSpecificEndpoint() {
           };
           try {
             const result = await tester.updateReservation(parseInt(reservationId), updateData);
-            console.log('✅ PUT /reservations/:id - Success:');
+            console.log(' PUT /reservations/:id - Success:');
             console.log(JSON.stringify(result.data, null, 2));
           } catch (error) {
-            console.log('❌ Error:', error.response?.data || error.message);
+            console.log(' Error:', error.response?.data || error.message);
           }
           rl.close();
         });
@@ -1118,10 +1118,10 @@ async function testSpecificEndpoint() {
                 try {
                   // FIX: Pass the reason to the function
                   const result = await tester.cancelReservation(parseInt(reservationId), reason);
-                  console.log('✅ PUT /reservations/:id/cancel - Success:');
+                  console.log(' PUT /reservations/:id/cancel - Success:');
                   console.log(JSON.stringify(result.data, null, 2));
                 } catch (error) {
-                  console.log('❌ Error:', error.response?.data || error.message);
+                  console.log(' Error:', error.response?.data || error.message);
                 }
               } else {
                 console.log('Cancellation cancelled');
@@ -1136,10 +1136,10 @@ async function testSpecificEndpoint() {
         rl.question('Enter Reservation ID to check-in: ', async (reservationId) => {
           try {
             const result = await tester.checkInReservation(parseInt(reservationId));
-            console.log('✅ PUT /reservations/:id/check-in - Success:');
+            console.log(' PUT /reservations/:id/check-in - Success:');
             console.log(JSON.stringify(result.data, null, 2));
           } catch (error) {
-            console.log('❌ Error:', error.response?.data || error.message);
+            console.log(' Error:', error.response?.data || error.message);
           }
           rl.close();
         });
@@ -1149,10 +1149,10 @@ async function testSpecificEndpoint() {
         rl.question('Enter Reservation ID to check-out: ', async (reservationId) => {
           try {
             const result = await tester.checkOutReservation(parseInt(reservationId));
-            console.log('✅ PUT /reservations/:id/check-out - Success:');
+            console.log(' PUT /reservations/:id/check-out - Success:');
             console.log(JSON.stringify(result.data, null, 2));
           } catch (error) {
-            console.log('❌ Error:', error.response?.data || error.message);
+            console.log(' Error:', error.response?.data || error.message);
           }
           rl.close();
         });
@@ -1169,10 +1169,10 @@ async function testSpecificEndpoint() {
           rl.question('Enter Amount to Pay: ', async (amount) => {
             try {
               const result = await tester.createPayment(id, amount);
-              console.log('✅ Payment Processed Successfully:');
+              console.log(' Payment Processed Successfully:');
               console.log(JSON.stringify(result.data || result, null, 2));
             } catch (error) {
-              console.log('❌ Error:', error.response?.data || error.message);
+              console.log(' Error:', error.response?.data || error.message);
             }
             rl.close();
           });
@@ -1201,7 +1201,7 @@ async function viewPreviousResults() {
   if (files.length === 0) {
     console.log('No previous reservation test results found.');
   } else {
-    console.log('\n📄 PREVIOUS RESERVATION TEST RESULTS:');
+    console.log('\n PREVIOUS RESERVATION TEST RESULTS:');
     files.forEach((file, index) => {
       const filePath = path.join(resultsDir, file);
       const stats = fs.statSync(filePath);
@@ -1225,7 +1225,7 @@ async function viewPreviousResults() {
 }
 
 async function quickHealthCheck() {
-  console.log('\n⚡ QUICK RESERVATION API HEALTH CHECK');
+  console.log('\n QUICK RESERVATION API HEALTH CHECK');
   console.log('====================================');
   
   const tester = new ReservationAPITester(API_BASE_URL);
@@ -1234,25 +1234,25 @@ async function quickHealthCheck() {
     // Test 1: API Health
     console.log('1. Testing API health...');
     const healthResponse = await axios.get(`${API_BASE_URL}/health`);
-    console.log(`   ✅ API Health: ${healthResponse.data.status}`);
+    console.log(`    API Health: ${healthResponse.data.status}`);
     
     // Test 2: Login
     console.log('2. Testing authentication...');
     await tester.login(ADMIN_CREDENTIALS);
-    console.log(`   ✅ Authentication: Success`);
+    console.log(`    Authentication: Success`);
     
     // Test 3: Get all reservations
     console.log('3. Testing reservation endpoint...');
     const reservations = await tester.getAllReservations({ limit: 1 });
     const totalReservations = reservations.data.total || reservations.data.reservations?.length || 0;
-    console.log(`   ✅ Reservation API: Accessible (Found ${totalReservations} reservations)`);
+    console.log(`    Reservation API: Accessible (Found ${totalReservations} reservations)`);
     
     // Test 4: Check response structure
     console.log('4. Checking response structure...');
     if (reservations.data.reservations || reservations.data.data) {
-      console.log(`   ✅ Response structure: Correct`);
+      console.log(`    Response structure: Correct`);
     } else {
-      console.log(`   ⚠️  Response structure: Unexpected format`);
+      console.log(`     Response structure: Unexpected format`);
     }
     
     // Test 5: Check for required fields
@@ -1263,22 +1263,22 @@ async function quickHealthCheck() {
       const missingFields = requiredFields.filter(field => !sampleReservation[field]);
       
       if (missingFields.length === 0) {
-        console.log(`   ✅ Schema: All required fields present`);
+        console.log(`    Schema: All required fields present`);
       } else {
-        console.log(`   ⚠️  Schema: Missing fields: ${missingFields.join(', ')}`);
+        console.log(`     Schema: Missing fields: ${missingFields.join(', ')}`);
       }
     }
     
-    console.log('\n🎉 RESERVATION API IS HEALTHY!');
-    console.log('\n📊 Quick Stats:');
+    console.log('\n RESERVATION API IS HEALTHY!');
+    console.log('\n Quick Stats:');
     console.log(`   - Total Reservations: ${totalReservations}`);
     console.log(`   - API Status: ${healthResponse.data.status}`);
     console.log(`   - Authentication: Working`);
     console.log(`   - Schema: Validated`);
     
   } catch (error) {
-    console.log(`❌ Health check failed: ${error.message}`);
-    console.log('\n🔧 Troubleshooting:');
+    console.log(` Health check failed: ${error.message}`);
+    console.log('\n Troubleshooting:');
     console.log('   1. Is the server running? (npm run dev)');
     console.log('   2. Is the database seeded? (npm run seed)');
     console.log('   3. Check authentication credentials');
@@ -1304,7 +1304,7 @@ if (process.argv.length > 2) {
     quickHealthCheck().then(() => process.exit(0));
   } else if (command === '--help' || command === '-h') {
     console.log(`
-📅 Reservation API Test Script
+ Reservation API Test Script
 ==============================
 Usage:
   node reservation-api-test.js [option]
@@ -1329,7 +1329,7 @@ Examples:
 
 // Handle errors gracefully
 process.on('unhandledRejection', (error) => {
-  console.error('\n❌ Unhandled rejection:', error.message);
+  console.error('\n Unhandled rejection:', error.message);
   if (error.response) {
     console.error('   Response:', error.response.data);
     console.error('   Status:', error.response.status);
@@ -1338,7 +1338,7 @@ process.on('unhandledRejection', (error) => {
 });
 
 process.on('uncaughtException', (error) => {
-  console.error('\n💥 Uncaught exception:', error.message);
+  console.error('\n Uncaught exception:', error.message);
   console.error('   Stack:', error.stack);
   process.exit(1);
 });

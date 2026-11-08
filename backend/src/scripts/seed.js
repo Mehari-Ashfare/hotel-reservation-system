@@ -28,11 +28,11 @@ async function seedDatabase() {
   const client = await pool.connect();
 
   try {
-    console.log('🌱 Starting comprehensive database seeding...');
+    console.log(' Starting comprehensive database seeding...');
     await client.query('BEGIN');
 
     // 0. TRUNCATE & RESET
-    console.log('🧹 Truncating tables and resetting identities...');
+    console.log(' Truncating tables and resetting identities...');
     await client.query(`
       TRUNCATE TABLE
         payments, reservations, audit_logs, guests, rooms, room_types, staff, users, roles
@@ -40,7 +40,7 @@ async function seedDatabase() {
     `);
 
     // 1. ROLES (permissions is TEXT[] NOT NULL in your schema)
-    console.log('🔐 Inserting roles...');
+    console.log(' Inserting roles...');
     const insertRolesQ = `
       INSERT INTO roles (role_name, permissions, created_at)
       VALUES ($1, $2::text[], NOW()),
@@ -57,7 +57,7 @@ async function seedDatabase() {
     rolesRes.rows.forEach(r => { roleMap[r.role_name] = r.role_id; });
 
     // 2. USERS
-    console.log('👥 Inserting users (admin, receptionist, guests)...');
+    console.log(' Inserting users (admin, receptionist, guests)...');
     const salt = await bcrypt.genSalt(10);
     const adminHash = await bcrypt.hash('Admin123!', salt);
     const recepHash = await bcrypt.hash('Recep123!', salt);
@@ -83,7 +83,7 @@ async function seedDatabase() {
     usersRes.rows.forEach(u => { userMap[u.email] = u.user_id; });
 
     // 3. STAFF (link to user accounts)
-    console.log('👔 Inserting staff records...');
+    console.log(' Inserting staff records...');
     const insertStaffQ = `
       INSERT INTO staff (user_id, first_name, last_name, phone, email, address, position, department, hire_date, is_active, created_at)
       VALUES
@@ -97,7 +97,7 @@ async function seedDatabase() {
     const mainRecepStaffId = staffIds[1];
 
     // 4. ROOM_TYPES
-    console.log('📝 Inserting room types...');
+    console.log(' Inserting room types...');
     const insertRoomTypesQ = `
       INSERT INTO room_types (type_name, description, base_price, max_occupancy, amenities, size_sqft, created_at)
       VALUES
@@ -117,7 +117,7 @@ async function seedDatabase() {
     rt.rows.forEach(r => { roomTypeMap[r.type_name] = r.room_type_id; });
 
     // 5. ROOMS
-    console.log('🚪 Inserting rooms...');
+    console.log(' Inserting rooms...');
     // create a small set of rooms across floors, referencing room_type_id
     const roomsToInsert = [
       { number: '101', type: 'Standard Room', floor: 1 },
@@ -146,7 +146,7 @@ async function seedDatabase() {
     const roomIds = roomsRes.rows.map(r => r.room_id);
 
     // 6. GUESTS
-    console.log('🧾 Inserting guests...');
+    console.log(' Inserting guests...');
     // Link guest profiles to the guest user accounts created earlier
     const insertGuestsQ = `
       INSERT INTO guests (user_id, created_by, first_name, last_name, email, phone, address, id_type, id_number, date_of_birth, nationality, guest_type, created_at)
@@ -167,7 +167,7 @@ async function seedDatabase() {
     const guestIds = guestsRes.rows.map(g => g.guest_id);
 
     // 7. RESERVATIONS
-    console.log('📅 Inserting reservations...');
+    console.log(' Inserting reservations...');
     // create 4 reservations using different statuses
     // pick roomIds[0]..roomIds[3] and guestIds[0]..guestIds[3]
     const today = new Date();
@@ -224,7 +224,7 @@ async function seedDatabase() {
     const reservationsRows = reservationsRes.rows;
 
     // 8. PAYMENTS
-    console.log('💳 Inserting payments for non-cancelled reservations...');
+    console.log(' Inserting payments for non-cancelled reservations...');
     for (const r of reservationsRows) {
       if (r.status === 'cancelled') continue;
       // one payment per reservation, mark as completed
@@ -244,7 +244,7 @@ async function seedDatabase() {
     }
 
     // 9. AUDIT LOGS
-    console.log('🧾 Inserting sample audit logs...');
+    console.log(' Inserting sample audit logs...');
     // Example: log creating a guest record
     const someGuest = guestIds[0];
     await client.query(`
@@ -279,7 +279,7 @@ async function seedDatabase() {
     `);
 
     const s = counts.rows[0];
-    console.log('\n🎉 Seeding completed successfully:');
+    console.log('\n Seeding completed successfully:');
     console.log(`Roles: ${s.roles}, Users: ${s.users}, Staff: ${s.staff}, Guests: ${s.guests}`);
     console.log(`Room types: ${s.room_types}, Rooms: ${s.rooms}`);
     console.log(`Reservations: ${s.reservations}, Payments: ${s.payments}, Audit logs: ${s.audit_logs}`);
@@ -287,7 +287,7 @@ async function seedDatabase() {
     process.exit(0);
   } catch (err) {
     await client.query('ROLLBACK').catch(() => {});
-    console.error('❌ Seeding failed:', err);
+    console.error(' Seeding failed:', err);
     process.exit(1);
   } finally {
     client.release();

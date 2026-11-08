@@ -41,7 +41,7 @@ const rl = readline.createInterface({
 const sleep = (ms) => new Promise(resolve => setTimeout(resolve, ms));
 
 const logSuccess = (testName, message = '') => {
-  const log = `✅ ${testName}: ${message}`;
+  const log = ` ${testName}: ${message}`;
   testResults.push({ testName, success: true, message });
   console.log(log);
   return log;
@@ -49,19 +49,19 @@ const logSuccess = (testName, message = '') => {
 
 const logError = (testName, error) => {
   const message = error.response?.data?.message || error.message;
-  const log = `❌ ${testName}: ${message}`;
+  const log = ` ${testName}: ${message}`;
   testResults.push({ testName, success: false, message: error.message });
   console.log(log);
   return log;
 };
 
 const logInfo = (message) => {
-  console.log(`ℹ️  ${message}`);
+  console.log(`ℹ  ${message}`);
 };
 
 const logHeader = (title) => {
   console.log('\n' + '='.repeat(60));
-  console.log(`📋 ${title}`);
+  console.log(` ${title}`);
   console.log('='.repeat(60));
 };
 
@@ -246,7 +246,7 @@ async function runAllTests() {
     await sleep(500);
   } catch (error) {
     logError('Admin Login', error);
-    console.log('\n⚠️  Please ensure:');
+    console.log('\n  Please ensure:');
     console.log('1. Server is running: npm run dev');
     console.log('2. Admin user exists in database');
     console.log('3. Admin credentials:', ADMIN_CREDENTIALS);
@@ -278,7 +278,7 @@ async function runAllTests() {
         `Retrieved ${count} audit logs`);
       
       if (count > 0) {
-        console.log(`   📊 Sample entries (${test.name}):`);
+        console.log(`    Sample entries (${test.name}):`);
         const sample = Array.isArray(logs) ? logs.slice(0, 3) : Object.values(logs).slice(0, 3);
         sample.forEach((log, index) => {
           if (log) {
@@ -352,7 +352,7 @@ async function runAllTests() {
         logSuccess(`Get Audit Logs - ${test.name}`, 
           `Found ${count} logs matching filters`);
         
-        console.log(`   🔍 Filter Summary (${test.name}):`);
+        console.log(`    Filter Summary (${test.name}):`);
         console.log(`      Applied filters: ${JSON.stringify(test.params)}`);
         console.log(`      Results: ${count} logs`);
         
@@ -396,7 +396,7 @@ async function runAllTests() {
           logSuccess(`Get Record Audit Trail - ${test.table}.${test.id}`, 
             `Found ${count} audit entries for ${test.description}`);
           
-          console.log(`   📈 Audit Trail for ${test.table} ID ${test.id}:`);
+          console.log(`    Audit Trail for ${test.table} ID ${test.id}:`);
           if (Array.isArray(trail)) {
             trail.forEach((entry, index) => {
               console.log(`   ${index + 1}. ${entry.action} by User ${entry.user_id || 'System'}`);
@@ -515,7 +515,7 @@ async function runAllTests() {
         }
         
         // Show sample audit log structure
-        console.log('\n   📋 Sample Audit Log Structure:');
+        console.log('\n    Sample Audit Log Structure:');
         console.log(JSON.stringify(sampleLog, null, 2));
         
       } else {
@@ -546,54 +546,54 @@ async function printSummary(tester) {
   const total = testResults.length;
   const successRate = total > 0 ? ((passed / total) * 100).toFixed(1) : '0.0';
 
-  console.log(`📊 Total Tests: ${total}`);
-  console.log(`✅ Passed: ${passed}`);
-  console.log(`❌ Failed: ${total - passed}`);
-  console.log(`🎯 Success Rate: ${successRate}%`);
+  console.log(` Total Tests: ${total}`);
+  console.log(` Passed: ${passed}`);
+  console.log(` Failed: ${total - passed}`);
+  console.log(` Success Rate: ${successRate}%`);
 
   // Test coverage summary
-  console.log('\n📋 TEST COVERAGE:');
-  console.log('   ✅ GET /audit              - Get audit logs with filters');
-  console.log('   ✅ GET /audit/recent       - Get recent activity');
-  console.log('   ✅ GET /audit/record/:table/:id - Get audit trail for record');
-  console.log('   ✅ Access control tests    - Admin-only validation');
-  console.log('   ✅ Edge case handling      - Invalid inputs');
-  console.log('   ✅ Data validation         - Audit log structure');
+  console.log('\n TEST COVERAGE:');
+  console.log('    GET /audit              - Get audit logs with filters');
+  console.log('    GET /audit/recent       - Get recent activity');
+  console.log('    GET /audit/record/:table/:id - Get audit trail for record');
+  console.log('    Access control tests    - Admin-only validation');
+  console.log('    Edge case handling      - Invalid inputs');
+  console.log('    Data validation         - Audit log structure');
 
   // Recommendations
-  console.log('\n💡 RECOMMENDATIONS:');
+  console.log('\n RECOMMENDATIONS:');
   if (successRate === '100.0') {
-    console.log('🎉 EXCELLENT! All Audit Log API endpoints are fully functional.');
+    console.log(' EXCELLENT! All Audit Log API endpoints are fully functional.');
     console.log('   Next steps:');
     console.log('   1. Test with different date ranges');
     console.log('   2. Test with complex filter combinations');
     console.log('   3. Load test with high volume of audit logs');
   } else if (parseFloat(successRate) >= 80.0) {
-    console.log('👍 GOOD! Most endpoints are working.');
+    console.log(' GOOD! Most endpoints are working.');
     console.log('   Review failed tests - check permission setup.');
   } else {
-    console.log('⚠️  NEEDS ATTENTION. Several tests failed.');
+    console.log('  NEEDS ATTENTION. Several tests failed.');
     console.log('   Check:');
     console.log('   1. Admin permissions are correctly set');
     console.log('   2. Audit logging is enabled in controllers');
     console.log('   3. Database has audit_logs table');
   }
 
-  console.log('\n🔗 AUDIT LOG STATISTICS:');
+  console.log('\n AUDIT LOG STATISTICS:');
   try {
     const recent = await tester.getRecentActivity(1);
     const totalLogs = await tester.getAuditLogs({ limit: 1 });
     
-    console.log(`   📈 Recent activity endpoint: ${recent.data?.length ? 'Working' : 'No data'}`);
-    console.log(`   📊 Filter endpoint: ${totalLogs.data ? 'Working' : 'No data'}`);
+    console.log(`    Recent activity endpoint: ${recent.data?.length ? 'Working' : 'No data'}`);
+    console.log(`    Filter endpoint: ${totalLogs.data ? 'Working' : 'No data'}`);
   } catch (error) {
-    console.log(`   ❌ Cannot fetch statistics: ${error.message}`);
+    console.log(`    Cannot fetch statistics: ${error.message}`);
   }
 }
 
 // Interactive test menu
 async function showMenu() {
-  console.log('\n📋 AUDIT LOG API TESTER');
+  console.log('\n AUDIT LOG API TESTER');
   console.log('=====================');
   console.log('1. Run All Tests');
   console.log('2. Test Specific Endpoint');
@@ -607,9 +607,9 @@ async function showMenu() {
     // Login first
     try {
       await tester.login(ADMIN_CREDENTIALS);
-      console.log('✅ Logged in as admin');
+      console.log(' Logged in as admin');
     } catch (error) {
-      console.log('❌ Login failed:', error.message);
+      console.log(' Login failed:', error.message);
       rl.close();
       return;
     }
@@ -639,7 +639,7 @@ async function showMenu() {
 }
 
 async function testSpecificEndpoint(tester) {
-  console.log('\n🔧 SPECIFIC AUDIT ENDPOINT TESTING');
+  console.log('\n SPECIFIC AUDIT ENDPOINT TESTING');
   console.log('==================================');
   console.log('1. GET /audit - Get audit logs with filters');
   console.log('2. GET /audit/recent - Get recent activity');
@@ -660,11 +660,11 @@ async function testSpecificEndpoint(tester) {
           try {
             const filters = filterInput ? JSON.parse(filterInput) : {};
             const result = await tester.getAuditLogs(filters);
-            console.log('✅ GET /audit - Success:');
+            console.log(' GET /audit - Success:');
             console.log(`Found ${Array.isArray(result.data) ? result.data.length : 'some'} logs`);
             console.log(JSON.stringify(result.data, null, 2));
           } catch (error) {
-            console.log('❌ Error:', error.response?.data || error.message);
+            console.log(' Error:', error.response?.data || error.message);
           }
           rl.close();
         });
@@ -675,11 +675,11 @@ async function testSpecificEndpoint(tester) {
           try {
             const limit = limitInput ? parseInt(limitInput) : 100;
             const result = await tester.getRecentActivity(limit);
-            console.log('✅ GET /audit/recent - Success:');
+            console.log(' GET /audit/recent - Success:');
             console.log(`Retrieved ${result.data?.length || 0} recent activities`);
             console.log(JSON.stringify(result.data, null, 2));
           } catch (error) {
-            console.log('❌ Error:', error.response?.data || error.message);
+            console.log(' Error:', error.response?.data || error.message);
           }
           rl.close();
         });
@@ -690,11 +690,11 @@ async function testSpecificEndpoint(tester) {
           rl.question('Enter record ID: ', async (recordId) => {
             try {
               const result = await tester.getRecordAuditTrail(table, parseInt(recordId));
-              console.log('✅ GET /audit/record/:table/:id - Success:');
+              console.log(' GET /audit/record/:table/:id - Success:');
               console.log(`Audit trail for ${table}.${recordId}:`);
               console.log(JSON.stringify(result.data, null, 2));
             } catch (error) {
-              console.log('❌ Error:', error.response?.data || error.message);
+              console.log(' Error:', error.response?.data || error.message);
             }
             rl.close();
           });
@@ -713,7 +713,7 @@ async function testSpecificEndpoint(tester) {
 
 async function viewRecentActivity(tester) {
   try {
-    console.log('\n📈 RECENT AUDIT ACTIVITY');
+    console.log('\n RECENT AUDIT ACTIVITY');
     console.log('========================');
     
     const result = await tester.getRecentActivity(20);
@@ -736,24 +736,24 @@ async function viewRecentActivity(tester) {
         return acc;
       }, {});
       
-      console.log('📊 Summary:');
+      console.log(' Summary:');
       Object.entries(actions).forEach(([action, count]) => {
         console.log(`   ${action}: ${count} entries`);
       });
       
       const tables = [...new Set(logs.map(log => log.table_name))];
-      console.log(`\n📋 Tables with activity: ${tables.join(', ')}`);
+      console.log(`\n Tables with activity: ${tables.join(', ')}`);
     } else {
       console.log('No recent audit activity found.');
     }
   } catch (error) {
-    console.log('❌ Error:', error.response?.data || error.message);
+    console.log(' Error:', error.response?.data || error.message);
   }
   rl.close();
 }
 
 async function quickHealthCheck(tester) {
-  console.log('\n⚡ QUICK AUDIT API HEALTH CHECK');
+  console.log('\n QUICK AUDIT API HEALTH CHECK');
   console.log('===============================');
   
   const checks = [
@@ -792,10 +792,10 @@ async function quickHealthCheck(tester) {
     try {
       const success = await check.test();
       results.push({ check: check.name, success });
-      console.log(`${success ? '✅' : '❌'} ${check.name}`);
+      console.log(`${success ? '' : ''} ${check.name}`);
     } catch (error) {
       results.push({ check: check.name, success: false, error: error.message });
-      console.log(`❌ ${check.name}: ${error.message}`);
+      console.log(` ${check.name}: ${error.message}`);
     }
     await sleep(300);
   }
@@ -803,13 +803,13 @@ async function quickHealthCheck(tester) {
   const passed = results.filter(r => r.success).length;
   const total = results.length;
   
-  console.log('\n📊 Health Check Summary:');
+  console.log('\n Health Check Summary:');
   console.log(`   Passed: ${passed}/${total}`);
   
   if (passed === total) {
-    console.log('🎉 AUDIT API IS HEALTHY!');
+    console.log(' AUDIT API IS HEALTHY!');
   } else {
-    console.log('⚠️  Some checks failed. Review the errors above.');
+    console.log('  Some checks failed. Review the errors above.');
   }
   
   rl.close();
@@ -840,7 +840,7 @@ if (process.argv.length > 2) {
     quickHealthCheck(tester);
   } else if (command === '--help' || command === '-h') {
     console.log(`
-📋 Audit Log API Test Script
+ Audit Log API Test Script
 ==========================
 Usage:
   node audit-api-test.js [option]
@@ -867,7 +867,7 @@ Examples:
 
 // Handle errors gracefully
 process.on('unhandledRejection', (error) => {
-  console.error('\n❌ Unhandled rejection:', error.message);
+  console.error('\n Unhandled rejection:', error.message);
   if (error.response) {
     console.error('   Response:', error.response.data);
     console.error('   Status:', error.response.status);
@@ -876,7 +876,7 @@ process.on('unhandledRejection', (error) => {
 });
 
 process.on('uncaughtException', (error) => {
-  console.error('\n💥 Uncaught exception:', error.message);
+  console.error('\n Uncaught exception:', error.message);
   console.error('   Stack:', error.stack);
   process.exit(1);
 });

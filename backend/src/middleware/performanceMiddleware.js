@@ -57,7 +57,7 @@ class PerformanceMiddleware {
         
         // Log slow responses
         if (duration > 1000) {
-          logger.warn(`⚠️ Slow response detected: ${req.method} ${req.originalUrl}`, {
+          logger.warn(` Slow response detected: ${req.method} ${req.originalUrl}`, {
             duration: `${duration.toFixed(2)}ms`,
             status: res.statusCode,
             userId: req.user?.id || 'anonymous',
@@ -67,7 +67,7 @@ class PerformanceMiddleware {
         
         // Log performance metrics periodically
         if (Math.random() < 0.01) {
-          logger.debug('📊 Performance metrics', {
+          logger.debug(' Performance metrics', {
             endpoint: `${req.method} ${req.originalUrl}`,
             duration: `${duration.toFixed(2)}ms`,
             status: res.statusCode,
@@ -94,7 +94,7 @@ class PerformanceMiddleware {
       const memoryUsage = (memory.heapUsed / memory.heapTotal) * 100;
       
       if (memoryUsage > 80) {
-        logger.warn('⚠️ High memory usage detected', {
+        logger.warn(' High memory usage detected', {
           memoryUsage: `${memoryUsage.toFixed(2)}%`,
           heapUsed: `${(memory.heapUsed / 1024 / 1024).toFixed(2)} MB`,
           heapTotal: `${(memory.heapTotal / 1024 / 1024).toFixed(2)} MB`,
@@ -103,7 +103,7 @@ class PerformanceMiddleware {
       }
       
       if (Math.random() < 0.2) {
-        logger.info('🖥️ System resource metrics', {
+        logger.info(' System resource metrics', {
           memory: {
             usage: `${memoryUsage.toFixed(2)}%`,
             heapUsed: `${(memory.heapUsed / 1024 / 1024).toFixed(2)} MB`,
@@ -143,7 +143,7 @@ class PerformanceMiddleware {
         const db = await import('../config/database.js').then(m => m.default);
         const stats = db.getPoolStats ? db.getPoolStats() : {};
         
-        logger.debug('📊 Database pool metrics', {
+        logger.debug(' Database pool metrics', {
           status: stats.status || 'unknown',
           totalCount: stats.totalCount || 0,
           idleCount: stats.idleCount || 0,
@@ -151,7 +151,7 @@ class PerformanceMiddleware {
         });
         
         if (stats.waitingCount > 10) {
-          logger.warn('⚠️ Database pool saturation detected', {
+          logger.warn(' Database pool saturation detected', {
             waitingCount: stats.waitingCount,
             totalCount: stats.totalCount,
             idleCount: stats.idleCount,

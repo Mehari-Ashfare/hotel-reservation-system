@@ -43,7 +43,7 @@ const rl = readline.createInterface({
 const sleep = (ms) => new Promise(resolve => setTimeout(resolve, ms));
 
 const logSuccess = (testName, message = '') => {
-  const log = `✅ ${testName}: ${message}`;
+  const log = ` ${testName}: ${message}`;
   testResults.push({ testName, success: true, message });
   console.log(log);
   return log;
@@ -51,19 +51,19 @@ const logSuccess = (testName, message = '') => {
 
 const logError = (testName, error) => {
   const message = error.response?.data?.message || error.message;
-  const log = `❌ ${testName}: ${message}`;
+  const log = ` ${testName}: ${message}`;
   testResults.push({ testName, success: false, message: error.message });
   console.log(log);
   return log;
 };
 
 const logInfo = (message) => {
-  console.log(`ℹ️  ${message}`);
+  console.log(`ℹ  ${message}`);
 };
 
 const logHeader = (title) => {
   console.log('\n' + '='.repeat(60));
-  console.log(`🔐 ${title}`);
+  console.log(` ${title}`);
   console.log('='.repeat(60));
 };
 
@@ -210,7 +210,7 @@ async function runAllTests() {
     logSuccess('User Registration', 
       `User ${userData.email} registered successfully`);
     
-    console.log('\n👤 Registered User Details:');
+    console.log('\n Registered User Details:');
     console.table({
       'User ID': testUserId,
       'Email': userData.email,
@@ -229,12 +229,12 @@ async function runAllTests() {
         logSuccess('Using Existing User', `Logged in as ${testUserEmail}`);
       } catch (loginError) {
         logError('User Registration', error);
-        console.log('⚠️  Cannot proceed without a valid user.');
+        console.log('  Cannot proceed without a valid user.');
         process.exit(1);
       }
     } else {
       logError('User Registration', error);
-      console.log('⚠️  Cannot proceed without a valid user.');
+      console.log('  Cannot proceed without a valid user.');
       process.exit(1);
     }
   }
@@ -254,14 +254,14 @@ async function runAllTests() {
     logSuccess('User Login', 
       `Logged in as ${testUserEmail}`);
     
-    console.log('\n🔑 Login Response:');
+    console.log('\n Login Response:');
     console.table({
       'Access Token': authToken ? `${authToken.substring(0, 30)}...` : 'Not received',
       'User Role': loginData?.user?.role || 'N/A'
     });
   } catch (error) {
     logError('User Login', error);
-    console.log('⚠️  Cannot proceed without login.');
+    console.log('  Cannot proceed without login.');
     process.exit(1);
   }
   await sleep(500);
@@ -276,7 +276,7 @@ async function runAllTests() {
     logSuccess('Get Current User', 
       `Retrieved user profile for ${userData.email}`);
     
-    console.log('\n👤 Current User Profile:');
+    console.log('\n Current User Profile:');
     console.table({
       'User ID': userData.user_id || userData.id,
       'Email': userData.email,
@@ -301,7 +301,7 @@ async function runAllTests() {
       logSuccess('Refresh Token', 
         `Token refreshed successfully`);
       
-      console.log('\n🔄 Token Refresh Details:');
+      console.log('\n Token Refresh Details:');
       console.table({
         'Old Token': oldToken.substring(0, 30) + '...',
         'New Token': authToken.substring(0, 30) + '...',
@@ -388,7 +388,7 @@ async function runAllTests() {
     const userResult = await tester.getCurrentUser();
     // Handle nested response again
     const userData = userResult.data?.data?.user || userResult.data?.user || userResult.data;
-    console.log(`   ✅ Confirmed: Logged in as ${userData?.email || testUserEmail}`);
+    console.log(`    Confirmed: Logged in as ${userData?.email || testUserEmail}`);
   } catch (error) {
     logError('Re-Login After Password Change', error);
   }
@@ -432,10 +432,10 @@ async function runAllTests() {
   const total = testResults.length;
   const successRate = total > 0 ? ((passed / total) * 100).toFixed(1) : '0.0';
 
-  console.log(`📊 Total Tests: ${total}`);
-  console.log(`✅ Passed: ${passed}`);
-  console.log(`❌ Failed: ${total - passed}`);
-  console.log(`🎯 Success Rate: ${successRate}%`);
+  console.log(` Total Tests: ${total}`);
+  console.log(` Passed: ${passed}`);
+  console.log(` Failed: ${total - passed}`);
+  console.log(` Success Rate: ${successRate}%`);
 
   // Save test results to file
   const timestamp = new Date().toISOString().replace(/[:.]/g, '-');
@@ -461,14 +461,14 @@ async function runAllTests() {
   };
 
   fs.writeFileSync(resultsFile, JSON.stringify(report, null, 2));
-  console.log(`\n📄 Detailed results saved to: ${resultsFile}`);
+  console.log(`\n Detailed results saved to: ${resultsFile}`);
 
   rl.close();
 }
 
 // Interactive test menu
 async function showMenu() {
-  console.log('\n🔐 AUTHENTICATION API TESTER');
+  console.log('\n AUTHENTICATION API TESTER');
   console.log('============================');
   console.log('1. Run All Tests');
   console.log('2. Test Specific Endpoint');
@@ -502,7 +502,7 @@ async function showMenu() {
 }
 
 async function testSpecificEndpoint() {
-  console.log('\n🔧 SPECIFIC AUTH ENDPOINT TESTING');
+  console.log('\n SPECIFIC AUTH ENDPOINT TESTING');
   console.log('==================================');
   console.log('1. POST /register - User registration');
   console.log('2. POST /login - User login');
@@ -537,10 +537,10 @@ async function testSpecificEndpoint() {
                   };
                   try {
                     const result = await tester.register(userData);
-                    console.log('✅ POST /register - Success:');
+                    console.log(' POST /register - Success:');
                     console.log(JSON.stringify(result, null, 2));
                   } catch (error) {
-                    console.log('❌ Error:', error.response?.data || error.message);
+                    console.log(' Error:', error.response?.data || error.message);
                   }
                   rl.close();
                 });
@@ -555,13 +555,13 @@ async function testSpecificEndpoint() {
           rl.question('Enter password: ', async (password) => {
             try {
               const result = await tester.login({ email, password });
-              console.log('✅ POST /login - Success:');
+              console.log(' POST /login - Success:');
               console.log(`Access Token: ${authToken.substring(0, 30)}...`);
               // Handle nested data safely
               const userEmail = result.data?.data?.user?.email || result.data?.user?.email || result.data?.email;
               console.log(`User: ${userEmail}`);
             } catch (error) {
-              console.log('❌ Error:', error.response?.data || error.message);
+              console.log(' Error:', error.response?.data || error.message);
             }
             rl.close();
           });
@@ -571,15 +571,15 @@ async function testSpecificEndpoint() {
       case '3': // Get current user
         // If we already have a token, ask if they want to use it
         if (authToken) {
-            console.log('ℹ️  Using existing auth token from previous test...');
+            console.log('ℹ  Using existing auth token from previous test...');
             try {
               const result = await tester.getCurrentUser();
-              console.log('✅ GET /me - Success:');
+              console.log(' GET /me - Success:');
               console.log(JSON.stringify(result, null, 2));
               rl.close();
               return;
             } catch (error) {
-              console.log('❌ Existing token failed. Please login again.');
+              console.log(' Existing token failed. Please login again.');
             }
         }
 
@@ -588,10 +588,10 @@ async function testSpecificEndpoint() {
             try {
               await tester.login({ email, password });
               const result = await tester.getCurrentUser();
-              console.log('✅ GET /me - Success:');
+              console.log(' GET /me - Success:');
               console.log(JSON.stringify(result, null, 2));
             } catch (error) {
-              console.log('❌ Error:', error.response?.data || error.message);
+              console.log(' Error:', error.response?.data || error.message);
             }
             rl.close();
           });
@@ -600,7 +600,7 @@ async function testSpecificEndpoint() {
         
       case '4': // Refresh token (FIXED LOGIC)
         if (!authToken) {
-           console.log('⚠️ No token in memory. You need to login first.');
+           console.log(' No token in memory. You need to login first.');
         }
 
         rl.question('Enter email (for login first): ', async (email) => {
@@ -608,15 +608,15 @@ async function testSpecificEndpoint() {
             try {
               await tester.login({ email, password });
               if (!authToken) {
-                console.log('❌ No token returned from login.');
+                console.log(' No token returned from login.');
                 rl.close();
                 return;
               }
               const result = await tester.refreshToken();
-              console.log('✅ POST /refresh - Success:');
+              console.log(' POST /refresh - Success:');
               console.log(`New Token: ${authToken.substring(0, 30)}...`);
             } catch (error) {
-              console.log('❌ Error:', error.response?.data || error.message);
+              console.log(' Error:', error.response?.data || error.message);
             }
             rl.close();
           });
@@ -629,11 +629,11 @@ async function testSpecificEndpoint() {
             try {
               await tester.login({ email, password });
               const result = await tester.logout();
-              console.log('✅ POST /logout - Success:');
+              console.log(' POST /logout - Success:');
               console.log(JSON.stringify(result, null, 2));
               console.log('Token cleared. Should not be able to access protected endpoints.');
             } catch (error) {
-              console.log('❌ Error:', error.response?.data || error.message);
+              console.log(' Error:', error.response?.data || error.message);
             }
             rl.close();
           });
@@ -657,13 +657,13 @@ async function testSpecificEndpoint() {
                   };
                   
                   // Debug: Print payload to verify
-                  console.log('📤 Sending Payload:', JSON.stringify(passwordData, null, 2));
+                  console.log(' Sending Payload:', JSON.stringify(passwordData, null, 2));
 
                   const result = await tester.changePassword(passwordData);
-                  console.log('✅ POST /change-password - Success:');
+                  console.log(' POST /change-password - Success:');
                   console.log(JSON.stringify(result, null, 2));
                 } catch (error) {
-                  console.log('❌ Error:', error.response?.data || error.message);
+                  console.log(' Error:', error.response?.data || error.message);
                 }
                 rl.close();
               });
@@ -698,7 +698,7 @@ async function viewPreviousResults() {
   if (files.length === 0) {
     console.log('No previous auth test results found.');
   } else {
-    console.log('\n📄 PREVIOUS AUTH TEST RESULTS:');
+    console.log('\n PREVIOUS AUTH TEST RESULTS:');
     files.forEach((file, index) => {
       const filePath = path.join(resultsDir, file);
       const data = JSON.parse(fs.readFileSync(filePath, 'utf8'));
@@ -720,7 +720,7 @@ async function viewPreviousResults() {
 }
 
 async function quickHealthCheck() {
-  console.log('\n⚡ QUICK AUTH HEALTH CHECK');
+  console.log('\n QUICK AUTH HEALTH CHECK');
   console.log('==========================');
   
   const tester = new AuthAPITester(API_BASE_URL);
@@ -729,25 +729,25 @@ async function quickHealthCheck() {
     // Test 1: API Health
     console.log('1. Testing API health...');
     const healthResponse = await axios.get(`${API_BASE_URL}/health`);
-    console.log(`   ✅ API Health: ${healthResponse.data.status}`);
+    console.log(`    API Health: ${healthResponse.data.status}`);
     
     // Test 2: Admin Login
     console.log('2. Testing admin authentication...');
     const loginResult = await tester.login(ADMIN_CREDENTIALS);
     const loginData = loginResult.data?.data || loginResult.data;
-    console.log(`   ✅ Admin Login: Success (Role: ${loginData?.user?.role || 'N/A'})`);
+    console.log(`    Admin Login: Success (Role: ${loginData?.user?.role || 'N/A'})`);
     
     // Test 3: Get Current User
     console.log('3. Testing current user endpoint...');
     const userResult = await tester.getCurrentUser();
     const userData = userResult.data?.data?.user || userResult.data?.user || userResult.data;
-    console.log(`   ✅ Current User: ${userData?.email || 'Unknown'}`);
+    console.log(`    Current User: ${userData?.email || 'Unknown'}`);
     
-    console.log('\n🎉 AUTH SYSTEM IS HEALTHY!');
+    console.log('\n AUTH SYSTEM IS HEALTHY!');
     
   } catch (error) {
-    console.log(`❌ Auth health check failed: ${error.message}`);
-    console.log('\n🔧 Troubleshooting:');
+    console.log(` Auth health check failed: ${error.message}`);
+    console.log('\n Troubleshooting:');
     console.log('   1. Is the server running? (npm run dev)');
     console.log('   2. Check admin credentials in database');
     console.log('   3. Verify JWT_SECRET in .env file');
@@ -772,7 +772,7 @@ if (process.argv.length > 2) {
     quickHealthCheck().then(() => process.exit(0));
   } else if (command === '--help' || command === '-h') {
     console.log(`
-🔐 Authentication API Test Script
+ Authentication API Test Script
 ================================
 Usage:
   node AUTH.js [option]
@@ -792,7 +792,7 @@ Options:
 
 // Handle errors gracefully
 process.on('unhandledRejection', (error) => {
-  console.error('\n❌ Unhandled rejection:', error.message);
+  console.error('\n Unhandled rejection:', error.message);
   if (error.response) {
     console.error('   Response:', error.response.data);
     console.error('   Status:', error.response.status);
@@ -801,7 +801,7 @@ process.on('unhandledRejection', (error) => {
 });
 
 process.on('uncaughtException', (error) => {
-  console.error('\n💥 Uncaught exception:', error.message);
+  console.error('\n Uncaught exception:', error.message);
   console.error('   Stack:', error.stack);
   process.exit(1);
 });
@@ -855,7 +855,7 @@ process.on('uncaughtException', (error) => {
 // const sleep = (ms) => new Promise(resolve => setTimeout(resolve, ms));
 
 // const logSuccess = (testName, message = '') => {
-//   const log = `✅ ${testName}: ${message}`;
+//   const log = ` ${testName}: ${message}`;
 //   testResults.push({ testName, success: true, message });
 //   console.log(log);
 //   return log;
@@ -863,19 +863,19 @@ process.on('uncaughtException', (error) => {
 
 // const logError = (testName, error) => {
 //   const message = error.response?.data?.message || error.message;
-//   const log = `❌ ${testName}: ${message}`;
+//   const log = ` ${testName}: ${message}`;
 //   testResults.push({ testName, success: false, message: error.message });
 //   console.log(log);
 //   return log;
 // };
 
 // const logInfo = (message) => {
-//   console.log(`ℹ️  ${message}`);
+//   console.log(`ℹ  ${message}`);
 // };
 
 // const logHeader = (title) => {
 //   console.log('\n' + '='.repeat(60));
-//   console.log(`🔐 ${title}`);
+//   console.log(` ${title}`);
 //   console.log('='.repeat(60));
 // };
 
@@ -1023,7 +1023,7 @@ process.on('uncaughtException', (error) => {
 //     logSuccess('User Registration', 
 //       `User ${userData.email} registered successfully`);
     
-//     console.log('\n👤 Registered User Details:');
+//     console.log('\n Registered User Details:');
 //     console.table({
 //       'User ID': testUserId,
 //       'Email': userData.email,
@@ -1042,12 +1042,12 @@ process.on('uncaughtException', (error) => {
 //         logSuccess('Using Existing User', `Logged in as ${testUserEmail}`);
 //       } catch (loginError) {
 //         logError('User Registration', error);
-//         console.log('⚠️  Cannot proceed without a valid user.');
+//         console.log('  Cannot proceed without a valid user.');
 //         process.exit(1);
 //       }
 //     } else {
 //       logError('User Registration', error);
-//       console.log('⚠️  Cannot proceed without a valid user.');
+//       console.log('  Cannot proceed without a valid user.');
 //       process.exit(1);
 //     }
 //   }
@@ -1067,7 +1067,7 @@ process.on('uncaughtException', (error) => {
 //     logSuccess('User Login', 
 //       `Logged in as ${testUserEmail}`);
     
-//     console.log('\n🔑 Login Response:');
+//     console.log('\n Login Response:');
 //     console.table({
 //       'Access Token': authToken ? `${authToken.substring(0, 30)}...` : 'Not received',
 //       'Refresh Token': refreshToken ? `${refreshToken.substring(0, 30)}...` : 'Not received',
@@ -1077,7 +1077,7 @@ process.on('uncaughtException', (error) => {
 //     });
 //   } catch (error) {
 //     logError('User Login', error);
-//     console.log('⚠️  Cannot proceed without login.');
+//     console.log('  Cannot proceed without login.');
 //     process.exit(1);
 //   }
 //   await sleep(500);
@@ -1092,7 +1092,7 @@ process.on('uncaughtException', (error) => {
 //     logSuccess('Get Current User', 
 //       `Retrieved user profile for ${userData.email}`);
     
-//     console.log('\n👤 Current User Profile:');
+//     console.log('\n Current User Profile:');
 //     console.table({
 //       'User ID': userData.user_id || userData.id,
 //       'Email': userData.email,
@@ -1123,7 +1123,7 @@ process.on('uncaughtException', (error) => {
 //       logSuccess('Refresh Token', 
 //         `Token refreshed successfully`);
       
-//       console.log('\n🔄 Token Refresh Details:');
+//       console.log('\n Token Refresh Details:');
 //       console.table({
 //         'Old Token': oldToken.substring(0, 30) + '...',
 //         'New Token': authToken.substring(0, 30) + '...',
@@ -1132,7 +1132,7 @@ process.on('uncaughtException', (error) => {
 //       });
 //     } catch (error) {
 //       logError('Refresh Token', error);
-//       console.log('   ℹ️  This endpoint might not be implemented yet');
+//       console.log('   ℹ  This endpoint might not be implemented yet');
 //     }
 //   } else {
 //     logInfo('No refresh token available to test');
@@ -1180,7 +1180,7 @@ process.on('uncaughtException', (error) => {
 //     }
 //   } catch (error) {
 //     logError('Change Password', error);
-//     console.log('   ℹ️  This endpoint might require additional setup');
+//     console.log('   ℹ  This endpoint might require additional setup');
 //   }
 //   await sleep(500);
 
@@ -1216,7 +1216,7 @@ process.on('uncaughtException', (error) => {
 //     const userResult = await tester.getCurrentUser();
 //     // Handle nested response again
 //     const userData = userResult.data?.data?.user || userResult.data?.user || userResult.data;
-//     console.log(`   ✅ Confirmed: Logged in as ${userData?.email || testUserEmail}`);
+//     console.log(`    Confirmed: Logged in as ${userData?.email || testUserEmail}`);
 //   } catch (error) {
 //     logError('Re-Login After Password Change', error);
 //   }
@@ -1260,20 +1260,20 @@ process.on('uncaughtException', (error) => {
 //   const total = testResults.length;
 //   const successRate = ((passed / total) * 100).toFixed(1);
 
-//   console.log(`📊 Total Tests: ${total}`);
-//   console.log(`✅ Passed: ${passed}`);
-//   console.log(`❌ Failed: ${total - passed}`);
-//   console.log(`🎯 Success Rate: ${successRate}%`);
+//   console.log(` Total Tests: ${total}`);
+//   console.log(` Passed: ${passed}`);
+//   console.log(` Failed: ${total - passed}`);
+//   console.log(` Success Rate: ${successRate}%`);
 
 //   // Test coverage summary
-//   console.log('\n📋 TEST COVERAGE:');
-//   console.log('   ✅ POST /register       - User registration');
-//   console.log('   ✅ POST /login          - User login');
-//   console.log('   ✅ GET  /me             - Get current user');
-//   console.log('   ✅ POST /refresh        - Refresh token (if available)');
-//   console.log('   ✅ POST /change-password - Change password');
-//   console.log('   ✅ POST /logout         - User logout');
-//   console.log('   ✅ Security tests       - Invalid login attempts');
+//   console.log('\n TEST COVERAGE:');
+//   console.log('    POST /register       - User registration');
+//   console.log('    POST /login          - User login');
+//   console.log('    GET  /me             - Get current user');
+//   console.log('    POST /refresh        - Refresh token (if available)');
+//   console.log('    POST /change-password - Change password');
+//   console.log('    POST /logout         - User logout');
+//   console.log('    Security tests       - Invalid login attempts');
 
 //   // Save test results to file
 //   const timestamp = new Date().toISOString().replace(/[:.]/g, '-');
@@ -1318,24 +1318,24 @@ process.on('uncaughtException', (error) => {
 //   };
 
 //   fs.writeFileSync(resultsFile, JSON.stringify(report, null, 2));
-//   console.log(`\n📄 Detailed results saved to: ${resultsFile}`);
+//   console.log(`\n Detailed results saved to: ${resultsFile}`);
 
 //   // Recommendations
-//   console.log('\n💡 RECOMMENDATIONS:');
+//   console.log('\n RECOMMENDATIONS:');
 //   if (successRate === '100.0') {
-//     console.log('🎉 EXCELLENT! All Auth API endpoints are fully functional.');
+//     console.log(' EXCELLENT! All Auth API endpoints are fully functional.');
 //   } else if (successRate >= '80.0') {
-//     console.log('👍 GOOD! Most endpoints are working.');
+//     console.log(' GOOD! Most endpoints are working.');
 //     console.log('   Review failed tests and check server logs.');
 //   } else {
-//     console.log('⚠️  NEEDS ATTENTION. Several auth endpoints failed.');
+//     console.log('  NEEDS ATTENTION. Several auth endpoints failed.');
 //     console.log('   Check:');
 //     console.log('   1. Database connection and user table');
 //     console.log('   2. JWT secret configuration in .env');
 //     console.log('   3. Password hashing implementation');
 //   }
 
-//   console.log('\n🔗 QUICK LINKS:');
+//   console.log('\n QUICK LINKS:');
 //   console.log('   Test User Created:');
 //   console.log(`     Email: ${testUserEmail}`);
 //   console.log(`     Password: ${currentPassword}`);
@@ -1347,7 +1347,7 @@ process.on('uncaughtException', (error) => {
 
 // // Interactive test menu
 // async function showMenu() {
-//   console.log('\n🔐 AUTHENTICATION API TESTER');
+//   console.log('\n AUTHENTICATION API TESTER');
 //   console.log('============================');
 //   console.log('1. Run All Tests');
 //   console.log('2. Test Specific Endpoint');
@@ -1381,7 +1381,7 @@ process.on('uncaughtException', (error) => {
 // }
 
 // async function testSpecificEndpoint() {
-//   console.log('\n🔧 SPECIFIC AUTH ENDPOINT TESTING');
+//   console.log('\n SPECIFIC AUTH ENDPOINT TESTING');
 //   console.log('==================================');
 //   console.log('1. POST /register - User registration');
 //   console.log('2. POST /login - User login');
@@ -1416,10 +1416,10 @@ process.on('uncaughtException', (error) => {
 //                   };
 //                   try {
 //                     const result = await tester.register(userData);
-//                     console.log('✅ POST /register - Success:');
+//                     console.log(' POST /register - Success:');
 //                     console.log(JSON.stringify(result, null, 2));
 //                   } catch (error) {
-//                     console.log('❌ Error:', error.response?.data || error.message);
+//                     console.log(' Error:', error.response?.data || error.message);
 //                   }
 //                   rl.close();
 //                 });
@@ -1434,13 +1434,13 @@ process.on('uncaughtException', (error) => {
 //           rl.question('Enter password: ', async (password) => {
 //             try {
 //               const result = await tester.login({ email, password });
-//               console.log('✅ POST /login - Success:');
+//               console.log(' POST /login - Success:');
 //               console.log(`Access Token: ${authToken.substring(0, 30)}...`);
 //               // Handle nested data safely
 //               const userEmail = result.data?.data?.user?.email || result.data?.user?.email || result.data?.email;
 //               console.log(`User: ${userEmail}`);
 //             } catch (error) {
-//               console.log('❌ Error:', error.response?.data || error.message);
+//               console.log(' Error:', error.response?.data || error.message);
 //             }
 //             rl.close();
 //           });
@@ -1450,15 +1450,15 @@ process.on('uncaughtException', (error) => {
 //       case '3': // Get current user
 //         // If we already have a token, ask if they want to use it
 //         if (authToken) {
-//             console.log('ℹ️  Using existing auth token from previous test...');
+//             console.log('ℹ  Using existing auth token from previous test...');
 //             try {
 //               const result = await tester.getCurrentUser();
-//               console.log('✅ GET /me - Success:');
+//               console.log(' GET /me - Success:');
 //               console.log(JSON.stringify(result, null, 2));
 //               rl.close();
 //               return;
 //             } catch (error) {
-//               console.log('❌ Existing token failed. Please login again.');
+//               console.log(' Existing token failed. Please login again.');
 //             }
 //         }
 
@@ -1467,10 +1467,10 @@ process.on('uncaughtException', (error) => {
 //             try {
 //               await tester.login({ email, password });
 //               const result = await tester.getCurrentUser();
-//               console.log('✅ GET /me - Success:');
+//               console.log(' GET /me - Success:');
 //               console.log(JSON.stringify(result, null, 2));
 //             } catch (error) {
-//               console.log('❌ Error:', error.response?.data || error.message);
+//               console.log(' Error:', error.response?.data || error.message);
 //             }
 //             rl.close();
 //           });
@@ -1479,7 +1479,7 @@ process.on('uncaughtException', (error) => {
         
 //       case '4': // Refresh token
 //         if (!refreshToken) {
-//            console.log('⚠️ No refresh token in memory. You need to login first.');
+//            console.log(' No refresh token in memory. You need to login first.');
 //         }
 
 //         rl.question('Enter email (for login first): ', async (email) => {
@@ -1487,15 +1487,15 @@ process.on('uncaughtException', (error) => {
 //             try {
 //               await tester.login({ email, password });
 //               if (!refreshToken) {
-//                 console.log('❌ No refresh token returned from login.');
+//                 console.log(' No refresh token returned from login.');
 //                 rl.close();
 //                 return;
 //               }
 //               const result = await tester.refreshToken({ refresh_token: refreshToken });
-//               console.log('✅ POST /refresh - Success:');
+//               console.log(' POST /refresh - Success:');
 //               console.log(`New Token: ${authToken.substring(0, 30)}...`);
 //             } catch (error) {
-//               console.log('❌ Error:', error.response?.data || error.message);
+//               console.log(' Error:', error.response?.data || error.message);
 //             }
 //             rl.close();
 //           });
@@ -1508,11 +1508,11 @@ process.on('uncaughtException', (error) => {
 //             try {
 //               await tester.login({ email, password });
 //               const result = await tester.logout();
-//               console.log('✅ POST /logout - Success:');
+//               console.log(' POST /logout - Success:');
 //               console.log(JSON.stringify(result, null, 2));
 //               console.log('Token cleared. Should not be able to access protected endpoints.');
 //             } catch (error) {
-//               console.log('❌ Error:', error.response?.data || error.message);
+//               console.log(' Error:', error.response?.data || error.message);
 //             }
 //             rl.close();
 //           });
@@ -1536,13 +1536,13 @@ process.on('uncaughtException', (error) => {
 //                   };
                   
 //                   // Debug: Print payload to verify
-//                   console.log('📤 Sending Payload:', JSON.stringify(passwordData, null, 2));
+//                   console.log(' Sending Payload:', JSON.stringify(passwordData, null, 2));
 
 //                   const result = await tester.changePassword(passwordData);
-//                   console.log('✅ POST /change-password - Success:');
+//                   console.log(' POST /change-password - Success:');
 //                   console.log(JSON.stringify(result, null, 2));
 //                 } catch (error) {
-//                   console.log('❌ Error:', error.response?.data || error.message);
+//                   console.log(' Error:', error.response?.data || error.message);
 //                 }
 //                 rl.close();
 //               });
@@ -1577,7 +1577,7 @@ process.on('uncaughtException', (error) => {
 //   if (files.length === 0) {
 //     console.log('No previous auth test results found.');
 //   } else {
-//     console.log('\n📄 PREVIOUS AUTH TEST RESULTS:');
+//     console.log('\n PREVIOUS AUTH TEST RESULTS:');
 //     files.forEach((file, index) => {
 //       const filePath = path.join(resultsDir, file);
 //       const stats = fs.statSync(filePath);
@@ -1601,7 +1601,7 @@ process.on('uncaughtException', (error) => {
 // }
 
 // async function quickHealthCheck() {
-//   console.log('\n⚡ QUICK AUTH HEALTH CHECK');
+//   console.log('\n QUICK AUTH HEALTH CHECK');
 //   console.log('==========================');
   
 //   const tester = new AuthAPITester(API_BASE_URL);
@@ -1610,39 +1610,39 @@ process.on('uncaughtException', (error) => {
 //     // Test 1: API Health
 //     console.log('1. Testing API health...');
 //     const healthResponse = await axios.get(`${API_BASE_URL}/health`);
-//     console.log(`   ✅ API Health: ${healthResponse.data.status}`);
+//     console.log(`    API Health: ${healthResponse.data.status}`);
     
 //     // Test 2: Admin Login
 //     console.log('2. Testing admin authentication...');
 //     const loginResult = await tester.login(ADMIN_CREDENTIALS);
 //     // Handle nested response
 //     const loginData = loginResult.data?.data || loginResult.data;
-//     console.log(`   ✅ Admin Login: Success (Role: ${loginData?.user?.role || 'N/A'})`);
+//     console.log(`    Admin Login: Success (Role: ${loginData?.user?.role || 'N/A'})`);
     
 //     // Test 3: Get Current User
 //     console.log('3. Testing current user endpoint...');
 //     const userResult = await tester.getCurrentUser();
 //     const userData = userResult.data?.data?.user || userResult.data?.user || userResult.data;
-//     console.log(`   ✅ Current User: ${userData?.email || 'Unknown'}`);
+//     console.log(`    Current User: ${userData?.email || 'Unknown'}`);
     
 //     // Test 4: Check for refresh token
 //     console.log('4. Checking refresh token...');
 //     if (refreshToken) {
-//       console.log(`   ✅ Refresh Token: Available (${refreshToken.substring(0, 20)}...)`);
+//       console.log(`    Refresh Token: Available (${refreshToken.substring(0, 20)}...)`);
 //     } else {
-//       console.log(`   ℹ️  Refresh Token: Not available in response`);
+//       console.log(`   ℹ  Refresh Token: Not available in response`);
 //     }
     
-//     console.log('\n🎉 AUTH SYSTEM IS HEALTHY!');
-//     console.log('\n📊 Quick Stats:');
-//     console.log(`   - Admin Access: ✅ Working`);
-//     console.log(`   - Token System: ✅ Working`);
-//     console.log(`   - User Endpoint: ✅ Working`);
+//     console.log('\n AUTH SYSTEM IS HEALTHY!');
+//     console.log('\n Quick Stats:');
+//     console.log(`   - Admin Access:  Working`);
+//     console.log(`   - Token System:  Working`);
+//     console.log(`   - User Endpoint:  Working`);
 //     console.log(`   - API Status: ${healthResponse.data.status}`);
     
 //   } catch (error) {
-//     console.log(`❌ Auth health check failed: ${error.message}`);
-//     console.log('\n🔧 Troubleshooting:');
+//     console.log(` Auth health check failed: ${error.message}`);
+//     console.log('\n Troubleshooting:');
 //     console.log('   1. Is the server running? (npm run dev)');
 //     console.log('   2. Check admin credentials in database');
 //     console.log('   3. Verify JWT_SECRET in .env file');
@@ -1668,7 +1668,7 @@ process.on('uncaughtException', (error) => {
 //     quickHealthCheck().then(() => process.exit(0));
 //   } else if (command === '--help' || command === '-h') {
 //     console.log(`
-// 🔐 Authentication API Test Script
+//  Authentication API Test Script
 // ================================
 // Usage:
 //   node auth-api-test.js [option]
@@ -1693,7 +1693,7 @@ process.on('uncaughtException', (error) => {
 
 // // Handle errors gracefully
 // process.on('unhandledRejection', (error) => {
-//   console.error('\n❌ Unhandled rejection:', error.message);
+//   console.error('\n Unhandled rejection:', error.message);
 //   if (error.response) {
 //     console.error('   Response:', error.response.data);
 //     console.error('   Status:', error.response.status);
@@ -1702,7 +1702,7 @@ process.on('uncaughtException', (error) => {
 // });
 
 // process.on('uncaughtException', (error) => {
-//   console.error('\n💥 Uncaught exception:', error.message);
+//   console.error('\n Uncaught exception:', error.message);
 //   console.error('   Stack:', error.stack);
 //   process.exit(1);
 // });

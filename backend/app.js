@@ -548,17 +548,17 @@ process.on('SIGINT', gracefulShutdown);
 
 // Log startup
 console.log(`
-🏨 Hotel Reservation System Backend v1.1.0
+ Hotel Reservation System Backend v1.1.0
 ============================================
-🚀 Server starting in ${process.env.NODE_ENV || 'development'} mode
-🔐 Authentication: JWT with role-based access
-📝 Audit Logging: ✅ ENABLED
-👥 Staff Management: ✅ ENABLED
-📊 Health Check: /api/health
-📚 API Docs: /api-docs
-🔍 Audit Logs: /api/audit (admin only)
-👤 Staff System: /api/staff
-📈 Dashboard: /api/dashboard
+ Server starting in ${process.env.NODE_ENV || 'development'} mode
+ Authentication: JWT with role-based access
+ Audit Logging:  ENABLED
+ Staff Management:  ENABLED
+ Health Check: /api/health
+ API Docs: /api-docs
+ Audit Logs: /api/audit (admin only)
+ Staff System: /api/staff
+ Dashboard: /api/dashboard
 ============================================
 `);
 
@@ -1114,16 +1114,16 @@ export default app;
 
 // // Log startup
 // console.log(`
-// 🏨 Hotel Reservation System Backend v1.1.0
+//  Hotel Reservation System Backend v1.1.0
 // ============================================
-// 🚀 Server starting in ${process.env.NODE_ENV || 'development'} mode
-// 🔐 Authentication: JWT with role-based access
-// 📝 Audit Logging: ✅ ENABLED
-// 👥 Staff Management: ✅ ENABLED
-// 📊 Health Check: /api/health
-// 📚 API Docs: /api-docs
-// 🔍 Audit Logs: /api/audit (admin only)
-// 👤 Staff System: /api/staff
+//  Server starting in ${process.env.NODE_ENV || 'development'} mode
+//  Authentication: JWT with role-based access
+//  Audit Logging:  ENABLED
+//  Staff Management:  ENABLED
+//  Health Check: /api/health
+//  API Docs: /api-docs
+//  Audit Logs: /api/audit (admin only)
+//  Staff System: /api/staff
 // ============================================
 // `);
 

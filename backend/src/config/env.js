@@ -156,15 +156,15 @@ function initializeEnv() {
     setDefaultEnvVars();
     validateEnvTypes();
     
-    console.log('✅ Environment configuration validated successfully');
+    console.log(' Environment configuration validated successfully');
     // FIX: Added backticks and variable interpolation to logs
-    console.log(`🌍 Environment: ${config.nodeEnv}`);
-    console.log(`🚀 Server Port: ${config.port}`);
-    console.log(`🗄️ Database: ${config.database.host}`);
+    console.log(` Environment: ${config.nodeEnv}`);
+    console.log(` Server Port: ${config.port}`);
+    console.log(` Database: ${config.database.host}`);
     
     return config;
   } catch (error) {
-    console.error('❌ Environment configuration failed:', error.message);
+    console.error(' Environment configuration failed:', error.message);
     process.exit(1);
   }
 }

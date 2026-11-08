@@ -215,7 +215,7 @@ async function runAllTests() {
     logSuccess('Create New Guest', 
       `Guest ${guestData.first_name} ${guestData.last_name} created successfully`);
     
-    console.log('\n👤 Created Guest Details:');
+    console.log('\n Created Guest Details:');
     console.table({
       'Guest ID': createdGuestId,
       'First Name': guestData.first_name,

@@ -46,7 +46,7 @@ const rl = readline.createInterface({
 const sleep = (ms) => new Promise(resolve => setTimeout(resolve, ms));
 
 const logSuccess = (testName, message = '') => {
-  const log = `✅ ${testName}: ${message}`;
+  const log = ` ${testName}: ${message}`;
   testResults.push({ testName, success: true, message });
   console.log(log);
   return log;
@@ -54,19 +54,19 @@ const logSuccess = (testName, message = '') => {
 
 const logError = (testName, error) => {
   const message = error.response?.data?.message || error.message;
-  const log = `❌ ${testName}: ${message}`;
+  const log = ` ${testName}: ${message}`;
   testResults.push({ testName, success: false, message: error.message });
   console.log(log);
   return log;
 };
 
 const logInfo = (message) => {
-  console.log(`ℹ️  ${message}`);
+  console.log(`ℹ  ${message}`);
 };
 
 const logHeader = (title) => {
   console.log('\n' + '='.repeat(60));
-  console.log(`💰 ${title}`);
+  console.log(` ${title}`);
   console.log('='.repeat(60));
 };
 
@@ -230,7 +230,7 @@ async function runAllTests() {
     await sleep(500);
   } catch (error) {
     logError('Admin Login', error);
-    console.log('\n⚠️  Please ensure:');
+    console.log('\n  Please ensure:');
     console.log('1. Server is running: npm run dev');
     console.log('2. Database is seeded with admin user');
     console.log('3. Admin credentials:', ADMIN_CREDENTIALS);
@@ -254,7 +254,7 @@ async function runAllTests() {
     }
   } catch (error) {
     logError('Get Guest', error);
-    console.log('⚠️  Please create at least one guest first');
+    console.log('  Please create at least one guest first');
     process.exit(1);
   }
   await sleep(500);
@@ -276,7 +276,7 @@ async function runAllTests() {
     }
   } catch (error) {
     logError('Get Reservation', error);
-    console.log('⚠️  Will create test payment without reservation link');
+    console.log('  Will create test payment without reservation link');
     testReservationId = null;
   }
   await sleep(500);
@@ -306,7 +306,7 @@ async function runAllTests() {
     logSuccess('Create New Payment', 
       `Payment ${createdPaymentId} created successfully`);
     
-    console.log('\n💳 Created Payment Details:');
+    console.log('\n Created Payment Details:');
     console.table({
       'Payment ID': createdPaymentId,
       'Reservation ID': testReservationId || 'N/A',
@@ -321,7 +321,7 @@ async function runAllTests() {
     });
   } catch (error) {
     logError('Create New Payment', error);
-    console.log('⚠️  Trying to find existing payment for testing...');
+    console.log('  Trying to find existing payment for testing...');
     
     // Try to get existing payment for further tests
     try {
@@ -334,7 +334,7 @@ async function runAllTests() {
         testGuestId = paymentsList[0].guest_id;
         logSuccess('Using Existing Payment', `ID: ${createdPaymentId}`);
       } else {
-        console.log('❌ Cannot proceed without a payment.');
+        console.log(' Cannot proceed without a payment.');
         process.exit(1);
       }
     } catch (fetchError) {
@@ -353,7 +353,7 @@ async function runAllTests() {
     logSuccess('Get Payment by ID', 
       `Payment ${payment.payment_id} retrieved successfully`);
     
-    console.log('\n🔍 Payment Details:');
+    console.log('\n Payment Details:');
     console.table({
       'Payment ID': payment.payment_id,
       'Reservation ID': payment.reservation_id || 'N/A',
@@ -408,7 +408,7 @@ async function runAllTests() {
     logSuccess('Process Payment', 
       `Payment ${createdPaymentId} processed successfully`);
     
-    console.log('\n🔄 Processing Details:');
+    console.log('\n Processing Details:');
     console.table({
       'Payment ID': createdPaymentId,
       'New Status': result.data.status || 'completed',
@@ -434,7 +434,7 @@ async function runAllTests() {
         `Found ${reservationPayments.length} payments for reservation ${testReservationId}`);
       
       if (reservationPayments.length > 0) {
-        console.log('\n📊 Reservation Payment History:');
+        console.log('\n Reservation Payment History:');
         reservationPayments.slice(0, 3).forEach(payment => {
           console.log(`   - Payment ${payment.payment_id}: ${formatCurrency(payment.amount)} (${payment.status})`);
         });
@@ -452,7 +452,7 @@ async function runAllTests() {
           return sum + (payment.status === 'pending' ? payment.amount : 0);
         }, 0);
         
-        console.log('\n💰 Payment Summary:');
+        console.log('\n Payment Summary:');
         console.log(`   Total Paid: ${formatCurrency(totalPaid)}`);
         console.log(`   Total Pending: ${formatCurrency(totalPending)}`);
         console.log(`   Balance: ${formatCurrency(totalPending)}`);
@@ -494,7 +494,7 @@ async function runAllTests() {
         `Page ${page}/${totalPages}, Showing ${payments.length} of ${total} payments`);
       
       if (payments.length > 0) {
-        console.log(`   📊 Sample (${test.name}):`);
+        console.log(`    Sample (${test.name}):`);
         payments.slice(0, 2).forEach(payment => {
           console.log(`   - #${payment.payment_id}: ${formatCurrency(payment.amount)} (${payment.status}) via ${payment.payment_method}`);
         });
@@ -555,7 +555,7 @@ async function runAllTests() {
       logSuccess('Process Refund', 
         `Payment ${refundPaymentId} refunded successfully`);
       
-      console.log('\n↩️ Refund Details:');
+      console.log('\n Refund Details:');
       console.table({
         'Original Payment ID': refundPaymentId,
         'Refund Amount': formatCurrency(refundData.refund_amount),
@@ -590,11 +590,11 @@ async function runAllTests() {
       logSuccess(`Financial Report - ${test.name}`, 
         `Report generated successfully`);
       
-      console.log(`\n📈 ${test.name.toUpperCase()} FINANCIAL REPORT:`);
+      console.log(`\n ${test.name.toUpperCase()} FINANCIAL REPORT:`);
       
       // Display summary statistics
       if (report.summary) {
-        console.log('   📊 Summary:');
+        console.log('    Summary:');
         console.table({
           'Total Revenue': formatCurrency(report.summary.total_revenue || 0),
           'Total Payments': report.summary.total_payments || 0,
@@ -607,7 +607,7 @@ async function runAllTests() {
       
       // Display by payment method if available
       if (report.by_payment_method && Object.keys(report.by_payment_method).length > 0) {
-        console.log('\n   💳 By Payment Method:');
+        console.log('\n    By Payment Method:');
         Object.entries(report.by_payment_method).forEach(([method, stats]) => {
           console.log(`     - ${method}: ${formatCurrency(stats.amount || stats)} (${stats.count || 1} payments)`);
         });
@@ -615,7 +615,7 @@ async function runAllTests() {
       
       // Display by status if available
       if (report.by_status && Object.keys(report.by_status).length > 0) {
-        console.log('\n   📋 By Payment Status:');
+        console.log('\n    By Payment Status:');
         Object.entries(report.by_status).forEach(([status, count]) => {
           console.log(`     - ${status}: ${count} payments`);
         });
@@ -623,7 +623,7 @@ async function runAllTests() {
       
       // Display top transactions if available
       if (report.top_transactions && report.top_transactions.length > 0) {
-        console.log('\n   🏆 Top Transactions:');
+        console.log('\n    Top Transactions:');
         report.top_transactions.slice(0, 3).forEach(txn => {
           console.log(`     - ${txn.payment_id}: ${formatCurrency(txn.amount)} (${txn.payment_method})`);
         });
@@ -741,7 +741,7 @@ async function runAllTests() {
     flowPaymentId = result.data.payment_id || result.data.id;
     logSuccess('Create Flow Test Payment', `ID: ${flowPaymentId}, Status: pending`);
     
-    console.log('\n🔄 Testing Payment Status Flow:');
+    console.log('\n Testing Payment Status Flow:');
     
     // Try to refund a pending payment (should fail)
     try {
@@ -764,7 +764,7 @@ async function runAllTests() {
     
     // Verify status
     const verifyPayment = await tester.getPaymentById(flowPaymentId);
-    console.log(`   ✅ Verified: Status is "${verifyPayment.data.status}"`);
+    console.log(`    Verified: Status is "${verifyPayment.data.status}"`);
     
     // Now refund should work
     const refundResult = await tester.refundPayment(flowPaymentId, {
@@ -816,7 +816,7 @@ async function runAllTests() {
     logSuccess('Partial Refund Test', 
       `Partial refund of ${formatCurrency(150.00)} processed successfully`);
     
-    console.log('\n💸 Partial Refund Details:');
+    console.log('\n Partial Refund Details:');
     console.log(`   Original Amount: ${formatCurrency(300.00)}`);
     console.log(`   Refund Amount: ${formatCurrency(150.00)}`);
     console.log(`   Remaining Balance: ${formatCurrency(150.00)}`);
@@ -877,26 +877,26 @@ async function printSummary() {
   const total = testResults.length;
   const successRate = ((passed / total) * 100).toFixed(1);
 
-  console.log(`📊 Total Tests: ${total}`);
-  console.log(`✅ Passed: ${passed}`);
-  console.log(`❌ Failed: ${total - passed}`);
-  console.log(`🎯 Success Rate: ${successRate}%`);
+  console.log(` Total Tests: ${total}`);
+  console.log(` Passed: ${passed}`);
+  console.log(` Failed: ${total - passed}`);
+  console.log(` Success Rate: ${successRate}%`);
 
   // Test coverage summary
-  console.log('\n📋 TEST COVERAGE:');
-  console.log('   ✅ GET /                               - Get all payments');
-  console.log('   ✅ GET /reservation/:reservation_id    - Get reservation payments');
-  console.log('   ✅ GET /financial-report               - Get financial report');
-  console.log('   ✅ GET /:id                            - Get payment by ID');
-  console.log('   ✅ POST /                              - Create new payment');
-  console.log('   ✅ PUT /:id/process                    - Process payment');
-  console.log('   ✅ PUT /:id/refund                     - Process refund');
-  console.log('   ✅ Status flow validation              - Payment lifecycle');
-  console.log('   ✅ Error cases                         - Validation and edge cases');
-  console.log('   ✅ Advanced scenarios                  - Partial refunds, reports');
+  console.log('\n TEST COVERAGE:');
+  console.log('    GET /                               - Get all payments');
+  console.log('    GET /reservation/:reservation_id    - Get reservation payments');
+  console.log('    GET /financial-report               - Get financial report');
+  console.log('    GET /:id                            - Get payment by ID');
+  console.log('    POST /                              - Create new payment');
+  console.log('    PUT /:id/process                    - Process payment');
+  console.log('    PUT /:id/refund                     - Process refund');
+  console.log('    Status flow validation              - Payment lifecycle');
+  console.log('    Error cases                         - Validation and edge cases');
+  console.log('    Advanced scenarios                  - Partial refunds, reports');
 
   // Payment statistics
-  console.log('\n💰 PAYMENT STATISTICS:');
+  console.log('\n PAYMENT STATISTICS:');
   console.log(`   Test Payment ID: ${createdPaymentId}`);
   console.log(`   Test Reservation ID: ${testReservationId || 'N/A'}`);
   console.log(`   Test Guest ID: ${testGuestId}`);
@@ -950,22 +950,22 @@ async function printSummary() {
   };
 
   fs.writeFileSync(resultsFile, JSON.stringify(report, null, 2));
-  console.log(`\n📄 Detailed results saved to: ${resultsFile}`);
+  console.log(`\n Detailed results saved to: ${resultsFile}`);
 
   // Recommendations
-  console.log('\n💡 RECOMMENDATIONS:');
+  console.log('\n RECOMMENDATIONS:');
   if (successRate === '100.0') {
-    console.log('🎉 EXCELLENT! All Payment API endpoints are fully functional.');
+    console.log(' EXCELLENT! All Payment API endpoints are fully functional.');
     console.log('   Next steps:');
     console.log('   1. Test payment gateway integration (Stripe, PayPal)');
     console.log('   2. Test email notifications for payments');
     console.log('   3. Load test with multiple concurrent payments');
     console.log('   4. Test payment reconciliation reports');
   } else if (successRate >= '80.0') {
-    console.log('👍 GOOD! Most endpoints are working.');
+    console.log(' GOOD! Most endpoints are working.');
     console.log('   Review failed tests - check payment gateway configuration.');
   } else {
-    console.log('⚠️  NEEDS ATTENTION. Several payment endpoints failed.');
+    console.log('  NEEDS ATTENTION. Several payment endpoints failed.');
     console.log('   Check:');
     console.log('   1. Database payment table structure');
     console.log('   2. Payment gateway configuration (if used)');
@@ -973,7 +973,7 @@ async function printSummary() {
     console.log('   4. Check backend/logs for detailed errors');
   }
 
-  console.log('\n🔗 QUICK LINKS:');
+  console.log('\n QUICK LINKS:');
   console.log('   Test Payment Created:');
   if (createdPaymentId) {
     console.log(`     Payment ID: ${createdPaymentId}`);
@@ -986,7 +986,7 @@ async function printSummary() {
 
 // Interactive test menu
 async function showMenu() {
-  console.log('\n💰 PAYMENT API TESTER');
+  console.log('\n PAYMENT API TESTER');
   console.log('====================');
   console.log('1. Run All Tests');
   console.log('2. Test Specific Endpoint');
@@ -1020,7 +1020,7 @@ async function showMenu() {
 }
 
 async function testSpecificEndpoint() {
-  console.log('\n🔧 SPECIFIC PAYMENT ENDPOINT TESTING');
+  console.log('\n SPECIFIC PAYMENT ENDPOINT TESTING');
   console.log('====================================');
   console.log('1. GET /payments - Get all payments');
   console.log('2. GET /payments/reservation/:id - Get reservation payments');
@@ -1037,9 +1037,9 @@ async function testSpecificEndpoint() {
     // Login first
     try {
       await tester.login(ADMIN_CREDENTIALS);
-      console.log('✅ Logged in successfully');
+      console.log(' Logged in successfully');
     } catch (error) {
-      console.log('❌ Login failed:', error.message);
+      console.log(' Login failed:', error.message);
       rl.close();
       return;
     }
@@ -1050,11 +1050,11 @@ async function testSpecificEndpoint() {
           try {
             const filters = filterInput ? JSON.parse(filterInput) : {};
             const result = await tester.getAllPayments(filters);
-            console.log('✅ GET /payments - Success:');
+            console.log(' GET /payments - Success:');
             console.log(`Total: ${result.data.total || result.data.payments?.length || 0} payments`);
             console.log(JSON.stringify(result.data, null, 2));
           } catch (error) {
-            console.log('❌ Error:', error.response?.data || error.message);
+            console.log(' Error:', error.response?.data || error.message);
           }
           rl.close();
         });
@@ -1064,11 +1064,11 @@ async function testSpecificEndpoint() {
         rl.question('Enter Reservation ID: ', async (reservationId) => {
           try {
             const result = await tester.getReservationPayments(parseInt(reservationId));
-            console.log('✅ GET /payments/reservation/:id - Success:');
+            console.log(' GET /payments/reservation/:id - Success:');
             console.log(`Found ${result.data.payments?.length || 0} payments`);
             console.log(JSON.stringify(result.data, null, 2));
           } catch (error) {
-            console.log('❌ Error:', error.response?.data || error.message);
+            console.log(' Error:', error.response?.data || error.message);
           }
           rl.close();
         });
@@ -1082,12 +1082,12 @@ async function testSpecificEndpoint() {
           // Helper function to send request
           const sendReportRequest = async (p) => {
             try {
-              console.log(`ℹ️  Sending Date Range: ${p.start_date} to ${p.end_date}`);
+              console.log(`ℹ  Sending Date Range: ${p.start_date} to ${p.end_date}`);
               const result = await tester.getFinancialReport(p);
-              console.log('✅ GET /financial-report - Success:');
+              console.log(' GET /financial-report - Success:');
               console.log(JSON.stringify(result.data, null, 2));
             } catch (error) {
-              console.log('❌ Error:', error.response?.data || error.message);
+              console.log(' Error:', error.response?.data || error.message);
             }
             rl.close();
           };
@@ -1161,10 +1161,10 @@ async function testSpecificEndpoint() {
         rl.question('Enter Payment ID: ', async (paymentId) => {
           try {
             const result = await tester.getPaymentById(parseInt(paymentId));
-            console.log('✅ GET /payments/:id - Success:');
+            console.log(' GET /payments/:id - Success:');
             console.log(JSON.stringify(result.data, null, 2));
           } catch (error) {
-            console.log('❌ Error:', error.response?.data || error.message);
+            console.log(' Error:', error.response?.data || error.message);
           }
           rl.close();
         });
@@ -1190,7 +1190,7 @@ async function testSpecificEndpoint() {
 
                   try {
                     const result = await tester.createPayment(paymentData);
-                    console.log('✅ POST /payments - Success:');
+                    console.log(' POST /payments - Success:');
                     console.log(`Created payment ID: ${result.data.payment_id || result.data.id}`);
                     
                     // Visual confirmation of the link
@@ -1198,7 +1198,7 @@ async function testSpecificEndpoint() {
                     
                     console.log(JSON.stringify(result.data, null, 2));
                   } catch (error) {
-                    console.log('❌ Error:', error.response?.data || error.message);
+                    console.log(' Error:', error.response?.data || error.message);
                   }
                   rl.close();
                 });
@@ -1216,10 +1216,10 @@ async function testSpecificEndpoint() {
           };
           try {
             const result = await tester.processPayment(parseInt(paymentId), processData);
-            console.log('✅ PUT /payments/:id/process - Success:');
+            console.log(' PUT /payments/:id/process - Success:');
             console.log(JSON.stringify(result.data, null, 2));
           } catch (error) {
-            console.log('❌ Error:', error.response?.data || error.message);
+            console.log(' Error:', error.response?.data || error.message);
           }
           rl.close();
         });
@@ -1237,10 +1237,10 @@ async function testSpecificEndpoint() {
               
               try {
                 const result = await tester.refundPayment(parseInt(paymentId), refundData);
-                console.log('✅ PUT /payments/:id/refund - Success:');
+                console.log(' PUT /payments/:id/refund - Success:');
                 console.log(JSON.stringify(result.data, null, 2));
               } catch (error) {
-                console.log('❌ Error:', error.response?.data || error.message);
+                console.log(' Error:', error.response?.data || error.message);
               }
               rl.close();
             });
@@ -1274,7 +1274,7 @@ async function viewPreviousResults() {
   if (files.length === 0) {
     console.log('No previous payment test results found.');
   } else {
-    console.log('\n📄 PREVIOUS PAYMENT TEST RESULTS:');
+    console.log('\n PREVIOUS PAYMENT TEST RESULTS:');
     files.forEach((file, index) => {
       const filePath = path.join(resultsDir, file);
       const stats = fs.statSync(filePath);
@@ -1298,7 +1298,7 @@ async function viewPreviousResults() {
 }
 
 async function quickHealthCheck() {
-  console.log('\n⚡ QUICK PAYMENT API HEALTH CHECK');
+  console.log('\n QUICK PAYMENT API HEALTH CHECK');
   console.log('=================================');
   
   const tester = new PaymentAPITester(API_BASE_URL);
@@ -1307,25 +1307,25 @@ async function quickHealthCheck() {
     // Test 1: API Health
     console.log('1. Testing API health...');
     const healthResponse = await axios.get(`${API_BASE_URL}/health`);
-    console.log(`   ✅ API Health: ${healthResponse.data.status}`);
+    console.log(`    API Health: ${healthResponse.data.status}`);
     
     // Test 2: Login
     console.log('2. Testing authentication...');
     await tester.login(ADMIN_CREDENTIALS);
-    console.log(`   ✅ Authentication: Success`);
+    console.log(`    Authentication: Success`);
     
     // Test 3: Get all payments
     console.log('3. Testing payment endpoint...');
     const payments = await tester.getAllPayments({ limit: 1 });
     const totalPayments = payments.data.total || payments.data.payments?.length || 0;
-    console.log(`   ✅ Payment API: Accessible (Found ${totalPayments} payments)`);
+    console.log(`    Payment API: Accessible (Found ${totalPayments} payments)`);
     
     // Test 4: Check response structure
     console.log('4. Checking response structure...');
     if (payments.data.payments || payments.data.data) {
-      console.log(`   ✅ Response structure: Correct`);
+      console.log(`    Response structure: Correct`);
     } else {
-      console.log(`   ⚠️  Response structure: Unexpected format`);
+      console.log(`     Response structure: Unexpected format`);
     }
     
     // Test 5: Check for required fields
@@ -1336,22 +1336,22 @@ async function quickHealthCheck() {
       const missingFields = requiredFields.filter(field => !samplePayment[field]);
       
       if (missingFields.length === 0) {
-        console.log(`   ✅ Schema: All required fields present`);
+        console.log(`    Schema: All required fields present`);
       } else {
-        console.log(`   ⚠️  Schema: Missing fields: ${missingFields.join(', ')}`);
+        console.log(`     Schema: Missing fields: ${missingFields.join(', ')}`);
       }
     }
     
-    console.log('\n🎉 PAYMENT API IS HEALTHY!');
-    console.log('\n📊 Quick Stats:');
+    console.log('\n PAYMENT API IS HEALTHY!');
+    console.log('\n Quick Stats:');
     console.log(`   - Total Payments: ${totalPayments}`);
     console.log(`   - API Status: ${healthResponse.data.status}`);
     console.log(`   - Authentication: Working`);
     console.log(`   - Schema: Validated`);
     
   } catch (error) {
-    console.log(`❌ Health check failed: ${error.message}`);
-    console.log('\n🔧 Troubleshooting:');
+    console.log(` Health check failed: ${error.message}`);
+    console.log('\n Troubleshooting:');
     console.log('   1. Is the server running? (npm run dev)');
     console.log('   2. Is the database seeded? (npm run seed)');
     console.log('   3. Check authentication credentials');
@@ -1377,7 +1377,7 @@ if (process.argv.length > 2) {
     quickHealthCheck().then(() => process.exit(0));
   } else if (command === '--help' || command === '-h') {
     console.log(`
-💰 Payment API Test Script
+ Payment API Test Script
 ==========================
 Usage:
   node payment-api-test.js [option]
@@ -1402,7 +1402,7 @@ Examples:
 
 // Handle errors gracefully
 process.on('unhandledRejection', (error) => {
-  console.error('\n❌ Unhandled rejection:', error.message);
+  console.error('\n Unhandled rejection:', error.message);
   if (error.response) {
     console.error('   Response:', error.response.data);
     console.error('   Status:', error.response.status);
@@ -1411,7 +1411,7 @@ process.on('unhandledRejection', (error) => {
 });
 
 process.on('uncaughtException', (error) => {
-  console.error('\n💥 Uncaught exception:', error.message);
+  console.error('\n Uncaught exception:', error.message);
   console.error('   Stack:', error.stack);
   process.exit(1);
 });

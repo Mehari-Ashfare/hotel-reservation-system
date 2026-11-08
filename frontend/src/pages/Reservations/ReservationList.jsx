@@ -211,7 +211,7 @@ const ReservationList = () => {
                         {/* Refund Badge (Only if a refund exists) */}
                         {refundedAmount > 0 && (
                             <span style={{ fontSize: '0.7rem', color: '#ff9800', fontWeight: 'bold' }}>
-                                ↩ Refunded: ETB {refundedAmount}
+                                 Refunded: ETB {refundedAmount}
                             </span>
                         )}
                        </div>

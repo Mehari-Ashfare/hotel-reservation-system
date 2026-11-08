@@ -16,8 +16,8 @@ dotenv.config();
 const poolConfig = {
   host: process.env.DB_HOST || 'localhost',
   port: parseInt(process.env.DB_PORT) || 5432,
-  database: process.env.DB_NAME || 'hotel_db', // Check this name matches your .env
-  user: process.env.DB_USER || 'postgres',
+  database: process.env.DB_NAME || 'hotel_reservation', // Check this name matches your .env
+  user: process.env.DB_USER || 'hotel_app',
   password: process.env.DB_PASSWORD || 'password',
   max: parseInt(process.env.DB_POOL_MAX) || 20, 
   min: parseInt(process.env.DB_POOL_MIN) || 2,  
@@ -40,12 +40,12 @@ export const initPool = () => {
     // Test the connection
     pool.on('connect', () => {
       isConnected = true;
-      logger.info('✅ PostgreSQL pool connected');
+      logger.info(' PostgreSQL pool connected');
     });
     
     // Handle connection errors
     pool.on('error', (err) => {
-      logger.error('❌ PostgreSQL pool error', { error: err.message });
+      logger.error(' PostgreSQL pool error', { error: err.message });
       isConnected = false;
       
       // Attempt to reconnect after delay
@@ -92,14 +92,14 @@ export const testConnection = async () => {
     const result = await client.query('SELECT NOW() as time, version() as version');
     client.release();
     
-    logger.info('✅ PostgreSQL connection test successful', {
+    logger.info(' PostgreSQL connection test successful', {
       time: result.rows[0].time,
       version: result.rows[0].version.split(' ').slice(0, 4).join(' '),
     });
     
     return true;
   } catch (error) {
-    logger.error('❌ PostgreSQL connection test failed', { error: error.message });
+    logger.error(' PostgreSQL connection test failed', { error: error.message });
     return false;
   }
 };
@@ -132,7 +132,7 @@ export const query = async (text, params = []) => {
     
     // Log slow queries
     if (duration > 1000) { 
-      logger.warn('⚠️ Slow query detected', {
+      logger.warn(' Slow query detected', {
         query: text,
         duration: `${duration}ms`,
         rows: result.rowCount,
@@ -141,7 +141,7 @@ export const query = async (text, params = []) => {
     
     // Log all queries in development
     if (process.env.NODE_ENV === 'development') {
-      logger.debug('📦 Database query executed', {
+      logger.debug(' Database query executed', {
         query: text.substring(0, 200) + (text.length > 200 ? '...' : ''),
         params: params.slice(0, 5), 
         duration: `${duration}ms`,
@@ -152,7 +152,7 @@ export const query = async (text, params = []) => {
     return result;
   } catch (error) {
     const duration = Date.now() - start;
-    logger.error('❌ Database query failed', {
+    logger.error(' Database query failed', {
       query: text,
       params,
       duration: `${duration}ms`,
@@ -177,7 +177,7 @@ export const transaction = async (callback) => {
     return result;
   } catch (error) {
     await client.query('ROLLBACK');
-    logger.error('❌ Transaction failed', { error: error.message });
+    logger.error(' Transaction failed', { error: error.message });
     throw error;
   } finally {
     client.release();
@@ -304,12 +304,12 @@ export default {
 //     // Test the connection
 //     pool.on('connect', () => {
 //       isConnected = true;
-//       logger.info('✅ PostgreSQL pool connected');
+//       logger.info(' PostgreSQL pool connected');
 //     });
     
 //     // Handle connection errors
 //     pool.on('error', (err) => {
-//       logger.error('❌ PostgreSQL pool error', { error: err.message });
+//       logger.error(' PostgreSQL pool error', { error: err.message });
 //       isConnected = false;
       
 //       // Attempt to reconnect after delay
@@ -356,14 +356,14 @@ export default {
 //     const result = await client.query('SELECT NOW() as time, version() as version');
 //     client.release();
     
-//     logger.info('✅ PostgreSQL connection test successful', {
+//     logger.info(' PostgreSQL connection test successful', {
 //       time: result.rows[0].time,
 //       version: result.rows[0].version.split(' ').slice(0, 4).join(' '),
 //     });
     
 //     return true;
 //   } catch (error) {
-//     logger.error('❌ PostgreSQL connection test failed', { error: error.message });
+//     logger.error(' PostgreSQL connection test failed', { error: error.message });
 //     return false;
 //   }
 // };
@@ -397,7 +397,7 @@ export default {
 //     // Log slow queries
 //     if (duration > 1000) { // More than 1 second
 //       // Fix: Added backticks
-//       logger.warn('⚠️ Slow query detected', {
+//       logger.warn(' Slow query detected', {
 //         query: text,
 //         duration: `${duration}ms`,
 //         rows: result.rowCount,
@@ -407,7 +407,7 @@ export default {
 //     // Log all queries in development
 //     if (process.env.NODE_ENV === 'development') {
 //       // Fix: Added backticks
-//       logger.debug('📦 Database query executed', {
+//       logger.debug(' Database query executed', {
 //         query: text.substring(0, 200) + (text.length > 200 ? '...' : ''),
 //         params: params.slice(0, 5), // Limit params in log
 //         duration: `${duration}ms`,
@@ -419,7 +419,7 @@ export default {
 //   } catch (error) {
 //     const duration = Date.now() - start;
 //     // Fix: Added backticks
-//     logger.error('❌ Database query failed', {
+//     logger.error(' Database query failed', {
 //       query: text,
 //       params,
 //       duration: `${duration}ms`,
@@ -444,7 +444,7 @@ export default {
 //     return result;
 //   } catch (error) {
 //     await client.query('ROLLBACK');
-//     logger.error('❌ Transaction failed', { error: error.message });
+//     logger.error(' Transaction failed', { error: error.message });
 //     throw error;
 //   } finally {
 //     client.release();

@@ -61,9 +61,9 @@ const PublicLayout = () => {
           </div>
           <div>
             <h3>Contact</h3>
-            <p style={{ color: '#aaa' }}>📍 123 Main Street, Aksum</p>
-            <p style={{ color: '#aaa' }}>📞 +251 901298714</p>
-            <p style={{ color: '#aaa' }}>✉️ mehariashfare2012@gamil.com</p>
+            <p style={{ color: '#aaa' }}> 123 Main Street, Aksum</p>
+            <p style={{ color: '#aaa' }}> +251 901298714</p>
+            <p style={{ color: '#aaa' }}> mehariashfare2012@gamil.com</p>
           </div>
           <div>
             <h3>Quick Links</h3>

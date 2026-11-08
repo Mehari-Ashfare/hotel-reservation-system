@@ -42,7 +42,7 @@ const rl = readline.createInterface({
 const sleep = (ms) => new Promise(resolve => setTimeout(resolve, ms));
 
 const logSuccess = (testName, message = '') => {
-  const log = `✅ ${testName}: ${message}`;
+  const log = ` ${testName}: ${message}`;
   testResults.push({ testName, success: true, message });
   console.log(log);
   return log;
@@ -50,23 +50,23 @@ const logSuccess = (testName, message = '') => {
 
 const logError = (testName, error) => {
   const message = error.response?.data?.message || error.message;
-  const log = `❌ ${testName}: ${message}`;
+  const log = ` ${testName}: ${message}`;
   testResults.push({ testName, success: false, message: error.message });
   console.log(log);
   return log;
 };
 
 const logInfo = (message) => {
-  console.log(`ℹ️  ${message}`);
+  console.log(`ℹ  ${message}`);
 };
 
 const logWarning = (message) => {
-  console.log(`⚠️  ${message}`);
+  console.log(`  ${message}`);
 };
 
 const logHeader = (title) => {
   console.log('\n' + '='.repeat(60));
-  console.log(`⚙️  ${title}`);
+  console.log(`  ${title}`);
   console.log('='.repeat(60));
 };
 
@@ -265,7 +265,7 @@ async function runAllTests() {
       logSuccess('Server Availability', `Server is reachable (Status: ${availability.status}, Attempt: ${availability.attempt})`);
     } else {
       logError('Server Availability', new Error(`Server is not reachable after ${availability.attempts} attempts`));
-      console.log('\n⚠️  Please ensure the server is running:');
+      console.log('\n  Please ensure the server is running:');
       console.log('   cd backend && npm run dev');
       process.exit(1);
     }
@@ -284,7 +284,7 @@ async function runAllTests() {
     
     logSuccess('Health Check', 'System health check passed');
     
-    console.log('\n🏥 SYSTEM HEALTH STATUS:');
+    console.log('\n SYSTEM HEALTH STATUS:');
     console.table({
       'Status': healthData.status || 'unknown',
       'Timestamp': healthData.timestamp || new Date().toISOString(),
@@ -296,7 +296,7 @@ async function runAllTests() {
     
     // Check database health
     if (healthData.database) {
-      console.log('\n🗄️  DATABASE HEALTH:');
+      console.log('\n  DATABASE HEALTH:');
       console.table({
         'Status': healthData.database.status || 'unknown',
         'Connected': healthData.database.details?.connected ? 'Yes' : 'No',
@@ -308,7 +308,7 @@ async function runAllTests() {
     
     // Check memory usage
     if (healthData.memory) {
-      console.log('\n💾 MEMORY USAGE:');
+      console.log('\n MEMORY USAGE:');
       console.table({
         'Heap Used': formatBytes(healthData.memory.heapUsed || 0),
         'Heap Total': formatBytes(healthData.memory.heapTotal || 0),
@@ -322,7 +322,7 @@ async function runAllTests() {
     
     // Check available endpoints
     if (healthData.endpoints) {
-      console.log('\n🔗 AVAILABLE ENDPOINTS:');
+      console.log('\n AVAILABLE ENDPOINTS:');
       Object.entries(healthData.endpoints).forEach(([name, endpoint]) => {
         console.log(`   - ${name}: ${endpoint}`);
       });
@@ -349,10 +349,10 @@ async function runAllTests() {
     const result = await tester.getMetrics();
     logWarning('Metrics Access Test', 'Metrics accessible without special header (might be development mode)');
     
-    console.log('\n📈 SYSTEM METRICS:');
+    console.log('\n SYSTEM METRICS:');
     
     if (result.process) {
-      console.log('   🔄 PROCESS INFO:');
+      console.log('    PROCESS INFO:');
       console.table({
         'Uptime': `${result.process.uptime || 0} seconds`,
         'Node Version': result.process.versions?.node || 'N/A',
@@ -362,7 +362,7 @@ async function runAllTests() {
     }
     
     if (result.system) {
-      console.log('\n   🖥️  SYSTEM INFO:');
+      console.log('\n     SYSTEM INFO:');
       console.table({
         'CPU Cores': result.system.cpus || 'N/A',
         'Total Memory': result.system.totalMemory ? formatBytes(result.system.totalMemory) : 'N/A',
@@ -373,7 +373,7 @@ async function runAllTests() {
     }
     
     if (result.memory) {
-      console.log('\n   🧠 MEMORY METRICS:');
+      console.log('\n    MEMORY METRICS:');
       const mem = result.memory;
       console.table({
         'Heap Used': formatBytes(mem.heapUsed || 0),
@@ -398,7 +398,7 @@ async function runAllTests() {
         const result = await tester.getMetrics();
         logSuccess('Metrics Access Test', 'Access granted with x-internal-metrics header');
         
-        console.log('\n📈 SYSTEM METRICS (with header):');
+        console.log('\n SYSTEM METRICS (with header):');
         console.log(JSON.stringify(result, null, 2));
         
       } catch (headerError) {
@@ -417,7 +417,7 @@ async function runAllTests() {
         const result = await tester.getMetrics();
         logSuccess('Metrics Access Test', 'Access granted with admin token');
         
-        console.log('\n📈 SYSTEM METRICS (with auth):');
+        console.log('\n SYSTEM METRICS (with auth):');
         console.log(JSON.stringify(result, null, 2));
         
       } catch (authError) {
@@ -454,7 +454,7 @@ async function runAllTests() {
       
       // Check page size
       const pageSize = Buffer.byteLength(result, 'utf8');
-      console.log(`\n📄 Swagger UI Page Info:`);
+      console.log(`\n Swagger UI Page Info:`);
       console.log(`   Size: ${formatBytes(pageSize)}`);
       console.log(`   Type: HTML`);
       console.log(`   Contains Swagger: ${hasSwaggerUI ? 'Yes' : 'No'}`);
@@ -489,7 +489,7 @@ async function runAllTests() {
     if (isJson) {
       logSuccess('OpenAPI Spec', 'OpenAPI specification loaded successfully');
       
-      console.log('\n📋 OPENAPI SPECIFICATION DETAILS:');
+      console.log('\n OPENAPI SPECIFICATION DETAILS:');
       console.table({
         'OpenAPI Version': result.openapi || 'N/A',
         'Title': result.info?.title || 'N/A',
@@ -508,13 +508,13 @@ async function runAllTests() {
         availablePaths.some(availablePath => availablePath.includes(path))
       );
       
-      console.log(`\n🔍 API Coverage:`);
+      console.log(`\n API Coverage:`);
       console.log(`   Found ${availablePaths.length} total paths`);
       console.log(`   Required paths found: ${foundPaths.length}/${requiredPaths.length}`);
       
       requiredPaths.forEach(path => {
         const found = availablePaths.some(p => p.includes(path));
-        console.log(`   - ${path}: ${found ? '✅' : '❌'}`);
+        console.log(`   - ${path}: ${found ? '' : ''}`);
       });
       
       // Validate OpenAPI structure
@@ -530,11 +530,11 @@ async function runAllTests() {
     
     // Test response time for OpenAPI spec
     const specResponseTime = await tester.testResponseTime('/api-docs.json');
-    console.log(`\n⏱️  Response Time: ${specResponseTime.responseTime}ms`);
+    console.log(`\n  Response Time: ${specResponseTime.responseTime}ms`);
     
     // Check spec size
     const specSize = Buffer.byteLength(JSON.stringify(result), 'utf8');
-    console.log(`📦 Specification Size: ${formatBytes(specSize)}`);
+    console.log(` Specification Size: ${formatBytes(specSize)}`);
     
   } catch (error) {
     logError('OpenAPI Spec', error);
@@ -550,7 +550,7 @@ async function runAllTests() {
     { name: 'OpenAPI Spec', url: '/api-docs.json', method: 'GET' }
   ];
   
-  console.log('⏱️  Testing response times (3 requests each):\n');
+  console.log('  Testing response times (3 requests each):\n');
   
   const responseTimes = {};
   
@@ -562,7 +562,7 @@ async function runAllTests() {
       try {
         const result = await tester.testResponseTime(endpoint.url, endpoint.method);
         times.push(result.responseTime);
-        console.log(`     Request ${i}: ${result.responseTime}ms ${result.success ? '✅' : '❌'}`);
+        console.log(`     Request ${i}: ${result.responseTime}ms ${result.success ? '' : ''}`);
         await sleep(300); // Small delay between requests
       } catch (error) {
         console.log(`     Request ${i}: Error - ${error.message}`);
@@ -588,12 +588,12 @@ async function runAllTests() {
   }
   
   // Summary of response times
-  console.log('📊 RESPONSE TIME SUMMARY:');
+  console.log(' RESPONSE TIME SUMMARY:');
   Object.entries(responseTimes).forEach(([name, stats]) => {
-    let rating = '⚡ Excellent';
-    if (stats.average > 1000) rating = '🐢 Slow';
-    else if (stats.average > 500) rating = '⚠️  Acceptable';
-    else if (stats.average > 200) rating = '👍 Good';
+    let rating = ' Excellent';
+    if (stats.average > 1000) rating = ' Slow';
+    else if (stats.average > 500) rating = '  Acceptable';
+    else if (stats.average > 200) rating = ' Good';
     
     console.log(`   ${name}: ${stats.average.toFixed(0)}ms avg (${rating})`);
   });
@@ -602,7 +602,7 @@ async function runAllTests() {
   // Test 6: Endpoint Structure Validation
   logHeader('TEST 6: ENDPOINT STRUCTURE VALIDATION');
   
-  console.log('🔗 Validating endpoint structure from provided configuration:\n');
+  console.log(' Validating endpoint structure from provided configuration:\n');
   
   const expectedEndpoints = [
     { name: 'System Health', url: ENDPOINTS.system.health(), method: 'GET', public: true },
@@ -645,7 +645,7 @@ async function runAllTests() {
   }
   
   const endpointSuccessRate = (validEndpoints / expectedEndpoints.length) * 100;
-  console.log(`\n📈 Endpoint Availability: ${validEndpoints}/${expectedEndpoints.length} (${endpointSuccessRate.toFixed(1)}%)`);
+  console.log(`\n Endpoint Availability: ${validEndpoints}/${expectedEndpoints.length} (${endpointSuccessRate.toFixed(1)}%)`);
   
   if (endpointSuccessRate === 100) {
     logSuccess('Endpoint Structure', 'All expected endpoints are properly configured');
@@ -666,7 +666,7 @@ async function runAllTests() {
     'http://malicious-site.com'  // Should be blocked
   ];
   
-  console.log('🌐 Testing CORS headers for /api/health endpoint:\n');
+  console.log(' Testing CORS headers for /api/health endpoint:\n');
   
   for (const origin of testOrigins) {
     try {
@@ -711,7 +711,7 @@ async function runAllTests() {
     const response = await axios.get(ENDPOINTS.system.health());
     const headers = response.headers;
     
-    console.log('🛡️  Security Headers Check:\n');
+    console.log('  Security Headers Check:\n');
     
     const securityHeaders = {
       'X-Content-Type-Options': headers['x-content-type-options'],
@@ -731,12 +731,12 @@ async function runAllTests() {
         console.log(`   ${header}: ${value.substring(0, 50)}${value.length > 50 ? '...' : ''}`);
         secureHeadersCount++;
       } else {
-        console.log(`   ${header}: ❌ Missing`);
+        console.log(`   ${header}:  Missing`);
       }
     });
     
     const securityScore = (secureHeadersCount / totalHeaders) * 100;
-    console.log(`\n📊 Security Headers Score: ${securityScore.toFixed(1)}%`);
+    console.log(`\n Security Headers Score: ${securityScore.toFixed(1)}%`);
     
     if (securityScore >= 80) {
       logSuccess('Security Headers', 'Good security header configuration');
@@ -762,29 +762,29 @@ async function printSummary() {
   const total = testResults.length;
   const successRate = ((passed / total) * 100).toFixed(1);
 
-  console.log(`📊 Total Tests: ${total}`);
-  console.log(`✅ Passed: ${passed}`);
-  console.log(`❌ Failed: ${total - passed}`);
-  console.log(`🎯 Success Rate: ${successRate}%`);
+  console.log(` Total Tests: ${total}`);
+  console.log(` Passed: ${passed}`);
+  console.log(` Failed: ${total - passed}`);
+  console.log(` Success Rate: ${successRate}%`);
 
   // Test coverage summary
-  console.log('\n📋 TEST COVERAGE:');
-  console.log('   ✅ GET /api/health    - System health check');
-  console.log('   ✅ GET /api/metrics   - System metrics');
-  console.log('   ✅ GET /api-docs      - Swagger UI documentation');
-  console.log('   ✅ GET /api-docs.json - OpenAPI specification');
-  console.log('   ✅ Response Time      - Performance analysis');
-  console.log('   ✅ Endpoint Structure - URL validation');
-  console.log('   ✅ CORS Headers      - Cross-origin security');
-  console.log('   ✅ Security Headers  - HTTP security validation');
+  console.log('\n TEST COVERAGE:');
+  console.log('    GET /api/health    - System health check');
+  console.log('    GET /api/metrics   - System metrics');
+  console.log('    GET /api-docs      - Swagger UI documentation');
+  console.log('    GET /api-docs.json - OpenAPI specification');
+  console.log('    Response Time      - Performance analysis');
+  console.log('    Endpoint Structure - URL validation');
+  console.log('    CORS Headers      - Cross-origin security');
+  console.log('    Security Headers  - HTTP security validation');
 
   // System status summary
-  console.log('\n⚙️  SYSTEM STATUS:');
-  console.log('   Health Check: ✅ Working');
-  console.log('   Documentation: ✅ Available');
-  console.log('   Metrics: ✅ Protected/Working');
-  console.log('   Security: ✅ Headers validated');
-  console.log('   Performance: ✅ Response times analyzed');
+  console.log('\n  SYSTEM STATUS:');
+  console.log('   Health Check:  Working');
+  console.log('   Documentation:  Available');
+  console.log('   Metrics:  Protected/Working');
+  console.log('   Security:  Headers validated');
+  console.log('   Performance:  Response times analyzed');
 
   // Save test results to file
   const timestamp = new Date().toISOString().replace(/[:.]/g, '-');
@@ -826,29 +826,29 @@ async function printSummary() {
   };
 
   fs.writeFileSync(resultsFile, JSON.stringify(report, null, 2));
-  console.log(`\n📄 Detailed results saved to: ${resultsFile}`);
+  console.log(`\n Detailed results saved to: ${resultsFile}`);
 
   // Quick access links
-  console.log('\n🔗 QUICK ACCESS LINKS:');
+  console.log('\n QUICK ACCESS LINKS:');
   console.log(`   Health Check: ${ENDPOINTS.system.health()}`);
   console.log(`   Swagger UI: ${ENDPOINTS.docs.swaggerUI()}`);
   console.log(`   OpenAPI Spec: ${ENDPOINTS.docs.openAPI()}`);
   console.log(`   Metrics: ${ENDPOINTS.system.metrics()} (requires x-internal-metrics header)`);
 
   // Recommendations
-  console.log('\n💡 RECOMMENDATIONS:');
+  console.log('\n RECOMMENDATIONS:');
   if (successRate === '100.0') {
-    console.log('🎉 EXCELLENT! All System and Documentation endpoints are fully functional.');
+    console.log(' EXCELLENT! All System and Documentation endpoints are fully functional.');
     console.log('   Next steps:');
     console.log('   1. Monitor system health in production');
     console.log('   2. Set up automated API documentation updates');
     console.log('   3. Implement rate limiting for public endpoints');
     console.log('   4. Set up monitoring dashboard with metrics');
   } else if (successRate >= '80.0') {
-    console.log('👍 GOOD! Most system endpoints are working.');
+    console.log(' GOOD! Most system endpoints are working.');
     console.log('   Review failed tests - check security and CORS configuration.');
   } else {
-    console.log('⚠️  NEEDS ATTENTION. Several system endpoints failed.');
+    console.log('  NEEDS ATTENTION. Several system endpoints failed.');
     console.log('   Check:');
     console.log('   1. Server is running on correct port');
     console.log('   2. Route registrations in app.js');
@@ -856,7 +856,7 @@ async function printSummary() {
     console.log('   4. CORS and security header settings');
   }
 
-  console.log('\n📚 For more details:');
+  console.log('\n For more details:');
   console.log('   Run individual tests with: node system-api-test.js (interactive mode)');
   console.log('   Check server logs for errors');
   console.log('   Review route configurations in backend');
@@ -864,7 +864,7 @@ async function printSummary() {
 
 // Interactive test menu
 async function showMenu() {
-  console.log('\n⚙️  SYSTEM API TESTER');
+  console.log('\n  SYSTEM API TESTER');
   console.log('==================');
   console.log('1. Run All Tests');
   console.log('2. Test Specific Endpoint');
@@ -902,7 +902,7 @@ async function showMenu() {
 }
 
 async function testSpecificEndpoint() {
-  console.log('\n🔧 SPECIFIC SYSTEM ENDPOINT TESTING');
+  console.log('\n SPECIFIC SYSTEM ENDPOINT TESTING');
   console.log('===================================');
   console.log('1. GET /api/health - Health check');
   console.log('2. GET /api/metrics - System metrics');
@@ -918,10 +918,10 @@ async function testSpecificEndpoint() {
       case '1': // Health check
         try {
           const result = await tester.getHealth();
-          console.log('✅ GET /api/health - Success:');
+          console.log(' GET /api/health - Success:');
           console.log(JSON.stringify(result, null, 2));
         } catch (error) {
-          console.log('❌ Error:', error.response?.data || error.message);
+          console.log(' Error:', error.response?.data || error.message);
         }
         rl.close();
         break;
@@ -934,10 +934,10 @@ async function testSpecificEndpoint() {
           
           try {
             const result = await tester.getMetrics();
-            console.log('✅ GET /api/metrics - Success:');
+            console.log(' GET /api/metrics - Success:');
             console.log(JSON.stringify(result, null, 2));
           } catch (error) {
-            console.log('❌ Error:', error.response?.data || error.message);
+            console.log(' Error:', error.response?.data || error.message);
           }
           rl.close();
         });
@@ -946,13 +946,13 @@ async function testSpecificEndpoint() {
       case '3': // Swagger UI
         try {
           const result = await tester.getSwaggerUI();
-          console.log('✅ GET /api-docs - Success:');
+          console.log(' GET /api-docs - Success:');
           console.log('Response is HTML, length:', result.length, 'characters');
           console.log('Contains Swagger UI:', result.includes('swagger-ui') ? 'Yes' : 'No');
           console.log('Preview (first 500 chars):');
           console.log(result.substring(0, 500) + '...');
         } catch (error) {
-          console.log('❌ Error:', error.response?.data || error.message);
+          console.log(' Error:', error.response?.data || error.message);
         }
         rl.close();
         break;
@@ -960,7 +960,7 @@ async function testSpecificEndpoint() {
       case '4': // OpenAPI spec
         try {
           const result = await tester.getOpenAPISpec();
-          console.log('✅ GET /api-docs.json - Success:');
+          console.log(' GET /api-docs.json - Success:');
           console.log('OpenAPI Version:', result.openapi);
           console.log('Title:', result.info?.title);
           console.log('Paths:', Object.keys(result.paths || {}).length);
@@ -972,7 +972,7 @@ async function testSpecificEndpoint() {
             console.log(`  ... and ${Object.keys(result.paths || {}).length - 10} more`);
           }
         } catch (error) {
-          console.log('❌ Error:', error.response?.data || error.message);
+          console.log(' Error:', error.response?.data || error.message);
         }
         rl.close();
         break;
@@ -983,28 +983,28 @@ async function testSpecificEndpoint() {
           
           // Health
           const health = await tester.getHealth();
-          console.log('✅ Health:', health.status);
+          console.log(' Health:', health.status);
           
           // Swagger UI
           const swagger = await tester.getSwaggerUI();
-          console.log('✅ Swagger UI:', swagger.length > 1000 ? 'Large HTML page' : 'Small response');
+          console.log(' Swagger UI:', swagger.length > 1000 ? 'Large HTML page' : 'Small response');
           
           // OpenAPI
           const openapi = await tester.getOpenAPISpec();
-          console.log('✅ OpenAPI Spec:', openapi.info?.title);
+          console.log(' OpenAPI Spec:', openapi.info?.title);
           
           // Metrics (with header)
           tester.setInternalMetricsHeader();
           try {
             const metrics = await tester.getMetrics();
-            console.log('✅ Metrics:', 'Available with header');
+            console.log(' Metrics:', 'Available with header');
           } catch (error) {
-            console.log('⚠️  Metrics:', error.response?.status === 403 ? 'Protected' : 'Error');
+            console.log('  Metrics:', error.response?.status === 403 ? 'Protected' : 'Error');
           }
           
-          console.log('\n🎉 All endpoints tested!');
+          console.log('\n All endpoints tested!');
         } catch (error) {
-          console.log('❌ Error:', error.message);
+          console.log(' Error:', error.message);
         }
         rl.close();
         break;
@@ -1035,7 +1035,7 @@ async function viewPreviousResults() {
   if (files.length === 0) {
     console.log('No previous system test results found.');
   } else {
-    console.log('\n📄 PREVIOUS SYSTEM TEST RESULTS:');
+    console.log('\n PREVIOUS SYSTEM TEST RESULTS:');
     files.forEach((file, index) => {
       const filePath = path.join(resultsDir, file);
       const stats = fs.statSync(filePath);
@@ -1059,7 +1059,7 @@ async function viewPreviousResults() {
 }
 
 async function quickHealthCheck() {
-  console.log('\n⚡ QUICK SYSTEM HEALTH CHECK');
+  console.log('\n QUICK SYSTEM HEALTH CHECK');
   console.log('============================');
   
   const tester = new SystemAPITester(API_BASE_URL);
@@ -1069,10 +1069,10 @@ async function quickHealthCheck() {
     console.log('1. Testing server availability...');
     const availability = await tester.testServerAvailability();
     if (availability.success) {
-      console.log(`   ✅ Server: Running (Status: ${availability.status})`);
+      console.log(`    Server: Running (Status: ${availability.status})`);
     } else {
-      console.log(`   ❌ Server: Not reachable`);
-      console.log('\n🔧 Please start the server:');
+      console.log(`    Server: Not reachable`);
+      console.log('\n Please start the server:');
       console.log('   cd backend && npm run dev');
       rl.close();
       return;
@@ -1081,41 +1081,41 @@ async function quickHealthCheck() {
     // Test 2: Health endpoint
     console.log('2. Testing health endpoint...');
     const health = await tester.getHealth();
-    console.log(`   ✅ Health: ${health.status || 'ok'}`);
+    console.log(`    Health: ${health.status || 'ok'}`);
     console.log(`   Service: ${health.service || 'Hotel Reservation API'}`);
     console.log(`   Uptime: ${health.uptime ? `${health.uptime.toFixed(2)}s` : 'N/A'}`);
     
     // Test 3: Database health
     console.log('3. Testing database connection...');
     if (health.database?.status === 'healthy') {
-      console.log(`   ✅ Database: Connected and healthy`);
+      console.log(`    Database: Connected and healthy`);
     } else if (health.database) {
-      console.log(`   ⚠️  Database: ${health.database.status}`);
+      console.log(`     Database: ${health.database.status}`);
     } else {
-      console.log(`   ℹ️  Database: Health info not available`);
+      console.log(`   ℹ  Database: Health info not available`);
     }
     
     // Test 4: Documentation
     console.log('4. Testing documentation...');
     try {
       const spec = await tester.getOpenAPISpec();
-      console.log(`   ✅ Documentation: Available (${spec.info?.title})`);
+      console.log(`    Documentation: Available (${spec.info?.title})`);
       console.log(`   Version: ${spec.info?.version}`);
       console.log(`   Paths: ${Object.keys(spec.paths || {}).length} endpoints documented`);
     } catch (error) {
-      console.log(`   ❌ Documentation: ${error.message}`);
+      console.log(`    Documentation: ${error.message}`);
     }
     
-    console.log('\n🎉 SYSTEM IS HEALTHY!');
-    console.log('\n📊 Quick Stats:');
+    console.log('\n SYSTEM IS HEALTHY!');
+    console.log('\n Quick Stats:');
     console.log(`   - Server: Running`);
     console.log(`   - Health: ${health.status}`);
     console.log(`   - Database: ${health.database?.status || 'N/A'}`);
     console.log(`   - Documentation: Available`);
     
   } catch (error) {
-    console.log(`❌ Health check failed: ${error.message}`);
-    console.log('\n🔧 Troubleshooting:');
+    console.log(` Health check failed: ${error.message}`);
+    console.log('\n Troubleshooting:');
     console.log('   1. Is the server running? (npm run dev)');
     console.log('   2. Check if port 5000 is already in use');
     console.log('   3. Verify database connection in .env file');
@@ -1126,7 +1126,7 @@ async function quickHealthCheck() {
 }
 
 async function serverStatusDashboard() {
-  console.log('\n📊 SERVER STATUS DASHBOARD');
+  console.log('\n SERVER STATUS DASHBOARD');
   console.log('==========================');
   console.log('Monitoring server status... (Press Ctrl+C to exit)\n');
   
@@ -1145,8 +1145,8 @@ async function serverStatusDashboard() {
   
   while (monitoring && iteration < maxIterations) {
     iteration++;
-    console.log(`\n📈 Iteration ${iteration}/${maxIterations} - ${new Date().toLocaleTimeString()}`);
-    console.log('─'.repeat(50));
+    console.log(`\n Iteration ${iteration}/${maxIterations} - ${new Date().toLocaleTimeString()}`);
+    console.log(''.repeat(50));
     
     try {
       // Health check
@@ -1154,7 +1154,7 @@ async function serverStatusDashboard() {
       const health = await tester.getHealth();
       const responseTime = Date.now() - startTime;
       
-      console.log('🏥 Health Status:');
+      console.log(' Health Status:');
       console.log(`   Status: ${health.status || 'unknown'}`);
       console.log(`   Response Time: ${responseTime}ms`);
       console.log(`   Uptime: ${health.uptime ? `${(health.uptime / 60).toFixed(1)} minutes` : 'N/A'}`);
@@ -1174,13 +1174,13 @@ async function serverStatusDashboard() {
       
       // Check response time threshold
       if (responseTime > 1000) {
-        console.log(`   ⚠️  Warning: Slow response (${responseTime}ms)`);
+        console.log(`     Warning: Slow response (${responseTime}ms)`);
       } else if (responseTime > 5000) {
-        console.log(`   🔴 Critical: Very slow response (${responseTime}ms)`);
+        console.log(`    Critical: Very slow response (${responseTime}ms)`);
       }
       
     } catch (error) {
-      console.log(`❌ Error: ${error.message}`);
+      console.log(` Error: ${error.message}`);
       console.log('   Server may be down or unreachable');
     }
     
@@ -1191,7 +1191,7 @@ async function serverStatusDashboard() {
   }
   
   if (iteration >= maxIterations) {
-    console.log('\n📊 Monitoring complete.');
+    console.log('\n Monitoring complete.');
   }
   
   rl.close();
@@ -1215,7 +1215,7 @@ if (process.argv.length > 2) {
     serverStatusDashboard();
   } else if (command === '--help' || command === '-h') {
     console.log(`
-⚙️  System API Test Script
+  System API Test Script
 =========================
 Usage:
   node system-api-test.js [option]
@@ -1242,7 +1242,7 @@ Examples:
 
 // Handle errors gracefully
 process.on('unhandledRejection', (error) => {
-  console.error('\n❌ Unhandled rejection:', error.message);
+  console.error('\n Unhandled rejection:', error.message);
   if (error.response) {
     console.error('   Response:', error.response.data);
     console.error('   Status:', error.response.status);
@@ -1251,7 +1251,7 @@ process.on('unhandledRejection', (error) => {
 });
 
 process.on('uncaughtException', (error) => {
-  console.error('\n💥 Uncaught exception:', error.message);
+  console.error('\n Uncaught exception:', error.message);
   console.error('   Stack:', error.stack);
   process.exit(1);
 });
