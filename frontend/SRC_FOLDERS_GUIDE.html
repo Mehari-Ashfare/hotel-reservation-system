@@ -1,0 +1,322 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="Interactive guide to the frontend/src folders in the Hotel Reservation System.">
+  <title>Source folders guide | Hotel Reservation System</title>
+  <style>
+    :root {
+      color-scheme: light;
+      --ink: #17233b;
+      --muted: #5f6e83;
+      --line: #dce4ef;
+      --paper: #fff;
+      --wash: #f3f6fb;
+      --blue: #2459d3;
+      --blue-wash: #eaf0ff;
+      --teal: #087e82;
+      --teal-wash: #e7f7f5;
+      --amber: #9a5b00;
+      --amber-wash: #fff5df;
+      font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+    }
+
+    * { box-sizing: border-box; }
+    body { margin: 0; color: var(--ink); background: var(--wash); line-height: 1.62; }
+    .shell { width: min(1120px, calc(100% - 36px)); margin: 0 auto; }
+
+    header {
+      padding: 56px 0 42px;
+      color: white;
+      background: linear-gradient(125deg, #132448, #2459d3 72%, #4d83df);
+    }
+    .eyebrow { margin: 0 0 10px; color: #cfddff; font-size: .78rem; font-weight: 750; letter-spacing: .14em; text-transform: uppercase; }
+    h1 { max-width: 800px; margin: 0; font-size: clamp(2rem, 5vw, 3.5rem); line-height: 1.08; }
+    header p { max-width: 750px; margin: 18px 0 0; color: #e2eaff; font-size: 1.05rem; }
+    main { padding: 30px 0 62px; }
+
+    .toolbar, .panel, .folder-card, .step, .note {
+      border: 1px solid var(--line);
+      border-radius: 14px;
+      background: var(--paper);
+      box-shadow: 0 8px 24px #17233b08;
+    }
+    .toolbar { display: flex; align-items: center; gap: 12px; flex-wrap: wrap; margin-bottom: 20px; padding: 15px; }
+    .toolbar label { font-weight: 700; }
+    #search { flex: 1 1 250px; min-width: 170px; padding: 11px 13px; border: 1px solid #b9c6d8; border-radius: 9px; font: inherit; }
+    button { padding: 9px 13px; border: 0; border-radius: 8px; background: var(--blue-wash); color: var(--blue); font: inherit; font-weight: 700; cursor: pointer; }
+    button:hover { background: #dce7ff; }
+
+    .grid { display: grid; grid-template-columns: 260px minmax(0, 1fr); gap: 20px; align-items: start; }
+    nav { position: sticky; top: 18px; padding: 18px; }
+    nav h2, .panel h2 { margin: 0 0 12px; font-size: 1rem; }
+    nav ul { margin: 0; padding: 0; list-style: none; }
+    nav li + li { margin-top: 7px; }
+    nav a { color: var(--blue); text-decoration: none; font-weight: 650; }
+    nav a:hover { text-decoration: underline; }
+
+    .content { display: grid; gap: 17px; min-width: 0; }
+    .panel { padding: 21px; }
+    .panel > p { margin: 0; color: var(--muted); }
+    .tree { overflow-x: auto; margin: 14px 0 0; padding: 15px; border-radius: 10px; background: #101a2d; color: #e3ebff; font: .89rem/1.65 ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; white-space: pre; }
+
+    .flow { display: grid; grid-template-columns: repeat(5, 1fr); gap: 9px; margin-top: 15px; }
+    .step { padding: 13px; }
+    .step strong { display: block; margin-bottom: 4px; color: var(--blue); }
+    .step span { color: var(--muted); font-size: .88rem; }
+
+    .folder-list { display: grid; gap: 11px; }
+    .folder-card { scroll-margin-top: 16px; padding: 0; }
+    .folder-card[hidden] { display: none; }
+    details > summary { display: flex; justify-content: space-between; align-items: center; gap: 13px; padding: 16px 18px; cursor: pointer; list-style: none; }
+    details > summary::-webkit-details-marker { display: none; }
+    details > summary::after { content: "+"; color: var(--blue); font-size: 1.25rem; font-weight: 650; }
+    details[open] > summary::after { content: "−"; }
+    .folder-name { font: 750 1rem ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; }
+    .badge { flex: none; padding: 4px 9px; border-radius: 999px; background: var(--blue-wash); color: var(--blue); font-size: .75rem; font-weight: 750; }
+    .badge.teal { background: var(--teal-wash); color: var(--teal); }
+    .badge.empty { background: var(--amber-wash); color: var(--amber); }
+    .detail { padding: 0 18px 18px; border-top: 1px solid #edf1f6; }
+    .detail p { margin: 13px 0 7px; }
+    .detail h3 { margin: 14px 0 4px; font-size: .91rem; }
+    .detail ul { margin: 5px 0 0; padding-left: 20px; color: var(--muted); }
+    code { padding: .12em .35em; border-radius: 5px; background: #eef2f8; color: #23375e; font: .92em ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; }
+    .note { margin-top: 13px; padding: 13px 15px; border-left: 4px solid #e6a423; }
+    .note strong { display: block; margin-bottom: 4px; }
+    .note p { margin: 0; color: var(--muted); }
+    footer { padding: 0 0 32px; color: var(--muted); font-size: .9rem; }
+
+    @media (max-width: 800px) {
+      header { padding: 42px 0 32px; }
+      .grid { grid-template-columns: 1fr; }
+      nav { position: static; }
+      nav ul { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 7px 14px; }
+      nav li + li { margin-top: 0; }
+      .flow { grid-template-columns: repeat(2, 1fr); }
+    }
+    @media (max-width: 460px) {
+      .shell { width: min(100% - 24px, 1120px); }
+      .flow { grid-template-columns: 1fr; }
+      .badge { max-width: 45%; white-space: normal; text-align: center; }
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <div class="shell">
+      <p class="eyebrow">Hotel Reservation System / Frontend Source</p>
+      <h1>A guide to the <code>src/</code> folders</h1>
+      <p>See where screens, shared UI, application state, API calls, and styling live, and how those folders connect when the React app runs.</p>
+    </div>
+  </header>
+
+  <main class="shell">
+    <div class="toolbar">
+      <label for="search">Find a folder</label>
+      <input id="search" type="search" placeholder="Try pages, API, auth, empty folders..." autocomplete="off">
+      <button id="expandAll" type="button">Expand all</button>
+      <button id="collapseAll" type="button">Collapse all</button>
+    </div>
+
+    <div class="grid">
+      <nav aria-label="Guide sections">
+        <h2>Folder index</h2>
+        <ul>
+          <li><a href="#map">Source map</a></li>
+          <li><a href="#flow">How folders work together</a></li>
+          <li><a href="#assets">assets/</a></li>
+          <li><a href="#components">components/</a></li>
+          <li><a href="#context">context/</a></li>
+          <li><a href="#hooks">hooks/</a></li>
+          <li><a href="#layouts">layouts/</a></li>
+          <li><a href="#pages">pages/</a></li>
+          <li><a href="#routes">routes/</a></li>
+          <li><a href="#services">services/</a></li>
+          <li><a href="#utils">utils/</a></li>
+        </ul>
+      </nav>
+
+      <div class="content">
+        <section class="panel" id="map">
+          <h2>Source map</h2>
+          <p>The tree shows the current folder layout. The two folders marked empty currently contain no source files.</p>
+          <pre class="tree">src/
+├── assets/
+│   ├── images/       (currently empty)
+│   └── styles/
+├── components/
+│   ├── common/
+│   └── layout/
+├── context/
+├── hooks/
+├── layouts/
+├── pages/
+│   ├── Admin/  ├── Auth/        ├── Dashboard/
+│   ├── Guests/ ├── Profile/     ├── Public/
+│   ├── Reports/├── Reservations/├── Rooms/ └── Staff/
+├── routes/         (currently empty)
+├── services/
+└── utils/          (currently empty)</pre>
+        </section>
+
+        <section class="panel" id="flow">
+          <h2>How these folders work together</h2>
+          <p>The application entry and route table connect the folders. A page renders a screen, shared components provide reusable interface pieces, context/hooks provide shared state, and services communicate with the backend.</p>
+          <div class="flow">
+            <div class="step"><strong>Entry</strong><span><code>main.jsx</code> starts React and loads global styles.</span></div>
+            <div class="step"><strong>Navigation</strong><span><code>App.jsx</code> chooses a page and its layout.</span></div>
+            <div class="step"><strong>Screen</strong><span><code>pages/</code> composes interface components.</span></div>
+            <div class="step"><strong>Shared logic</strong><span><code>context/</code> and <code>hooks/</code> expose app state.</span></div>
+            <div class="step"><strong>Data and style</strong><span><code>services/</code> calls the API; <code>assets/</code> supplies visuals and CSS.</span></div>
+          </div>
+        </section>
+
+        <section class="folder-list" aria-label="Folder explanations">
+          <article class="folder-card" id="assets" data-search="assets images styles css global visual graphics empty">
+            <details>
+              <summary><span class="folder-name">assets/</span><span class="badge">Visual resources</span></summary>
+              <div class="detail">
+                <p><strong>Objective:</strong> Keep static resources used by the interface, such as stylesheets and image files.</p>
+                <ul>
+                  <li><code>styles/</code> contains <code>global.css</code>, imported by <code>main.jsx</code> for site-wide styling.</li>
+                  <li><code>images/</code> exists but is currently empty.</li>
+                </ul>
+                <p>Use this folder for assets that belong to the app source and are imported by components or styles.</p>
+              </div>
+            </details>
+          </article>
+
+          <article class="folder-card" id="components" data-search="components reusable common button input modal statcard layout header sidebar dashboard payment">
+            <details>
+              <summary><span class="folder-name">components/</span><span class="badge">Reusable interface</span></summary>
+              <div class="detail">
+                <p><strong>Objective:</strong> Hold UI building blocks that can be reused across multiple screens.</p>
+                <ul>
+                  <li><code>common/</code> has reusable Button, Input, Modal, StatCard, and a barrel export file.</li>
+                  <li><code>layout/</code> contains the dashboard frame, header, and sidebar.</li>
+                  <li><code>PaymentModal.jsx</code> is currently directly under <code>components/</code>.</li>
+                </ul>
+                <p>Pages compose these pieces instead of rebuilding the same controls and navigation on every screen.</p>
+              </div>
+            </details>
+          </article>
+
+          <article class="folder-card" id="context" data-search="context auth authentication user login logout token shared state provider">
+            <details>
+              <summary><span class="folder-name">context/</span><span class="badge">Shared application state</span></summary>
+              <div class="detail">
+                <p><strong>Objective:</strong> Make important state available to many components without passing it manually through every layer.</p>
+                <p><code>AuthContext.jsx</code> stores the current user and provides login/logout behavior. <code>AuthProvider</code> wraps the app in <code>App.jsx</code>; components can read authentication state with the exported <code>useAuth</code> function.</p>
+              </div>
+            </details>
+          </article>
+
+          <article class="folder-card" id="hooks" data-search="hooks useauth custom hook reuse react context">
+            <details>
+              <summary><span class="folder-name">hooks/</span><span class="badge">Reusable React logic</span></summary>
+              <div class="detail">
+                <p><strong>Objective:</strong> Group custom React hooks: functions that let components reuse stateful behavior.</p>
+                <p>The current <code>useAuth.js</code> re-exports <code>useAuth</code> from <code>AuthContext</code> as a convenient import path. It does not currently define separate authentication logic.</p>
+              </div>
+            </details>
+          </article>
+
+          <article class="folder-card" id="layouts" data-search="layouts publiclayout outlet navbar footer page frame">
+            <details>
+              <summary><span class="folder-name">layouts/</span><span class="badge">Page frames</span></summary>
+              <div class="detail">
+                <p><strong>Objective:</strong> Provide the outer structure shared by a group of pages.</p>
+                <p><code>PublicLayout.jsx</code> supplies a public-site header, content outlet, and footer. <code>App.jsx</code> uses it around the landing page. The authenticated dashboard frame is currently in <code>components/layout/</code>.</p>
+              </div>
+            </details>
+          </article>
+
+          <article class="folder-card" id="pages" data-search="pages screens admin auth dashboard guests profile public reports reservations rooms staff route">
+            <details>
+              <summary><span class="folder-name">pages/</span><span class="badge">Route-level screens</span></summary>
+              <div class="detail">
+                <p><strong>Objective:</strong> Organize the screens users visit, grouped by feature or audience.</p>
+                <ul>
+                  <li><code>Admin/</code>: staff list and audit logs.</li>
+                  <li><code>Auth/</code>: login, registration, and password reset screens.</li>
+                  <li><code>Dashboard/</code>, <code>Reports/</code>, and <code>Profile/</code>: dashboard and account screens.</li>
+                  <li><code>Guests/</code>, <code>Reservations/</code>, and <code>Rooms/</code>: hotel operations and guest booking screens.</li>
+                  <li><code>Public/</code> and <code>Staff/</code>: landing page and staff profile.</li>
+                </ul>
+                <p><code>App.jsx</code> imports these pages and maps URL paths to them.</p>
+              </div>
+            </details>
+          </article>
+
+          <article class="folder-card" id="routes" data-search="routes empty app jsx router routing paths react router">
+            <details>
+              <summary><span class="folder-name">routes/</span><span class="badge empty">Currently empty</span></summary>
+              <div class="detail">
+                <p><strong>Possible objective:</strong> This folder could hold route configuration if routing is later separated from the main app component.</p>
+                <p>At present it contains no files. The active React Router setup and path-to-page mapping are in <code>App.jsx</code>; this empty folder is not part of the current runtime flow.</p>
+              </div>
+            </details>
+          </article>
+
+          <article class="folder-card" id="services" data-search="services api axios backend authentication guests rooms reservations payments reports audit dashboard staff">
+            <details>
+              <summary><span class="folder-name">services/</span><span class="badge teal">Backend communication</span></summary>
+              <div class="detail">
+                <p><strong>Objective:</strong> Keep HTTP request logic out of screen components and organize it around application features.</p>
+                <ul>
+                  <li><code>api.js</code> creates the shared Axios client and attaches the saved authentication token.</li>
+                  <li>Feature services wrap requests for auth, guests, rooms, reservations, payments, reports, dashboard data, staff, and audit logs.</li>
+                </ul>
+                <p>Pages call these services to load or change data through the backend API.</p>
+              </div>
+            </details>
+          </article>
+
+          <article class="folder-card" id="utils" data-search="utils utilities helper functions empty shared logic">
+            <details>
+              <summary><span class="folder-name">utils/</span><span class="badge empty">Currently empty</span></summary>
+              <div class="detail">
+                <p><strong>Possible objective:</strong> Store small shared helper functions that do not belong to one page or service.</p>
+                <p>There are currently no files in this folder, so it is not part of the application's current runtime flow.</p>
+              </div>
+            </details>
+          </article>
+        </section>
+
+        <section class="panel">
+          <h2>A practical rule for adding code</h2>
+          <p>Put a screen in <code>pages/</code>, shared visual pieces in <code>components/</code>, backend calls in <code>services/</code>, shared React state in <code>context/</code>, and global visual files in <code>assets/</code>. Keep a helper in <code>utils/</code> only when it is genuinely shared and does not belong more naturally to a feature service or component.</p>
+        </section>
+      </div>
+    </div>
+  </main>
+
+  <footer class="shell">Guide scope: folders under <code>frontend/src/</code>. The folder explanations describe the current structure, including empty folders.</footer>
+
+  <script>
+    const cards = [...document.querySelectorAll('.folder-card')];
+    const search = document.getElementById('search');
+
+    search.addEventListener('input', () => {
+      const query = search.value.trim().toLowerCase();
+      for (const card of cards) {
+        const text = `${card.dataset.search} ${card.innerText}`.toLowerCase();
+        card.hidden = query.length > 0 && !text.includes(query);
+      }
+    });
+
+    document.getElementById('expandAll').addEventListener('click', () => {
+      cards.filter((card) => !card.hidden).forEach((card) => {
+        card.querySelector('details').open = true;
+      });
+    });
+
+    document.getElementById('collapseAll').addEventListener('click', () => {
+      cards.forEach((card) => {
+        card.querySelector('details').open = false;
+      });
+    });
+  </script>
+</body>
+</html>

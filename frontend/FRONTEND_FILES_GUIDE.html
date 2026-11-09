@@ -1,0 +1,417 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="An interactive guide to the main files and folders in the Hotel Reservation System frontend.">
+  <title>Frontend project guide | Hotel Reservation System</title>
+  <style>
+    :root {
+      color-scheme: light;
+      --ink: #17233b;
+      --muted: #5f6e83;
+      --line: #dce4ef;
+      --paper: #ffffff;
+      --wash: #f3f6fb;
+      --blue: #2459d3;
+      --blue-wash: #eaf0ff;
+      --green: #16794b;
+      --green-wash: #e9f7ef;
+      font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+    }
+
+    * { box-sizing: border-box; }
+
+    body {
+      margin: 0;
+      color: var(--ink);
+      background: var(--wash);
+      line-height: 1.6;
+    }
+
+    .shell { width: min(1100px, calc(100% - 36px)); margin: 0 auto; }
+
+    header {
+      padding: 58px 0 42px;
+      color: white;
+      background: linear-gradient(125deg, #142852, #2459d3 72%, #5482e5);
+    }
+
+    .eyebrow {
+      margin: 0 0 10px;
+      color: #cddaff;
+      font-size: .78rem;
+      font-weight: 750;
+      letter-spacing: .13em;
+      text-transform: uppercase;
+    }
+
+    h1 { max-width: 760px; margin: 0; font-size: clamp(2rem, 5vw, 3.5rem); line-height: 1.08; }
+    header p { max-width: 710px; margin: 18px 0 0; color: #e0e9ff; font-size: 1.05rem; }
+
+    main { padding: 30px 0 64px; }
+
+    .toolbar {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      flex-wrap: wrap;
+      margin-bottom: 22px;
+      padding: 16px;
+      border: 1px solid var(--line);
+      border-radius: 14px;
+      background: var(--paper);
+    }
+
+    .toolbar label { font-weight: 700; }
+
+    #search {
+      flex: 1 1 260px;
+      min-width: 180px;
+      padding: 11px 13px;
+      border: 1px solid #b9c6d8;
+      border-radius: 9px;
+      color: var(--ink);
+      font: inherit;
+    }
+
+    button {
+      padding: 10px 14px;
+      border: 0;
+      border-radius: 9px;
+      background: var(--blue-wash);
+      color: var(--blue);
+      font: inherit;
+      font-weight: 700;
+      cursor: pointer;
+    }
+
+    button:hover { background: #dce7ff; }
+
+    .layout { display: grid; grid-template-columns: 275px minmax(0, 1fr); gap: 22px; align-items: start; }
+
+    nav, .panel, .file-card, .flow-step, .note {
+      border: 1px solid var(--line);
+      border-radius: 14px;
+      background: var(--paper);
+      box-shadow: 0 8px 26px #17233b08;
+    }
+
+    nav { position: sticky; top: 18px; padding: 18px; }
+    nav h2, .panel h2 { margin: 0 0 12px; font-size: 1rem; }
+    nav ul { margin: 0; padding: 0; list-style: none; }
+    nav li + li { margin-top: 7px; }
+    nav a { color: var(--blue); text-decoration: none; font-weight: 650; }
+    nav a:hover { text-decoration: underline; }
+
+    .content { display: grid; gap: 18px; min-width: 0; }
+    .panel { padding: 22px; }
+    .panel > p:first-of-type { margin-top: 0; color: var(--muted); }
+
+    .tree {
+      overflow-x: auto;
+      margin: 15px 0 0;
+      padding: 15px;
+      border-radius: 10px;
+      background: #101a2d;
+      color: #e3ebff;
+      font: .91rem/1.65 ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+      white-space: pre;
+    }
+
+    .cards { display: grid; gap: 12px; }
+    .file-card { scroll-margin-top: 16px; padding: 0; }
+    .file-card[hidden] { display: none; }
+
+    details > summary {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 14px;
+      padding: 17px 19px;
+      cursor: pointer;
+      list-style: none;
+    }
+
+    details > summary::-webkit-details-marker { display: none; }
+    details > summary::after { content: "+"; color: var(--blue); font-size: 1.3rem; font-weight: 600; }
+    details[open] > summary::after { content: "−"; }
+
+    .file-name { font: 700 1rem ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; }
+    .kind { color: var(--muted); font-size: .84rem; text-align: right; }
+    .detail { padding: 0 19px 18px; border-top: 1px solid #edf1f6; }
+    .detail p { margin: 14px 0 8px; }
+    .detail h3 { margin: 15px 0 5px; font-size: .93rem; }
+    .detail ul { margin: 5px 0 0; padding-left: 20px; color: var(--muted); }
+
+    code {
+      padding: .12em .35em;
+      border-radius: 5px;
+      background: #eef2f8;
+      color: #23375e;
+      font: .92em ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+    }
+
+    .flow { display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; margin-top: 16px; }
+    .flow-step { padding: 14px; }
+    .flow-step strong { display: block; margin-bottom: 5px; color: var(--blue); }
+    .flow-step span { color: var(--muted); font-size: .9rem; }
+    .note { padding: 16px 18px; border-left: 4px solid #e6a423; }
+    .note strong { display: block; margin-bottom: 5px; }
+    .note p { margin: 0; color: var(--muted); }
+
+    .commands { display: grid; gap: 10px; margin-top: 14px; }
+    .command {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 10px 11px;
+      border-radius: 9px;
+      background: #101a2d;
+    }
+    .command code { flex: 1; padding: 0; background: none; color: #e3ebff; overflow-wrap: anywhere; }
+    .command button { padding: 7px 10px; background: #2b3c5e; color: white; font-size: .83rem; }
+
+    footer { padding: 0 0 34px; color: var(--muted); font-size: .9rem; }
+
+    @media (max-width: 760px) {
+      header { padding: 42px 0 32px; }
+      .layout { grid-template-columns: 1fr; }
+      nav { position: static; }
+      nav ul { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 7px 14px; }
+      nav li + li { margin-top: 0; }
+      .flow { grid-template-columns: repeat(2, 1fr); }
+    }
+
+    @media (max-width: 440px) {
+      .shell { width: min(100% - 24px, 1100px); }
+      .flow { grid-template-columns: 1fr; }
+      .kind { max-width: 45%; }
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <div class="shell">
+      <p class="eyebrow">Hotel Reservation System / Frontend</p>
+      <h1>How the frontend’s top-level files work together</h1>
+      <p>A practical guide to the files and folders beside <code>src</code>: what each one is for, when it is used, and how the browser app starts.</p>
+    </div>
+  </header>
+
+  <main class="shell">
+    <div class="toolbar">
+      <label for="search">Find a file</label>
+      <input id="search" type="search" placeholder="Try package, Vite, HTML, dependencies..." autocomplete="off">
+      <button id="expandAll" type="button">Expand all</button>
+      <button id="collapseAll" type="button">Collapse all</button>
+    </div>
+
+    <div class="layout">
+      <nav aria-label="Guide sections">
+        <h2>On this page</h2>
+        <ul>
+          <li><a href="#map">Folder map</a></li>
+          <li><a href="#how-it-runs">How it starts</a></li>
+          <li><a href="#readme">README.md</a></li>
+          <li><a href="#index">index.html</a></li>
+          <li><a href="#modules">node_modules/</a></li>
+          <li><a href="#lock">package-lock.json</a></li>
+          <li><a href="#package">package.json</a></li>
+          <li><a href="#src">src/</a></li>
+          <li><a href="#vite">vite.config.js</a></li>
+          <li><a href="#run">Run commands</a></li>
+        </ul>
+      </nav>
+
+      <div class="content">
+        <section class="panel" id="map">
+          <h2>Folder map</h2>
+          <p>This guide covers the frontend directory entries you listed. It explains <code>src/</code> as a whole; its internal folders and files can be documented separately.</p>
+          <pre class="tree">frontend/
+├── README.md
+├── index.html
+├── node_modules/
+├── package-lock.json
+├── package.json
+├── src/
+└── vite.config.js</pre>
+        </section>
+
+        <section class="panel" id="how-it-runs">
+          <h2>How a browser request turns into the app</h2>
+          <p>Vite serves the HTML shell during development. The browser loads the entry module, React mounts into the page, and the app makes API requests to the backend when needed.</p>
+          <div class="flow">
+            <div class="flow-step"><strong>1. Vite</strong><span>Reads <code>vite.config.js</code> and serves the project.</span></div>
+            <div class="flow-step"><strong>2. HTML shell</strong><span><code>index.html</code> provides the page and React mount point.</span></div>
+            <div class="flow-step"><strong>3. React entry</strong><span><code>src/main.jsx</code> mounts the application into that point.</span></div>
+            <div class="flow-step"><strong>4. Application</strong><span><code>src/</code> contains the UI and its app behavior.</span></div>
+          </div>
+        </section>
+
+        <section class="cards" id="file-cards" aria-label="Frontend files">
+          <article class="file-card" id="readme" data-search="readme documentation setup install run frontend overview">
+            <details>
+              <summary><span class="file-name">README.md</span><span class="kind">Project instructions</span></summary>
+              <div class="detail">
+                <p><strong>Objective:</strong> Explain the frontend to developers and provide the commands to install, start, build, and lint it.</p>
+                <h3>How it works</h3>
+                <ul>
+                  <li>It documents the React, Vite, and UI libraries used here.</li>
+                  <li>It explains that the frontend and backend run as separate development servers.</li>
+                  <li>It points to the API URL configuration and the backend CORS requirement.</li>
+                </ul>
+                <h3>When to update it</h3>
+                <p>Update this file when setup commands, requirements, scripts, or important configuration change.</p>
+              </div>
+            </details>
+          </article>
+
+          <article class="file-card" id="index" data-search="index html document browser title root mount script entry">
+            <details>
+              <summary><span class="file-name">index.html</span><span class="kind">Browser document shell</span></summary>
+              <div class="detail">
+                <p><strong>Objective:</strong> Provide the one HTML document that Vite serves to the browser.</p>
+                <h3>What is inside</h3>
+                <ul>
+                  <li>The document metadata, page title, and mobile viewport setting.</li>
+                  <li><code>&lt;div id="root"&gt;</code>, where React attaches the user interface.</li>
+                  <li>A module script that loads <code>/src/main.jsx</code>.</li>
+                </ul>
+                <p>Most application screens are rendered by React after startup rather than being written directly in this HTML file.</p>
+              </div>
+            </details>
+          </article>
+
+          <article class="file-card" id="modules" data-search="node_modules npm packages installed dependencies generated ignore git">
+            <details>
+              <summary><span class="file-name">node_modules/</span><span class="kind">Installed dependencies</span></summary>
+              <div class="detail">
+                <p><strong>Objective:</strong> Hold the local JavaScript packages required to run tools and application code.</p>
+                <h3>How it works</h3>
+                <p>Running <code>npm install</code> reads the package files and creates or updates this directory. Vite, React, Material UI, Axios, and other packages are resolved from here during local development and builds.</p>
+                <div class="note">
+                  <strong>Do not edit or commit this folder</strong>
+                  <p>It is generated, often very large, and can be recreated with npm. Git normally ignores it.</p>
+                </div>
+              </div>
+            </details>
+          </article>
+
+          <article class="file-card" id="lock" data-search="package-lock json exact versions reproducibility npm install ci dependencies">
+            <details>
+              <summary><span class="file-name">package-lock.json</span><span class="kind">Dependency version lock</span></summary>
+              <div class="detail">
+                <p><strong>Objective:</strong> Record the exact dependency tree npm resolved, including transitive packages.</p>
+                <h3>How it works</h3>
+                <p>It helps different machines install a consistent set of package versions. npm updates it when dependency declarations change.</p>
+                <p>Keep it in Git. Avoid hand-editing it; use npm commands to change dependencies.</p>
+              </div>
+            </details>
+          </article>
+
+          <article class="file-card" id="package" data-search="package json project metadata scripts dependencies devdependencies react vite lint build">
+            <details>
+              <summary><span class="file-name">package.json</span><span class="kind">Project manifest and commands</span></summary>
+              <div class="detail">
+                <p><strong>Objective:</strong> Declare the frontend package, its dependencies, and the npm scripts developers can run.</p>
+                <h3>Scripts in this project</h3>
+                <ul>
+                  <li><code>npm run dev</code> starts Vite's development server.</li>
+                  <li><code>npm run build</code> creates production assets in <code>dist/</code>.</li>
+                  <li><code>npm run preview</code> locally serves the built output.</li>
+                  <li><code>npm run lint</code> runs ESLint.</li>
+                </ul>
+                <h3>Dependencies</h3>
+                <p><code>dependencies</code> lists packages used by the application. <code>devDependencies</code> lists development and build tools such as Vite and ESLint.</p>
+              </div>
+            </details>
+          </article>
+
+          <article class="file-card" id="src" data-search="src source code react application components pages context services styles assets">
+            <details>
+              <summary><span class="file-name">src/</span><span class="kind">Application source</span></summary>
+              <div class="detail">
+                <p><strong>Objective:</strong> Contain the React application code loaded by <code>index.html</code>.</p>
+                <h3>High-level role</h3>
+                <p>The entry module is <code>src/main.jsx</code>. It mounts <code>App</code> into the HTML root. The application code then provides screens, navigation, shared state, API services, components, and styles.</p>
+                <p>This guide intentionally stops at the <code>src/</code> folder. Its internal structure and files can be covered in the next guide.</p>
+              </div>
+            </details>
+          </article>
+
+          <article class="file-card" id="vite" data-search="vite config javascript react plugin port 5173 proxy api backend 5000 alias src">
+            <details>
+              <summary><span class="file-name">vite.config.js</span><span class="kind">Development and build configuration</span></summary>
+              <div class="detail">
+                <p><strong>Objective:</strong> Configure Vite, the React plugin, the development server, and source aliases.</p>
+                <h3>Settings in this project</h3>
+                <ul>
+                  <li>The React plugin supports React-specific development transforms.</li>
+                  <li>The Vite server uses port <code>5173</code>.</li>
+                  <li>The <code>src</code> alias points to the source directory.</li>
+                  <li>A proxy rule forwards relative <code>/api</code> requests to <code>http://localhost:5000</code>.</li>
+                </ul>
+                <div class="note">
+                  <strong>Proxy detail</strong>
+                  <p>The current Axios service uses the absolute URL <code>http://localhost:5000/api</code>, so those requests go straight to the backend and bypass Vite's proxy. The proxy applies if requests use a relative <code>/api</code> URL.</p>
+                </div>
+              </div>
+            </details>
+          </article>
+        </section>
+
+        <section class="panel" id="run">
+          <h2>Install and run the frontend</h2>
+          <p>Open a terminal in the <code>frontend/</code> directory. Start the backend separately if the pages need database-backed API data.</p>
+          <div class="commands">
+            <div class="command"><code id="cmd-install">npm install</code><button type="button" onclick="copyCommand('cmd-install', this)">Copy</button></div>
+            <div class="command"><code id="cmd-dev">npm run dev</code><button type="button" onclick="copyCommand('cmd-dev', this)">Copy</button></div>
+            <div class="command"><code id="cmd-build">npm run build</code><button type="button" onclick="copyCommand('cmd-build', this)">Copy</button></div>
+          </div>
+          <p>Vite prints the local address when it starts. This project configures port <code>5173</code>; open <code>http://localhost:5173</code> in your browser.</p>
+        </section>
+      </div>
+    </div>
+  </main>
+
+  <footer class="shell">Standalone guide for the top-level frontend files. It uses no external scripts, stylesheets, or icon libraries.</footer>
+
+  <script>
+    const cards = [...document.querySelectorAll('.file-card')];
+    const search = document.getElementById('search');
+
+    search.addEventListener('input', () => {
+      const query = search.value.trim().toLowerCase();
+      for (const card of cards) {
+        const text = `${card.dataset.search} ${card.innerText}`.toLowerCase();
+        card.hidden = query.length > 0 && !text.includes(query);
+      }
+    });
+
+    document.getElementById('expandAll').addEventListener('click', () => {
+      cards.filter((card) => !card.hidden).forEach((card) => {
+        card.querySelector('details').open = true;
+      });
+    });
+
+    document.getElementById('collapseAll').addEventListener('click', () => {
+      cards.forEach((card) => {
+        card.querySelector('details').open = false;
+      });
+    });
+
+    async function copyCommand(id, button) {
+      const command = document.getElementById(id).textContent;
+      try {
+        await navigator.clipboard.writeText(command);
+        const previous = button.textContent;
+        button.textContent = 'Copied';
+        setTimeout(() => { button.textContent = previous; }, 1200);
+      } catch {
+        window.prompt('Copy this command:', command);
+      }
+    }
+  </script>
+</body>
+</html>
