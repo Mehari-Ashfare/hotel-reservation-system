@@ -1,0 +1,134 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="An interactive guide to the hotel reservation backend startup and request flow.">
+  <title>Backend Flow Guide | Hotel Reservation System</title>
+  <style>
+    :root{color-scheme:light;--ink:#172338;--muted:#52627a;--line:#d8e1ed;--paper:#f4f7fb;--card:#fff;--blue:#2459a6;--blue-pale:#eaf2ff;--green:#176b52;--green-pale:#e8f6f0;--amber:#855600;--amber-pale:#fff4d9;--red:#a33a3a;--shadow:0 12px 32px #223a5c12}
+    *{box-sizing:border-box}body{margin:0;background:var(--paper);color:var(--ink);font:16px/1.65 system-ui,-apple-system,"Segoe UI",sans-serif}a{color:var(--blue)}.wrap{max-width:1120px;margin:auto;padding:32px 22px 72px}.hero{padding:38px clamp(22px,5vw,56px);border-radius:24px;background:linear-gradient(130deg,#10294c,#2459a6);color:#fff;box-shadow:var(--shadow)}.eyebrow{text-transform:uppercase;letter-spacing:.14em;font-size:.76rem;font-weight:750;opacity:.8}.hero h1{font-size:clamp(2rem,5vw,3.5rem);line-height:1.12;margin:.35em 0}.hero p{max-width:760px;color:#e0eaff;margin:0}.hero code{color:white}.toolbar{display:flex;gap:12px;flex-wrap:wrap;margin:24px 0}.toolbar input{flex:1;min-width:220px;padding:12px 14px;border:1px solid var(--line);border-radius:10px;font:inherit}.toolbar button{padding:10px 15px;border:1px solid var(--line);border-radius:10px;background:white;color:var(--ink);font:inherit;font-weight:650;cursor:pointer}.toolbar button:hover{border-color:var(--blue);color:var(--blue)}section{margin:28px 0}.section-title{margin:0 0 6px;font-size:1.65rem;line-height:1.25}.lead{color:var(--muted);margin:0 0 18px}.card{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:22px;box-shadow:var(--shadow);margin:14px 0}.diagram{overflow-x:auto;padding:10px 0}.diagram svg{display:block;width:100%;min-width:780px;height:auto}.node rect{fill:#fff;stroke:#9eb2cc;stroke-width:2;rx:13}.node .head{font-weight:750;fill:var(--ink);font-size:16px}.node .sub{fill:var(--muted);font-size:12px}.node.blue rect{fill:var(--blue-pale);stroke:#7da4df}.node.green rect{fill:var(--green-pale);stroke:#80bea9}.node.amber rect{fill:var(--amber-pale);stroke:#dfbd68}.connector{fill:none;stroke:#627b9c;stroke-width:2.2;marker-end:url(#arrow)}.connector.dashed{stroke-dasharray:7 6;stroke:var(--red);marker-end:url(#arrowRed)}.arrow-label{font-size:12px;fill:#465a75}.diagram-note{font-size:.9rem;color:var(--muted);padding:0 12px}.cols{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:16px}.cols .card{margin:0}.tag{display:inline-block;background:var(--blue-pale);color:#244f8c;padding:2px 9px;border-radius:999px;font-size:.8rem;font-weight:700}code,pre{font-family:ui-monospace,SFMono-Regular,Consolas,monospace}code{background:#edf1f7;padding:.12em .35em;border-radius:5px}pre{white-space:pre;overflow:auto;background:#101d31;color:#e9f1ff;border-radius:12px;padding:17px;line-height:1.55}pre code{display:block;background:transparent;color:inherit;padding:0;border-radius:0}details{border:1px solid var(--line);border-radius:12px;background:white;margin:10px 0}summary{cursor:pointer;padding:14px 17px;font-weight:750}details .inside{padding:0 17px 17px;color:var(--muted)}ul{padding-left:22px}li+li{margin-top:5px}.notice{border-left:4px solid #d4a22e;background:var(--amber-pale);padding:14px 17px;border-radius:8px}.foot{color:var(--muted);font-size:.9rem;border-top:1px solid var(--line);padding-top:18px;margin-top:38px}.hidden{display:none!important}@media(max-width:700px){.wrap{padding:18px 13px 48px}.cols{grid-template-columns:1fr}.card{padding:16px}.hero{border-radius:17px}}
+  </style>
+</head>
+<body>
+<main class="wrap">
+  <header class="hero">
+    <div class="eyebrow">Hotel Reservation System · Backend Guide</div>
+    <h1>How the backend works</h1>
+    <p>This guide follows the backend from its npm start command to PostgreSQL and back to the client. The diagrams describe the current project structure and active Express setup.</p>
+  </header>
+  <div class="toolbar" role="search">
+    <input id="search" type="search" placeholder="Find a folder, file, or term…" aria-label="Search guide">
+    <button id="expand">Expand sections</button><button id="collapse">Collapse sections</button>
+  </div>
+
+  <section class="searchable">
+    <h2 class="section-title">1. Startup: npm command to listening server</h2>
+    <p class="lead">Run these commands from the <code>backend</code> directory. The development command restarts the process when watched files change.</p>
+    <div class="card">
+      <div class="diagram">
+        <svg viewBox="0 0 1000 300" role="img" aria-labelledby="startTitle startDesc">
+          <title id="startTitle">Backend startup flow</title><desc id="startDesc">npm run dev starts nodemon and server.js; server.js checks the database before listening with the Express app.</desc>
+          <defs><marker id="arrow" markerWidth="10" markerHeight="10" refX="8" refY="5" orient="auto"><path d="M0 0L10 5L0 10z" fill="#627b9c"/></marker></defs>
+          <path class="connector" d="M205 80H270"/><path class="connector" d="M445 80H510"/><path class="connector" d="M685 80H750"/>
+          <path class="connector" d="M835 125V185H595V205"/><path class="connector" d="M835 185H845V205"/>
+          <text class="arrow-label" x="215" y="68">runs script</text><text class="arrow-label" x="455" y="68">starts</text><text class="arrow-label" x="690" y="68">imports</text><text class="arrow-label" x="690" y="178">checks, then listens</text>
+          <g class="node blue"><rect x="30" y="35" width="175" height="90"/><text class="head" x="48" y="68">Terminal</text><text class="sub" x="48" y="94">npm run dev / npm start</text></g>
+          <g class="node"><rect x="270" y="35" width="175" height="90"/><text class="head" x="288" y="68">package.json</text><text class="sub" x="288" y="94">dev: nodemon server.js</text></g>
+          <g class="node"><rect x="510" y="35" width="175" height="90"/><text class="head" x="528" y="68">server.js</text><text class="sub" x="528" y="94">startup and shutdown</text></g>
+          <g class="node blue"><rect x="750" y="35" width="175" height="90"/><text class="head" x="768" y="68">app.js</text><text class="sub" x="768" y="94">Express app configuration</text></g>
+          <g class="node green"><rect x="500" y="205" width="190" height="70"/><text class="head" x="518" y="236">PostgreSQL check</text><text class="sub" x="518" y="257">src/config/database.js</text></g>
+          <g class="node green"><rect x="750" y="205" width="190" height="70"/><text class="head" x="768" y="236">HTTP server listens</text><text class="sub" x="768" y="257">PORT from .env; default 5000</text></g>
+        </svg>
+      </div>
+      <p class="diagram-note"><code>server.js</code> tests the database connection before calling <code>app.listen()</code>. If that check fails, startup reports an error instead of serving requests.</p>
+    </div>
+    <pre><code>cd backend
+npm run dev   # development with nodemon
+npm start     # start with Node.js</code></pre>
+  </section>
+
+  <section class="searchable">
+    <h2 class="section-title">2. Request: client to database and back</h2>
+    <p class="lead">A request passes through app-wide middleware before its route handler. A controller coordinates the operation and produces the HTTP response.</p>
+    <div class="card">
+      <div class="diagram">
+        <svg viewBox="0 0 1100 470" role="img" aria-labelledby="requestTitle requestDesc">
+          <title id="requestTitle">Backend request and response flow</title><desc id="requestDesc">Client request moves through global middleware, a mounted route, route middleware, controller, model or direct database query, and PostgreSQL; response returns to client. Errors go to centralized error handling.</desc>
+          <defs><marker id="arrow" markerWidth="10" markerHeight="10" refX="8" refY="5" orient="auto"><path d="M0 0L10 5L0 10z" fill="#627b9c"/></marker><marker id="arrowRed" markerWidth="10" markerHeight="10" refX="8" refY="5" orient="auto"><path d="M0 0L10 5L0 10z" fill="#a33a3a"/></marker></defs>
+          <path class="connector" d="M170 85H225"/><path class="connector" d="M395 85H450"/><path class="connector" d="M620 85H675"/><path class="connector" d="M845 85H900"/>
+          <path class="connector" d="M985 130V190H820V220"/><path class="connector" d="M985 190H990V220"/>
+          <path class="connector" d="M735 260H565"/><path class="connector" d="M405 260H230"/>
+          <path class="connector" d="M485 305V365H775V390"/><path class="connector" d="M900 430H1020V85H1010"/>
+          <path class="connector dashed" d="M535 105V165H170V195"/>
+          <text class="arrow-label" x="179" y="73">HTTP</text><text class="arrow-label" x="405" y="73">next</text><text class="arrow-label" x="630" y="73">match</text><text class="arrow-label" x="850" y="73">call</text>
+          <text class="arrow-label" x="625" y="248">query / result</text><text class="arrow-label" x="273" y="248">result</text><text class="arrow-label" x="614" y="357">errors</text><text class="arrow-label" x="917" y="421">JSON response</text>
+          <g class="node blue"><rect x="20" y="40" width="150" height="90"/><text class="head" x="38" y="73">Client</text><text class="sub" x="38" y="99">browser / API caller</text></g>
+          <g class="node"><rect x="225" y="40" width="170" height="90"/><text class="head" x="243" y="73">Global middleware</text><text class="sub" x="243" y="98">security, logs, parsing</text></g>
+          <g class="node"><rect x="450" y="40" width="170" height="90"/><text class="head" x="468" y="73">Mounted route</text><text class="sub" x="468" y="98">e.g. /api/rooms</text></g>
+          <g class="node"><rect x="675" y="40" width="170" height="90"/><text class="head" x="693" y="73">Route middleware</text><text class="sub" x="693" y="98">auth / validation</text></g>
+          <g class="node blue"><rect x="900" y="40" width="170" height="90"/><text class="head" x="918" y="73">Controller</text><text class="sub" x="918" y="98">business operation</text></g>
+          <g class="node green"><rect x="735" y="220" width="170" height="85"/><text class="head" x="753" y="252">Model</text><text class="sub" x="753" y="278">SQL / data access</text></g>
+          <g class="node green"><rect x="405" y="220" width="160" height="85"/><text class="head" x="423" y="252">PostgreSQL</text><text class="sub" x="423" y="278">database tables</text></g>
+          <g class="node amber"><rect x="20" y="195" width="210" height="85"/><text class="head" x="38" y="227">Central error handling</text><text class="sub" x="38" y="253">asyncHandler → error handler</text></g>
+          <g class="node amber"><rect x="695" y="390" width="205" height="70"/><text class="head" x="713" y="420">HTTP response</text><text class="sub" x="713" y="443">usually res.json(...)</text></g>
+          <text class="arrow-label" x="244" y="157">thrown / forwarded error</text>
+        </svg>
+      </div>
+      <p class="diagram-note">Typical path: <code>route → controller → model → database</code>. In this project, some controllers also call the configured database pool directly, so a model is not always in the path.</p>
+    </div>
+  </section>
+
+  <section class="searchable">
+    <h2 class="section-title">3. What happens inside <code>app.js</code></h2>
+    <p class="lead">The order matters: middleware registered earlier gets the request first. The app then mounts route groups and installs the final error handler.</p>
+    <div class="cols">
+      <article class="card"><span class="tag">Request setup</span><ol><li>CORS rules configure which browser origins may call the API.</li><li>Security and performance middleware apply shared protections and response behavior.</li><li>HTTP logging and audit logging observe requests.</li><li>JSON and URL-encoded parsers read request bodies.</li><li>Staff validation runs before route handling.</li><li>Swagger documentation is configured outside production.</li></ol></article>
+      <article class="card"><span class="tag">Mounted API groups</span><ul><li><code>/api/auth</code> — registration, login, password reset, current user</li><li><code>/api/guests</code> — guest records</li><li><code>/api/rooms</code> — rooms and room types</li><li><code>/api/reservations</code> — bookings and their status</li><li><code>/api/payments</code> — payment operations</li><li><code>/api/reports</code>, <code>/api/staff</code>, <code>/api/audit</code>, <code>/api/dashboard</code></li></ul></article>
+    </div>
+    <p class="notice"><strong>Useful endpoints:</strong> <code>/api/health</code> reports health, <code>/api/metrics</code> reports metrics, and <code>/api-docs</code> provides Swagger documentation in non-production mode. Check the route and environment configuration if an endpoint behaves differently.</p>
+  </section>
+
+  <section class="searchable">
+    <h2 class="section-title">4. Backend folders and their roles</h2>
+    <p class="lead">These are the main pieces involved in the running service, plus nearby database and testing resources.</p>
+    <div class="card"><pre><code>backend/
+├── package.json                 # scripts and dependencies
+├── server.js                    # database check, listen, shutdown
+├── app.js                       # Express middleware and route mounts
+├── .env                         # local configuration (keep private)
+├── src/
+│   ├── config/                  # database connection and API docs setup
+│   ├── routes/                  # URL/method mapping and route middleware
+│   ├── controllers/             # request handling and business operations
+│   ├── models/                  # database queries and data operations
+│   ├── middleware/              # auth, validation, audit, errors, etc.
+│   ├── utils/                   # logging, email, and shared helpers
+│   └── scripts/                 # backend maintenance scripts
+├── database/
+│   ├── schema.sql               # database structure
+│   ├── seed.js                  # sample data insertion
+│   └── clean.js                 # database cleanup utility
+└── APITEST/                     # standalone API exercise scripts</code></pre></div>
+    <details class="searchable"><summary>Open file responsibilities</summary><div class="inside">
+      <ul><li><code>server.js</code> imports the Express app and database check, waits for the check, then opens the HTTP port.</li><li><code>app.js</code> creates the Express app, applies shared middleware, exposes utility endpoints, mounts API routers, and registers error handling.</li><li><code>src/routes</code> maps HTTP methods and paths to middleware and controller methods.</li><li><code>src/controllers</code> reads request data, applies application rules, invokes data access, and sends status and response data.</li><li><code>src/models</code> contains reusable database operations. Some controller files also query the pool directly.</li><li><code>src/config/database.js</code> manages the PostgreSQL connection pool and provides connection/query helpers.</li><li><code>src/middleware</code> handles cross-cutting request work, including authentication and error processing.</li><li><code>database/schema.sql</code> defines tables; database scripts are separate from the server request path.</li><li><code>APITEST</code> contains API testing clients, not Express routes mounted by <code>app.js</code>. Root-level legacy files such as <code>roomApi.js</code> are also standalone test clients.</li></ul>
+    </div></details>
+  </section>
+
+  <section class="searchable">
+    <h2 class="section-title">5. Authentication and errors</h2>
+    <div class="cols">
+      <article class="card"><h3>Protected endpoints</h3><p>Route middleware can verify a bearer token and check the user’s role before calling the controller. Public routes such as login and password-reset requests do not require an existing login. The exact protections are configured per route.</p></article>
+      <article class="card"><h3>Failed requests</h3><p>Async route handlers are commonly wrapped with <code>ErrorMiddleware.asyncHandler</code>. Errors are forwarded to the final error middleware in <code>app.js</code>, which formats the HTTP error response. A route that does not match is handled as a not-found case.</p></article>
+    </div>
+  </section>
+  <footer class="foot">Prepared from the backend source layout and active Express setup. Environment values and credentials are intentionally omitted.</footer>
+</main>
+<script>
+  const search=document.getElementById('search');
+  search.addEventListener('input',()=>{const q=search.value.trim().toLowerCase();document.querySelectorAll('.searchable').forEach(section=>{section.classList.toggle('hidden',q!==''&&!section.innerText.toLowerCase().includes(q))})});
+  document.getElementById('expand').addEventListener('click',()=>document.querySelectorAll('details').forEach(d=>d.open=true));
+  document.getElementById('collapse').addEventListener('click',()=>document.querySelectorAll('details').forEach(d=>d.open=false));
+</script>
+</body>
+</html>

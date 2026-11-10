@@ -1,0 +1,343 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="Visual explanation of how the Hotel Reservation System frontend starts, renders pages, manages state, and communicates with its API.">
+  <title>Frontend flow guide | Hotel Reservation System</title>
+  <style>
+    :root {
+      color-scheme: light;
+      --ink: #17233b;
+      --muted: #5f6e83;
+      --line: #dce4ef;
+      --paper: #ffffff;
+      --wash: #f3f6fb;
+      --blue: #2459d3;
+      --blue-soft: #eaf0ff;
+      --teal: #087e82;
+      --teal-soft: #e7f7f5;
+      --purple: #6741a5;
+      --purple-soft: #f1ebfb;
+      --amber: #8a5700;
+      --amber-soft: #fff5df;
+      font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+    }
+
+    * { box-sizing: border-box; }
+    body { margin: 0; background: var(--wash); color: var(--ink); line-height: 1.62; }
+    .shell { width: min(1200px, calc(100% - 36px)); margin: 0 auto; }
+
+    header {
+      padding: 58px 0 42px;
+      background: linear-gradient(125deg, #122348, #2459d3 72%, #5281df);
+      color: white;
+    }
+    .eyebrow { margin: 0 0 10px; color: #cfddff; font-size: .78rem; font-weight: 750; letter-spacing: .14em; text-transform: uppercase; }
+    h1 { max-width: 850px; margin: 0; font-size: clamp(2rem, 5vw, 3.55rem); line-height: 1.08; }
+    header p { max-width: 810px; margin: 18px 0 0; color: #e2eaff; font-size: 1.06rem; }
+    main { padding: 30px 0 65px; }
+
+    .toolbar, .panel, .folder-card, .callout {
+      border: 1px solid var(--line);
+      border-radius: 14px;
+      background: var(--paper);
+      box-shadow: 0 8px 24px #17233b08;
+    }
+    .toolbar { display: flex; align-items: center; flex-wrap: wrap; gap: 12px; margin-bottom: 20px; padding: 15px; }
+    .toolbar label { font-weight: 700; }
+    #search { flex: 1 1 270px; min-width: 170px; padding: 11px 13px; border: 1px solid #b9c6d8; border-radius: 9px; font: inherit; }
+    button { padding: 9px 13px; border: 0; border-radius: 8px; background: var(--blue-soft); color: var(--blue); font: inherit; font-weight: 700; cursor: pointer; }
+    button:hover { background: #dce7ff; }
+
+    .grid { display: grid; grid-template-columns: 250px minmax(0, 1fr); align-items: start; gap: 20px; }
+    nav { position: sticky; top: 18px; padding: 18px; }
+    nav h2, .panel h2 { margin: 0 0 12px; font-size: 1rem; }
+    nav ul { margin: 0; padding: 0; list-style: none; }
+    nav li + li { margin-top: 7px; }
+    nav a { color: var(--blue); text-decoration: none; font-weight: 650; }
+    nav a:hover { text-decoration: underline; }
+
+    .content { display: grid; min-width: 0; gap: 17px; }
+    .panel { padding: 21px; }
+    .panel > p { margin: 0; color: var(--muted); }
+    .diagram-wrap { overflow-x: auto; margin-top: 15px; padding: 12px; border: 1px solid #e5ebf3; border-radius: 12px; background: #fbfcff; }
+    svg { display: block; width: 100%; min-width: 900px; height: auto; }
+    svg text { font-family: Inter, ui-sans-serif, system-ui, sans-serif; fill: var(--ink); }
+    .node { stroke-width: 1.5; }
+    .node-title { font-size: 15px; font-weight: 750; }
+    .node-sub { font-size: 11px; fill: #53637a; }
+    .edge { fill: none; stroke: #68809e; stroke-width: 2.2; marker-end: url(#arrow); }
+    .edge-branch { fill: none; stroke: #68809e; stroke-width: 2.2; }
+    .edge-return { fill: none; stroke: var(--teal); stroke-width: 2.3; stroke-dasharray: 7 5; marker-end: url(#arrowTeal); }
+    .edge-label { font-size: 11px; font-weight: 700; fill: #52647d; }
+    .legend { display: flex; gap: 18px; flex-wrap: wrap; margin-top: 12px; color: var(--muted); font-size: .9rem; }
+    .legend span { display: inline-flex; align-items: center; gap: 7px; }
+    .swatch { width: 12px; height: 12px; border-radius: 4px; background: var(--blue-soft); border: 1px solid #9bb5ef; }
+    .swatch.api { background: var(--teal-soft); border-color: #8bd0cc; }
+    .swatch.state { background: var(--purple-soft); border-color: #c4addf; }
+    .swatch.backend { background: var(--amber-soft); border-color: #e2c27a; }
+
+    .folder-list { display: grid; gap: 11px; }
+    .folder-card { scroll-margin-top: 14px; padding: 0; }
+    .folder-card[hidden] { display: none; }
+    details > summary { display: flex; align-items: center; justify-content: space-between; gap: 12px; padding: 16px 18px; cursor: pointer; list-style: none; }
+    details > summary::-webkit-details-marker { display: none; }
+    details > summary::after { content: "+"; color: var(--blue); font-size: 1.25rem; font-weight: 700; }
+    details[open] > summary::after { content: "−"; }
+    .folder-name { font: 750 1rem ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; }
+    .label { flex: none; padding: 4px 9px; border-radius: 999px; background: var(--blue-soft); color: var(--blue); font-size: .75rem; font-weight: 750; }
+    .label.api { background: var(--teal-soft); color: var(--teal); }
+    .label.state { background: var(--purple-soft); color: var(--purple); }
+    .label.backend { background: var(--amber-soft); color: var(--amber); }
+    .detail { padding: 0 18px 18px; border-top: 1px solid #edf1f6; }
+    .detail p { margin: 13px 0 7px; }
+    .detail ul { margin: 5px 0 0; padding-left: 20px; color: var(--muted); }
+    code { padding: .12em .35em; border-radius: 5px; background: #eef2f8; color: #23375e; font: .92em ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; }
+    .callout { margin-top: 13px; padding: 14px 16px; border-left: 4px solid #e4ad38; }
+    .callout strong { display: block; margin-bottom: 4px; }
+    .callout p { margin: 0; color: var(--muted); }
+    footer { padding: 0 0 34px; color: var(--muted); font-size: .9rem; }
+
+    @media (max-width: 780px) {
+      header { padding: 42px 0 32px; }
+      .grid { grid-template-columns: 1fr; }
+      nav { position: static; }
+      nav ul { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 7px 14px; }
+      nav li + li { margin-top: 0; }
+    }
+    @media (max-width: 450px) {
+      .shell { width: min(100% - 24px, 1200px); }
+      .label { max-width: 44%; text-align: center; white-space: normal; }
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <div class="shell">
+      <p class="eyebrow">Hotel Reservation System / Frontend Architecture</p>
+      <h1>How the frontend folders connect</h1>
+      <p>Follow the app from the npm command to the browser, through React pages and shared state, out to the backend API, and back to the screen when data arrives.</p>
+    </div>
+  </header>
+
+  <main class="shell">
+    <div class="toolbar">
+      <label for="search">Find a flow stage or folder</label>
+      <input id="search" type="search" placeholder="Try startup, pages, services, token, response..." autocomplete="off">
+      <button id="expandAll" type="button">Expand all</button>
+      <button id="collapseAll" type="button">Collapse all</button>
+    </div>
+
+    <div class="grid">
+      <nav aria-label="Guide sections">
+        <h2>Flow guide</h2>
+        <ul>
+          <li><a href="#startup">Startup diagram</a></li>
+          <li><a href="#request">API request diagram</a></li>
+          <li><a href="#startup-explained">Startup path</a></li>
+          <li><a href="#render">Page rendering</a></li>
+          <li><a href="#request-explained">Request and response</a></li>
+          <li><a href="#folders">Folder responsibilities</a></li>
+          <li><a href="#important-details">Current implementation notes</a></li>
+        </ul>
+      </nav>
+
+      <div class="content">
+        <section class="panel" id="startup">
+          <h2>1. Startup: terminal to visible page</h2>
+          <p>This is the initialization chain for local development. Vite serves the HTML document; React then mounts and chooses what to display.</p>
+          <div class="diagram-wrap">
+            <svg viewBox="0 0 1200 455" role="img" aria-labelledby="startupTitle startupDesc">
+              <title id="startupTitle">Frontend startup path</title>
+              <desc id="startupDesc">npm starts Vite, Vite serves index.html, the browser loads main.jsx, main mounts App, and App provides authentication context and a router that selects a layout and page.</desc>
+              <defs>
+                <marker id="arrow" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M 0 0 L 10 5 L 0 10 z" fill="#68809e"/></marker>
+                <marker id="arrowTeal" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M 0 0 L 10 5 L 0 10 z" fill="#087e82"/></marker>
+              </defs>
+              <path class="edge" d="M170 90 H205"/><path class="edge" d="M360 90 H395"/><path class="edge" d="M550 90 H585"/><path class="edge" d="M740 90 H775"/>
+              <path class="edge" d="M930 90 H965"/>
+              <path class="edge" d="M1042 128 V170"/>
+              <path class="edge" d="M1042 230 V255 H770 V280"/><path class="edge" d="M1042 230 V255 H1050 V280"/>
+              <path class="edge-branch" d="M770 350 V370 H910"/><path class="edge-branch" d="M1050 350 V370 H910"/><path class="edge" d="M910 370 V390"/>
+
+              <rect class="node" x="20" y="53" width="150" height="75" rx="13" fill="#eaf0ff" stroke="#9bb5ef"/>
+              <text class="node-title" x="95" y="82" text-anchor="middle">npm run dev</text><text class="node-sub" x="95" y="105" text-anchor="middle">package.json script</text>
+              <rect class="node" x="205" y="53" width="155" height="75" rx="13" fill="#eaf0ff" stroke="#9bb5ef"/>
+              <text class="node-title" x="282" y="82" text-anchor="middle">Vite</text><text class="node-sub" x="282" y="105" text-anchor="middle">vite.config.js</text>
+              <rect class="node" x="395" y="53" width="155" height="75" rx="13" fill="#eaf0ff" stroke="#9bb5ef"/>
+              <text class="node-title" x="472" y="82" text-anchor="middle">index.html</text><text class="node-sub" x="472" y="105" text-anchor="middle">HTML + root mount</text>
+              <rect class="node" x="585" y="53" width="155" height="75" rx="13" fill="#eaf0ff" stroke="#9bb5ef"/>
+              <text class="node-title" x="662" y="82" text-anchor="middle">main.jsx</text><text class="node-sub" x="662" y="105" text-anchor="middle">React entry point</text>
+              <rect class="node" x="775" y="53" width="155" height="75" rx="13" fill="#eaf0ff" stroke="#9bb5ef"/>
+              <text class="node-title" x="852" y="82" text-anchor="middle">App.jsx</text><text class="node-sub" x="852" y="105" text-anchor="middle">App shell + route table</text>
+              <rect class="node" x="965" y="53" width="155" height="75" rx="13" fill="#f1ebfb" stroke="#c4addf"/>
+              <text class="node-title" x="1042" y="82" text-anchor="middle">AuthProvider</text><text class="node-sub" x="1042" y="105" text-anchor="middle">shared auth state</text>
+
+              <rect class="node" x="965" y="170" width="155" height="60" rx="13" fill="#eaf0ff" stroke="#9bb5ef"/>
+              <text class="node-title" x="1042" y="195" text-anchor="middle">Router + Routes</text><text class="node-sub" x="1042" y="215" text-anchor="middle">match current URL</text>
+              <rect class="node" x="650" y="280" width="240" height="70" rx="13" fill="#eaf0ff" stroke="#9bb5ef"/>
+              <text class="node-title" x="770" y="309" text-anchor="middle">PublicLayout</text><text class="node-sub" x="770" y="332" text-anchor="middle">landing page + Outlet</text>
+              <rect class="node" x="930" y="280" width="240" height="70" rx="13" fill="#eaf0ff" stroke="#9bb5ef"/>
+              <text class="node-title" x="1050" y="309" text-anchor="middle">DashboardLayout</text><text class="node-sub" x="1050" y="332" text-anchor="middle">header + sidebar + Outlet</text>
+              <rect class="node" x="760" y="390" width="300" height="55" rx="13" fill="#eaf0ff" stroke="#9bb5ef"/>
+              <text class="node-title" x="910" y="414" text-anchor="middle">pages/ + components/</text><text class="node-sub" x="910" y="433" text-anchor="middle">screen for the selected route</text>
+            </svg>
+          </div>
+          <div class="legend"><span><i class="swatch"></i> startup and rendering</span><span><i class="swatch state"></i> shared auth state</span></div>
+        </section>
+
+        <section class="panel" id="request">
+          <h2>2. Data: screen to backend and back</h2>
+          <p>When a page needs server data, it calls a feature service or uses the shared API client directly. The response returns to the caller, which updates React state and causes the affected UI to render again.</p>
+          <div class="diagram-wrap">
+            <svg viewBox="0 0 1200 385" role="img" aria-labelledby="requestTitle requestDesc">
+              <title id="requestTitle">Frontend API request and response path</title>
+              <desc id="requestDesc">A page or component calls a feature service or API client, Axios adds the bearer token, the request reaches the Express backend and database, and the response returns to React state and renders the updated UI.</desc>
+              <defs>
+                <marker id="arrowReq" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M 0 0 L 10 5 L 0 10 z" fill="#68809e"/></marker>
+                <marker id="arrowBack" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M 0 0 L 10 5 L 0 10 z" fill="#087e82"/></marker>
+              </defs>
+              <path class="edge" marker-end="url(#arrowReq)" d="M175 112 H207"/><path class="edge" marker-end="url(#arrowReq)" d="M382 112 H414"/><path class="edge" marker-end="url(#arrowReq)" d="M589 112 H621"/><path class="edge" marker-end="url(#arrowReq)" d="M796 112 H828"/><path class="edge" marker-end="url(#arrowReq)" d="M1003 112 H1035"/>
+              <path class="edge-return" marker-end="url(#arrowBack)" d="M1118 153 V280 H1010"/><path class="edge-return" marker-end="url(#arrowBack)" d="M835 280 H790"/><path class="edge-return" marker-end="url(#arrowBack)" d="M615 280 H570"/><path class="edge-return" marker-end="url(#arrowBack)" d="M395 280 H350"/>
+
+              <rect class="node" x="20" y="75" width="155" height="78" rx="13" fill="#eaf0ff" stroke="#9bb5ef"/>
+              <text class="node-title" x="97" y="105" text-anchor="middle">pages/</text><text class="node-sub" x="97" y="129" text-anchor="middle">user action or data load</text>
+              <rect class="node" x="207" y="75" width="175" height="78" rx="13" fill="#e7f7f5" stroke="#8bd0cc"/>
+              <text class="node-title" x="294" y="105" text-anchor="middle">services/</text><text class="node-sub" x="294" y="129" text-anchor="middle">feature request methods</text>
+              <rect class="node" x="414" y="75" width="175" height="78" rx="13" fill="#e7f7f5" stroke="#8bd0cc"/>
+              <text class="node-title" x="501" y="105" text-anchor="middle">services/api.js</text><text class="node-sub" x="501" y="129" text-anchor="middle">Axios client + interceptors</text>
+              <rect class="node" x="621" y="75" width="175" height="78" rx="13" fill="#e7f7f5" stroke="#8bd0cc"/>
+              <text class="node-title" x="708" y="105" text-anchor="middle">HTTP request</text><text class="node-sub" x="708" y="129" text-anchor="middle">Bearer token if present</text>
+              <rect class="node" x="828" y="75" width="175" height="78" rx="13" fill="#fff5df" stroke="#e2c27a"/>
+              <text class="node-title" x="915" y="105" text-anchor="middle">backend /api</text><text class="node-sub" x="915" y="129" text-anchor="middle">Express routes and handlers</text>
+              <rect class="node" x="1035" y="75" width="165" height="78" rx="13" fill="#fff5df" stroke="#e2c27a"/>
+              <text class="node-title" x="1117" y="105" text-anchor="middle">PostgreSQL</text><text class="node-sub" x="1117" y="129" text-anchor="middle">backend data source</text>
+
+              <rect class="node" x="20" y="242" width="330" height="78" rx="13" fill="#eaf0ff" stroke="#9bb5ef"/>
+              <text class="node-title" x="185" y="272" text-anchor="middle">Page handles result</text><text class="node-sub" x="185" y="296" text-anchor="middle">updates state and React re-renders</text>
+              <rect class="node" x="395" y="242" width="175" height="78" rx="13" fill="#e7f7f5" stroke="#8bd0cc"/>
+              <text class="node-title" x="482" y="272" text-anchor="middle">Feature service</text><text class="node-sub" x="482" y="296" text-anchor="middle">returns data or passes error on</text>
+              <rect class="node" x="615" y="242" width="175" height="78" rx="13" fill="#e7f7f5" stroke="#8bd0cc"/>
+              <text class="node-title" x="702" y="272" text-anchor="middle">Axios response</text><text class="node-sub" x="702" y="296" text-anchor="middle">resolved response or rejection</text>
+              <rect class="node" x="835" y="242" width="350" height="78" rx="13" fill="#eaf0ff" stroke="#9bb5ef"/>
+              <text class="node-title" x="1010" y="272" text-anchor="middle">Backend response</text><text class="node-sub" x="1010" y="296" text-anchor="middle">JSON result or HTTP error comes back</text>
+              <text class="edge-label" x="930" y="217" text-anchor="middle">response travels back</text>
+              <text class="edge-label" x="610" y="350" text-anchor="middle">response moves back through Axios and the caller</text>
+            </svg>
+          </div>
+          <div class="legend"><span><i class="swatch api"></i> data request and response</span><span><i class="swatch backend"></i> backend and database are outside frontend/src</span></div>
+        </section>
+
+        <section class="panel" id="startup-explained">
+          <h2>Startup path, step by step</h2>
+          <p>Each step hands control to the next layer. The first command is run from <code>frontend/</code>.</p>
+        </section>
+
+        <section class="folder-list" id="folder-steps" aria-label="Flow step details">
+          <article class="folder-card" data-search="package json npm run dev vite script startup build">
+            <details>
+              <summary><span class="folder-name">package.json → vite.config.js</span><span class="label">1. Start tools</span></summary>
+              <div class="detail">
+                <p><code>npm run dev</code> invokes the <code>dev</code> script in <code>package.json</code>, which starts Vite. Vite reads its configuration, starts on port <code>5173</code>, and serves the frontend files.</p>
+              </div>
+            </details>
+          </article>
+          <article class="folder-card" data-search="index html main jsx browser root mount css">
+            <details>
+              <summary><span class="folder-name">index.html → main.jsx</span><span class="label">2. Mount React</span></summary>
+              <div class="detail">
+                <p>Vite serves <code>index.html</code>. Its module script loads <code>src/main.jsx</code>. The entry imports global CSS, finds <code>#root</code>, and calls ReactDOM's <code>createRoot(...).render(...)</code>.</p>
+              </div>
+            </details>
+          </article>
+          <article class="folder-card" data-search="app jsx authprovider router routes toaster context">
+            <details>
+              <summary><span class="folder-name">main.jsx → App.jsx</span><span class="label">3. Set app-wide providers</span></summary>
+              <div class="detail">
+                <p><code>App</code> is rendered inside <code>React.StrictMode</code>. It wraps the app with <code>AuthProvider</code>, then sets up React Router and toast notifications. The route table selects what appears for each URL.</p>
+              </div>
+            </details>
+          </article>
+          <article class="folder-card" data-search="layouts public dashboard outlet header sidebar pages routes">
+            <details>
+              <summary><span class="folder-name">App.jsx → layouts/ + pages/</span><span class="label">4. Choose screen frame</span></summary>
+              <div class="detail">
+                <p>The landing page is nested in <code>PublicLayout</code>. Operational pages are nested in <code>DashboardLayout</code>, which supplies a header, sidebar, and an <code>Outlet</code> for the selected page. The page components come from <code>pages/</code>.</p>
+                <div class="callout"><strong>Access-control detail</strong><p>The route group is commented as protected, but the current <code>DashboardLayout</code> is a visual shell, not an authentication guard. Backend route authorization remains important for securing data.</p></div>
+              </div>
+            </details>
+          </article>
+          <article class="folder-card" data-search="components common layout assets styles context hooks shared state ui">
+            <details>
+              <summary><span class="folder-name">pages/ → components/ + context/ + hooks/</span><span class="label">5. Compose interface</span></summary>
+              <div class="detail">
+                <p>Pages combine reusable controls from <code>components/</code>, shared global styles from <code>assets/styles/</code>, and application state exposed by context or hooks. For example, the header and sidebar read the current user through <code>useAuth</code>.</p>
+              </div>
+            </details>
+          </article>
+        </section>
+
+        <section class="panel" id="render">
+          <h2>What chooses and renders a page?</h2>
+          <p>React Router matches the current browser URL to a route declared in <code>App.jsx</code>. The route renders a page, sometimes inside a layout. Layouts place the nested page in React Router's <code>Outlet</code>. React then draws the resulting component tree into the <code>#root</code> element.</p>
+        </section>
+
+        <section class="panel" id="request-explained">
+          <h2>Request and response path</h2>
+          <p>A page can call a focused service such as <code>GuestService</code> or <code>RoomService</code>. Some screens call the shared Axios client directly. Both use <code>services/api.js</code>, whose request interceptor attaches a saved bearer token. The response interceptor clears stored session data and redirects to login on HTTP 401.</p>
+          <p>The frontend does not call backend controllers or database models directly. It sends HTTP requests to the Express API. Backend routes and handlers process those requests and return JSON; the frontend caller handles the result or error, updates local React state, and React re-renders affected components.</p>
+        </section>
+
+        <section class="panel" id="folders">
+          <h2>Folder responsibilities in the flow</h2>
+          <p><code>pages/</code> owns route-level screens. <code>components/</code> supplies reusable UI. <code>layouts/</code> supplies page frames. <code>context/</code> and <code>hooks/</code> expose shared state and behavior. <code>services/</code> talks to the API. <code>assets/</code> supplies styles and images. <code>routes/</code> and <code>utils/</code> exist but are currently empty; active frontend routing is in <code>App.jsx</code>.</p>
+        </section>
+
+        <section class="panel" id="important-details">
+          <h2>Important details from the current code</h2>
+          <ul>
+            <li><strong>Vite proxy:</strong> <code>vite.config.js</code> defines a proxy for relative <code>/api</code> requests. The current Axios client uses the absolute URL <code>http://localhost:5000/api</code>, so these requests bypass the Vite proxy.</li>
+            <li><strong>React Query:</strong> TanStack Query is listed as a dependency, but no <code>QueryClientProvider</code> or <code>useQuery</code> usage appears in the current source. The described request path uses Axios and component state.</li>
+            <li><strong>Role menus:</strong> Sidebar menu items change based on the role in auth state. This controls what navigation is displayed, but backend authorization should enforce access to protected data and actions.</li>
+          </ul>
+        </section>
+      </div>
+    </div>
+  </main>
+
+  <footer class="shell">Flow reference for the current frontend implementation. The backend and PostgreSQL are shown only to explain the API boundary.</footer>
+
+  <section aria-labelledby="backend-connection-title">
+    <h2 id="backend-connection-title">How the frontend connects to the backend</h2>
+    <p><code>frontend/src/services/api.js</code> configures the frontend HTTP client and the backend base URL. Frontend service modules use that client to send API requests.</p>
+    <p>On the backend, <code>backend/app.js</code> enables CORS and mounts API route groups under <code>/api</code>, such as <code>/api/auth</code> and <code>/api/rooms</code>. The backend address may be set in the frontend environment configuration.</p>
+    <p>In short: a frontend service calls <code>api.js</code>, the request reaches a route mounted by <code>app.js</code>, and the response returns to the frontend.</p>
+  </section>
+
+  <script>
+    const cards = [...document.querySelectorAll('.folder-card')];
+    const search = document.getElementById('search');
+
+    search.addEventListener('input', () => {
+      const query = search.value.trim().toLowerCase();
+      for (const card of cards) {
+        const text = `${card.dataset.search} ${card.innerText}`.toLowerCase();
+        card.hidden = query.length > 0 && !text.includes(query);
+      }
+    });
+
+    document.getElementById('expandAll').addEventListener('click', () => {
+      cards.filter((card) => !card.hidden).forEach((card) => {
+        card.querySelector('details').open = true;
+      });
+    });
+
+    document.getElementById('collapseAll').addEventListener('click', () => {
+      cards.forEach((card) => {
+        card.querySelector('details').open = false;
+      });
+    });
+  </script>
+</body>
+</html>
